@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fowned — Transforming How Your Customers See You</title>
+
+  <!-- Fonts: Inter does almost everything, Plex Mono is only for the
+       small uppercase labels (see .label class in style.css) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ==========================================================
+       LOADING SCREEN
+       Removed automatically by js/main.js once the page is ready.
+       Replace the SVG below with your real logo file whenever you
+       have it exported — for now it's a simple placeholder glasses
+       mark matching the LinkedIn logo's line-art style.
+       ========================================================== -->
+  <div id="loader">
+    <div class="loader-mark">
+      <span class="logo-mark">
+        <img src="images/fowned_logo.svg" alt="Fowned logo">
+      </span>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       TOP BANNER = header/nav + hero, both on the blush background
+       so it reads as one continuous band (like the LinkedIn cover).
+       ========================================================== -->
+  <div id="top-banner">
+
+    <header>
+      <div class="container">
+        <nav>
+          <div class="logo">
+            <span class="logo-mark">
+              <img src="images/fowned_logo.svg" alt="Fowned logo">
+            </span>
+            <span>Fowned</span>
+          </div>
+
+          <div class="nav-links">
+            <a href="#why">Why GEO</a>
+            <a href="#tiers">Tiers</a>
+            <a href="#contact">Contact</a>
+          </div>
+
+          <a href="#audit" class="btn btn-primary">Book a call</a>
+        </nav>
+      </div>
+    </header>
+
+    <section id="banner">
+      <div class="container">
+        <div class="banner-grid">
+    
+          <div class="banner-inner">
+            <span class="label">Generative Engine Optimization</span>
+            <h1>Transforming how your customers see you.</h1>
+            <p class="sub">
+              GEO gets your business named when AI tools like ChatGPT and Perplexity
+              answer a customer's question.
+            </p>
+    
+            <div class="banner-ctas">
+              <a href="#audit" class="btn btn-primary">Run your free audit</a>
+              <a href="#why" class="btn btn-secondary">See how it works</a>
+            </div>
+          </div>
+    
+          <div class="banner-graphic">
+            <div class="geo-card">
+              <span class="label">AI answer — simulated</span>
+              <p class="geo-line geo-query">"best [service] near me?"</p>
+              <p class="geo-line geo-cited">Your business <span class="dot-blink"></span></p>
+              <p class="geo-line geo-muted">Competitor A</p>
+              <p class="geo-line geo-muted">Competitor B</p>
+            </div>
+          </div>
+    
+        </div>
+      </div>
+    </section>
+
+  </div>
+  <section id="what-we-do">
+    <div class="container">
+      <span class="label">At Fowned</span>
+      <p>We audit your AI visibility, fix what's missing, and keep you cited as those answers keep changing.</p>
+    </div>
+  </section>
+  <!-- end #top-banner -->
+
+  <!-- Everything else (why-section, tiers, audit, FAQ, footer) goes here.
+       Build it the same way: a <section id="..."> with a .container inside,
+       styled with the same variables from style.css. -->
+
+  <script src="js/main.js"></script>
+</body>
+</html>
+<section id="tiers">
+  <div class="container">
+
+    <div class="section-head">
+      <span class="label">Engagement</span>
+      <h2>Three tiers, three levels of visibility</h2>
+      <p class="sub">Every tier starts from your audit results. Pricing is discussed on a call.</p>
+      <form class="audit-inline" onsubmit="event.preventDefault();">
+        <input type="url" placeholder="Your website URL" required>
+        <button type="submit" class="btn btn-primary">Run free audit</button>
+      </form>
+    </div>
+
+    <div class="tier-grid">
+
+      <div class="tier-card">
+        <span class="label">Tier 1</span>
+        <h3>Listing + Directory features</h3>
+        <p>Footprint repair and listing optimization, plus monthly report.</p>
+        <a href="#" class="btn btn-secondary">Book a call</a>
+      </div>
+
+      <div class="tier-card">
+        <span class="label">Tier 2</span>
+        <h3>Listing + Website</h3>
+        <p>Tier 1 foundation, plus on-site structure and content engineered for AI citation.</p>
+        <a href="#" class="btn btn-secondary">Book a call</a>
+      </div>
+
+      <div class="tier-card">
+        <span class="label">Tier 3</span>
+        <h3>Website + Cold Outreach Support</h3>
+        <p>Tier 2 foundation, plus warm-signal visitor identification that matures with site traffic.</p>
+        <a href="#" class="btn btn-secondary">Book a call</a>
+      </div>
+
+    </div>
+  </div>
+</section>   
