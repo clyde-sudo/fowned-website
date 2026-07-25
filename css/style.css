@@ -157,17 +157,26 @@ img {
 
 /* Header/top banner section */
 #top-banner {
-  background: var(--color-blush);
+  background: var(--color-blush) url('../images/starry-lineart-final.png') center top / cover no-repeat;
+  position: relative;
+  overflow: hidden;
 }
 
+
 header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-white);
   padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
 }
 
 .logo {
@@ -194,23 +203,53 @@ nav {
   object-fit: contain;
 }
 
-.nav-links {
+.nav-right {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  font-size: 14.5px;
-  color: var(--color-gray);
+  gap: 14px;
 }
 
-.nav-links a:hover {
+.menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius);
   color: var(--color-black);
+  cursor: pointer;
 }
 
-/* Hide nav links + show a hamburger below this width.
-   No hamburger behavior wired up yet — that's a good next step
-   once this section is in place. */
-@media (max-width: 760px) {
-  .nav-links { display: none; }
+.menu-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+.menu-panel {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-xs) 0 var(--space-sm);
+  border-top: 1px solid var(--color-hairline);
+  margin-top: 4px;
+}
+
+.menu-panel.is-open {
+  display: flex;
+}
+
+.menu-panel a {
+  padding: 10px 8px;
+  font-size: 15px;
+  color: var(--color-black);
+  border-radius: 6px;
+}
+
+.menu-panel a:hover {
+  background: var(--color-hairline);
 }
 
 /* ==========================================================================
@@ -220,7 +259,7 @@ nav {
    ========================================================================== */
 
    #banner {
-    padding: var(--space-md) 0 var(--space-md);
+    padding: var(--space-xs) 0 var(--space-md);
   }
   
   .banner-grid {
@@ -265,6 +304,71 @@ nav {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    max-width: 520px;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-lg) 0 var(--space-md);
+    overflow: hidden;
+  }
+  
+  .brand-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-sm) 0 var(--space-sm);
+  }
+  
+  .brand-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(48px, 5vw, 64px);
+    letter-spacing: -0.01em;
+    line-height: 1;
+    color: var(--color-black);
+    margin: 0 0 28px;
+  }
+  
+  .brand-portrait {
+    height: clamp(240px, 28vw, 340px);
+    width: auto;
+    display: block;
+    margin-bottom: 20px;
+  }
+  
+  .brand-tag {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-black);
+    margin-bottom: 10px;
+  }
+  
+  .brand-sub {
+    font-size: 14.5px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--color-gray);
+    max-width: 460px;
+  }
+  
+  @media (max-width: 760px) {
+    .brand-row {
+      flex-direction: column;
+      gap: var(--space-sm);
+      text-align: center;
+    }
   }
   
   /* --- Graphic placeholder --- */

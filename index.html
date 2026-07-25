@@ -8,19 +8,13 @@
   <!-- Fonts: Inter does almost everything, Plex Mono is only for the
        small uppercase labels (see .label class in style.css) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- ==========================================================
-       LOADING SCREEN
-       Removed automatically by js/main.js once the page is ready.
-       Replace the SVG below with your real logo file whenever you
-       have it exported — for now it's a simple placeholder glasses
-       mark matching the LinkedIn logo's line-art style.
-       ========================================================== -->
+  <!-- LOADING SCREEN -->
   <div id="loader">
     <div class="loader-mark">
       <span class="logo-mark">
@@ -29,10 +23,7 @@
     </div>
   </div>
 
-  <!-- ==========================================================
-       TOP BANNER = header/nav + hero, both on the blush background
-       so it reads as one continuous band (like the LinkedIn cover).
-       ========================================================== -->
+  <!--TOP BANNER -->
   <div id="top-banner">
 
     <header>
@@ -42,64 +33,71 @@
             <span class="logo-mark">
               <img src="images/fowned_logo.svg" alt="Fowned logo">
             </span>
-            <span>Fowned</span>
           </div>
-
-          <div class="nav-links">
-            <a href="#why">Why GEO</a>
-            <a href="#tiers">Tiers</a>
-            <a href="#contact">Contact</a>
+        
+          <div class="nav-right">
+            <a href="#audit" class="btn btn-primary">Book a call</a>
+            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
           </div>
-
-          <a href="#audit" class="btn btn-primary">Book a call</a>
         </nav>
+        
+        <div class="menu-panel" id="menuPanel">
+          <a href="#why">Why GEO</a>
+          <a href="#tiers">Outcomes</a>
+          <a href="#faq">Contact</a>
+        </div>
       </div>
     </header>
 
-    <section id="banner">
-      <div class="container">
-        <div class="banner-grid">
-    
-          <div class="banner-inner">
-            <span class="label">Generative Engine Optimization</span>
-            <h1>Transforming how your customers see you.</h1>
-            <p class="sub">
-              GEO gets your business named when AI tools like ChatGPT and Perplexity
-              answer a customer's question.
-            </p>
-    
-            <div class="banner-ctas">
-              <a href="#audit" class="btn btn-primary">Run your free audit</a>
-              <a href="#why" class="btn btn-secondary">See how it works</a>
-            </div>
-          </div>
-    
-          <div class="banner-graphic">
-            <div class="geo-card">
-              <span class="label">AI answer — simulated</span>
-              <p class="geo-line geo-query">"best [service] near me?"</p>
-              <p class="geo-line geo-cited">Your business <span class="dot-blink"></span></p>
-              <p class="geo-line geo-muted">Competitor A</p>
-              <p class="geo-line geo-muted">Competitor B</p>
-            </div>
-          </div>
-    
-        </div>
+    <div class="container">
+      <div class="brand-stack">
+        <h2 class="brand-name">Fowned</h2>
+        <img src="images/fowned-portrait-transparent.png" alt="Fowned" class="brand-portrait">
+        <span class="brand-tag">Generative Engine Optimization</span>
       </div>
-    </section>
+    </div>
 
   </div>
-  <section id="what-we-do">
+
+  <section id="banner">
     <div class="container">
-      <span class="label">At Fowned</span>
-      <p>We audit your AI visibility, fix what's missing, and keep you cited as those answers keep changing.</p>
+      <div class="banner-grid">
+  
+        <div class="banner-inner">
+          <h1>Transforming how your customers see you.</h1>
+          <p class="sub">
+            At Fowned, we audit your AI visibility, fix what's missing, and keep you cited as those answers keep changing.
+          </p>
+  
+          <div class="banner-ctas">
+            <a href="#audit" class="btn btn-primary">Run your free audit</a>
+            <a href="#why" class="btn btn-secondary">See how it works</a>
+          </div>
+        </div>
+  
+        <div class="banner-graphic">
+          <div class="geo-card">
+            <span class="label">AI answer — simulated</span>
+            <p class="geo-line geo-query">"best [service] near me?"</p>
+            <p class="geo-line geo-cited">Your business <span class="dot-blink"></span></p>
+            <p class="geo-line geo-muted">Competitor A</p>
+            <p class="geo-line geo-muted">Competitor B</p>
+          </div>
+        </div>
+  
+      </div>
     </div>
   </section>
+
   <!-- end #top-banner -->
 
-  <!-- Everything else (why-section, tiers, audit, FAQ, footer) goes here.
-       Build it the same way: a <section id="..."> with a .container inside,
-       styled with the same variables from style.css. -->
+  <!-- Everything else (why-section, tiers, audit, FAQ, footer) -->
 
   <script src="js/main.js"></script>
 </body>

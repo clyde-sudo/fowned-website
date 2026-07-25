@@ -1,8 +1,5 @@
 // ==========================================================================
 // LOADING SCREEN
-// Waits for BOTH the page to finish loading AND a minimum display time,
-// then fades the loader out. The minimum time exists so the loader doesn't
-// flash for 50ms on a fast connection — feels broken rather than intentional.
 // ==========================================================================
 
 const MIN_DISPLAY_MS = 900; // tweak this — try 600 for snappier, 1400 for slower
@@ -23,4 +20,65 @@ if (document.readyState === 'complete') {
   hideLoader();
 } else {
   window.addEventListener('load', hideLoader);
+}
+
+// ==========================================================================
+// MENU TOGGLE
+// ==========================================================================
+
+const menuToggle = document.getElementById('menuToggle');
+const menuPanel = document.getElementById('menuPanel');
+
+if (menuToggle && menuPanel) {
+  menuToggle.addEventListener('click', () => {
+    const isOpen = menuPanel.classList.toggle('is-open');
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+
+  // close after clicking a link
+  menuPanel.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      menuPanel.classList.remove('is-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // close if clicking anywhere outside the menu
+  document.addEventListener('click', (e) => {
+    if (!menuToggle.contains(e.target) && !menuPanel.contains(e.target)) {
+      menuPanel.classList.remove('is-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
+// ==========================================================================
+// PORTRAIT SCROLL EFFECT
+// Subtly scales the banner portrait up as the user scrolls down the page.
+// Capped at a small factor (1.0 → 1.08) so it reads as a nice touch, not
+// a distraction. Skips entirely if the user has reduced-motion enabled.
+// ==========================================================================
+
+const portrait = document.querySelector('.brand-portrait');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (portrait && !prefersReducedMotion) {
+  const MAX_SCROLL = 400;   // scroll distance (px) over which the effect completes
+  const MAX_SCALE = 1.15;   // final scale — keep this small, it's meant to be subtle
+
+  let ticking = false;
+
+  function updatePortraitScale() {
+    const progress = Math.min(window.scrollY / MAX_SCROLL, 1);
+    const scale = 1 + progress * (MAX_SCALE - 1);
+    portrait.style.transform = `scale(${scale})`;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(updatePortraitScale);
+      ticking = true;
+    }
+  }, { passive: true });
 }
