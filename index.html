@@ -24,73 +24,59 @@
   </div>
 
   <!--TOP BANNER -->
-  <div id="top-banner">
-
-    <header>
-      <div class="container">
-        <nav>
-          <div class="logo">
-            <span class="logo-mark">
-              <img src="images/fowned_logo.svg" alt="Fowned logo">
-            </span>
-          </div>
-        
-          <div class="nav-right">
-            <a href="#audit" class="btn btn-primary">Book a call</a>
-            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </button>
-          </div>
-        </nav>
-        
-        <div class="menu-panel" id="menuPanel">
-          <a href="#why">Why GEO</a>
-          <a href="#tiers">Outcomes</a>
-          <a href="#faq">Contact</a>
-        </div>
-      </div>
-    </header>
-
+  <header>
     <div class="container">
-      <div class="brand-stack">
-        <h2 class="brand-name">Fowned</h2>
-        <img src="images/fowned-portrait-transparent.png" alt="Fowned" class="brand-portrait">
-        <span class="brand-tag">Generative Engine Optimization</span>
+      <nav>
+        <div class="logo">
+          <span class="logo-mark">
+            <img src="images/fowned_logo.svg" alt="Fowned logo">
+          </span>
+        </div>
+        <div class="nav-right">
+          <a href="#audit" class="btn btn-primary">Book a call</a>
+          <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </nav>
+      <div class="menu-panel" id="menuPanel">
+        <a href="#why">Why GEO</a>
+        <a href="#tiers">Outcomes</a>
+        <a href="#contact">Contact</a>
       </div>
     </div>
-
-  </div>
-
-  <section id="banner">
-    <div class="container">
-      <div class="banner-grid">
+  </header>
   
-        <div class="banner-inner">
-          <h1>Transforming how your customers see you.</h1>
-          <p class="sub">
-            At Fowned, we audit your AI visibility, fix what's missing, and keep you cited as those answers keep changing.
-          </p>
-  
-          <div class="banner-ctas">
-            <a href="#audit" class="btn btn-primary">Run your free audit</a>
-            <a href="#why" class="btn btn-secondary">See how it works</a>
-          </div>
+  <section id="hero">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <span class="brand-tag">Generative Engine Optimization</span>
+        <h1>Transforming how your customers see you.</h1>
+        <p class="hero-sub">GEO gets your business named when AI tools like ChatGPT and Perplexity answer a customer's question. We audit your visibility, fix what's missing, and keep you cited as those answers change.</p>
+        <div class="hero-ctas">
+          <a href="#audit" class="btn btn-primary">Run your free audit</a>
+          <a href="#why" class="btn btn-secondary">See how it works</a>
         </div>
-  
-        <div class="banner-graphic">
-          <div class="geo-card">
-            <span class="label">AI answer — simulated</span>
-            <p class="geo-line geo-query">"best [service] near me?"</p>
-            <p class="geo-line geo-cited">Your business <span class="dot-blink"></span></p>
-            <p class="geo-line geo-muted">Competitor A</p>
-            <p class="geo-line geo-muted">Competitor B</p>
-          </div>
+        <div class="ai-badges">
+          <span class="ai-badge">ChatGPT</span>
+          <span class="ai-badge">Perplexity</span>
+          <span class="ai-badge">Gemini</span>
+          <span class="ai-badge">Claude</span>
         </div>
-  
+      </div>
+      <div class="hero-visual">
+        <img src="images/fowned-portrait-transparent.png" alt="Fowned" class="hero-portrait">
+        <div class="geo-card">
+          <span class="label">AI answer — simulated</span>
+          <p class="geo-line geo-query">"best [service] near me?"</p>
+          <p class="geo-line geo-cited">Your business <span class="dot-blink"></span></p>
+          <p class="geo-line geo-muted">Competitor A</p>
+          <p class="geo-line geo-muted">Competitor B</p>
+        </div>
       </div>
     </div>
   </section>
@@ -99,16 +85,13 @@
 
   <!-- Everything else (why-section, tiers, audit, FAQ, footer) -->
 
-  <script src="js/main.js"></script>
-</body>
-</html>
 <section id="tiers">
   <div class="container">
 
     <div class="section-head">
       <span class="label">Engagement</span>
-      <h2>Three tiers, three levels of visibility</h2>
-      <p class="sub">Every tier starts from your audit results. Pricing is discussed on a call.</p>
+      <h2>Three outcomes, three levels of visibility</h2>
+      <p class="sub">Every outcome starts from your audit results. Pricing is discussed on a call.</p>
       <form class="audit-inline" onsubmit="event.preventDefault();">
         <input type="url" placeholder="Your website URL" required>
         <button type="submit" class="btn btn-primary">Run free audit</button>
@@ -118,26 +101,77 @@
     <div class="tier-grid">
 
       <div class="tier-card">
-        <span class="label">Tier 1</span>
+        <span class="label">Outcome 1</span>
         <h3>Listing + Directory features</h3>
         <p>Footprint repair and listing optimization, plus monthly report.</p>
         <a href="#" class="btn btn-secondary">Book a call</a>
       </div>
 
       <div class="tier-card">
-        <span class="label">Tier 2</span>
+        <span class="label">Outcome 2</span>
         <h3>Listing + Website</h3>
-        <p>Tier 1 foundation, plus on-site structure and content engineered for AI citation.</p>
+        <p>Outcome 1 foundation, plus on-site structure and content engineered for AI citation.</p>
         <a href="#" class="btn btn-secondary">Book a call</a>
       </div>
 
       <div class="tier-card">
-        <span class="label">Tier 3</span>
+        <span class="label">Outcome 3</span>
         <h3>Website + Cold Outreach Support</h3>
-        <p>Tier 2 foundation, plus warm-signal visitor identification that matures with site traffic.</p>
+        <p>See which visitors come from AI answers. Proof GEO is working, and who to follow up with.</p>
         <a href="#" class="btn btn-secondary">Book a call</a>
       </div>
 
     </div>
   </div>
 </section>   
+
+<footer id="contact">
+  <div class="container">
+
+    <div class="contact-top">
+      <h2>Stay updated with Fowned's latest GEO insights.</h2>
+      <form class="subscribe-form" onsubmit="event.preventDefault();">
+        <input type="email" placeholder="Enter your email" required>
+        <button type="submit" class="btn btn-primary">Subscribe now</button>
+      </form>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-col">
+        <span class="label">Menu</span>
+        <a href="#why">Why GEO</a>
+        <a href="#tiers">Outcomes</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <div class="contact-col">
+        <span class="label">Email</span>
+        <a href="mailto:hello@fowned.com">hello@fowned.com</a>
+      </div>
+
+      <div class="contact-col">
+        <span class="label">Phone</span>
+        <a href="tel:+10000000000">+1 (000) 000 0000</a>
+      </div>
+
+      <div class="contact-col">
+        <span class="label">Social</span>
+        <a href="#" aria-label="LinkedIn">LinkedIn</a>
+      </div>
+    </div>
+
+    <div class="contact-bottom">
+      <span>© 2026 Fowned. All rights reserved.</span>
+      <div class="contact-legal">
+        <a href="#">Privacy Policy</a>
+        <span>|</span>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
