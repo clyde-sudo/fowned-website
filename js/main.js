@@ -2,7 +2,7 @@
 // LOADING SCREEN
 // ==========================================================================
 
-const MIN_DISPLAY_MS = 900; // tweak this — try 600 for snappier, 1400 for slower
+const MIN_DISPLAY_MS = 1000; 
 
 const loader = document.getElementById('loader');
 const startTime = Date.now();
@@ -23,7 +23,7 @@ if (document.readyState === 'complete') {
 }
 
 // ==========================================================================
-// MENU TOGGLE
+// menu toggle
 // ==========================================================================
 
 const menuToggle = document.getElementById('menuToggle');
@@ -53,7 +53,7 @@ if (menuToggle && menuPanel) {
 }
 
 // ==========================================================================
-// PORTRAIT SCROLL EFFECT
+// portrait scroll effect
 // Subtly scales the banner portrait up as the user scrolls down the page.
 // Capped at a small factor (1.0 → 1.08) so it reads as a nice touch, not
 // a distraction. Skips entirely if the user has reduced-motion enabled.
@@ -82,3 +82,23 @@ if (portrait && !prefersReducedMotion) {
     }
   }, { passive: true });
 }
+
+// ==========================================================================
+// links to call, audit, etc
+// Update the URLs here once you have them — every button tagged with a
+// matching data-link attribute updates automatically, no hunting through
+// index.html required.
+// ==========================================================================
+
+const LINKS = {
+  bookCall: '#',   //  replace 
+  audit: '#',      // replace 
+  linkedin: 'https://www.linkedin.com/company/fowned/',  
+};
+
+document.querySelectorAll('[data-link]').forEach(el => {
+  const key = el.dataset.link;
+  if (LINKS[key]) {
+    el.href = LINKS[key];
+  }
+});
