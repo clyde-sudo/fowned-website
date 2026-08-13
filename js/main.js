@@ -1,8 +1,8 @@
-// ==========================================================================
-// LOADING SCREEN
-// ==========================================================================
+// ---- Loading screen ----
+// Shows on first load, hides once the page is done loading and at least
+// MIN_DISPLAY_MS has passed (so it stays longer than just a flash).
 
-const MIN_DISPLAY_MS = 1000; 
+const MIN_DISPLAY_MS = 1000;
 
 const loader = document.getElementById('loader');
 const startTime = Date.now();
@@ -22,9 +22,10 @@ if (document.readyState === 'complete') {
   window.addEventListener('load', hideLoader);
 }
 
-// ==========================================================================
-// menu toggle
-// ==========================================================================
+
+// ---- Menu toggle ----
+// Opens/closes the dropdown panel under the 3-line icon. Closes
+// itself if you click a link inside it or click anywhere outside it.
 
 const menuToggle = document.getElementById('menuToggle');
 const menuPanel = document.getElementById('menuPanel');
@@ -52,19 +53,18 @@ if (menuToggle && menuPanel) {
   });
 }
 
-// ==========================================================================
-// portrait scroll effect
-// Subtly scales the banner portrait up as the user scrolls down the page.
-// Capped at a small factor (1.0 → 1.08) so it reads as a nice touch, not
-// a distraction. Skips entirely if the user has reduced-motion enabled.
-// ==========================================================================
+
+// ---- Portrait scroll effect ----
+// Scales the portrait up with scroll, kept small
+// (1.0 → 1.15) so it's a nice touch and not distracting. might
+// be arbitrary now with style changes
 
 const portrait = document.querySelector('.brand-portrait');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (portrait && !prefersReducedMotion) {
-  const MAX_SCROLL = 400;   // scroll distance (px) over which the effect completes
-  const MAX_SCALE = 1.15;   // final scale — keep this small, it's meant to be subtle
+  const MAX_SCROLL = 400;  // how much scrolling it takes to hit full scale
+  const MAX_SCALE = 1.15;  // final size , slightly larger than og
 
   let ticking = false;
 
@@ -83,17 +83,15 @@ if (portrait && !prefersReducedMotion) {
   }, { passive: true });
 }
 
-// ==========================================================================
-// links to call, audit, etc
-// Update the URLs here once you have them — every button tagged with a
-// matching data-link attribute updates automatically, no hunting through
-// index.html required.
-// ==========================================================================
+
+// ---- Centralized links ----
+// Book a call, audit, LinkedIn, etc. Update the URLs here, then every button
+// with a matching data-link attribute picks it up automatically 
 
 const LINKS = {
-  bookCall: '#',   //  replace 
-  audit: '#',      // replace 
-  linkedin: 'https://www.linkedin.com/company/fowned/',  
+  bookCall: '#',   // still need this one
+  audit: '#',      // still need this one
+  linkedin: 'https://www.linkedin.com/company/fowned/',
 };
 
 document.querySelectorAll('[data-link]').forEach(el => {
