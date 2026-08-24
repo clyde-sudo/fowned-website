@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fowned — Transforming How Your Customers See You</title>
+
+  <!-- Fonts: Inter everywhere, Plex Mono only for the small uppercase labels -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="icon" type="image/svg+xml" href="images/fowned_logo.svg">
+  <!-- Style -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Loading screen -->
+  <div id="loader">
+    <div class="loader-mark">
+      <span class="logo-mark">
+        <img src="images/fowned_logo.svg" alt="Fowned logo">
+      </span>
+    </div>
+  </div>
+
+  <!-- main top banner / navigation -->
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <span class="logo-mark">
+            <img src="images/fowned_logo.svg" alt="Fowned logo">
+          </span>
+        </div>
+        <div class="nav-right">
+          <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </nav>
+      <div class="menu-panel" id="menuPanel">
+        <a href="#tiers">Outcomes</a>
+        <a href="#why">Why GEO</a>
+        <a href="#how">How it works</a>
+        <a href="#contact">Contact</a>
+        <a href="https://citability.dev/agency/fowned/prospects" id="signinLink">Sign in</a>
+        <div class="menu-divider"></div>
+        <a href="#audit" class="btn btn-secondary menu-btn-secondary" data-link="audit">Run free audit</a>
+        <a href="#audit" class="btn btn-primary menu-btn-primary" data-link="bookCall">Book a call</a>
+      </div>
+    </div>
+  </header>
+  
+  <section id="hero">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <span class="brand-tag">Generative Engine Optimization</span>
+        <h1>Be the business AI recommends.</h1>
+        <p class="hero-sub">GEO gets your business named when AI tools like ChatGPT and Perplexity answer a customer's question. We audit your visibility, fix what's missing, and keep you cited as those answers change.</p>
+        <div class="hero-ctas">
+          <a href="#audit" class="btn btn-primary">Run my free audit -></a>
+          <a href="#how" class="btn btn-secondary">See how it works</a>
+        </div>
+        <div class="ai-badges">
+          <span class="ai-badge">ChatGPT</span>
+          <span class="ai-badge">Perplexity</span>
+          <span class="ai-badge">Gemini</span>
+          <span class="ai-badge">Claude</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="geo-card">
+          <div class="geo-top">
+            <span class="geo-dot"></span><span class="geo-dot"></span><span class="geo-dot"></span>
+            <span class="geo-tag">AI answer · simulated</span>
+          </div>
+          <div class="geo-body">
+            <p class="geo-query">"what's the <b>best [service] near me?</b>"</p>
+            <p class="geo-answer">
+              Based on reviews and local reputation, a strong option is
+              <span class="named">your business<span class="cite">[1]</span></span>,
+              known for fast response times and clear pricing. Other choices include
+              two nearby competitors, though they have fewer recent mentions.
+            </p>
+          </div>
+          <div class="geo-foot">
+            <span class="pill">Named first</span>
+            <span class="geo-meta">Sourced from 3 cited pages · tracked by Fowned</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end #top-banner -->
+
+  <!-- Everything else -->
+
+
+  <section id="tiers">
+    <div class="container">
+  
+      <div class="section-head">
+        <span class="label">Three levels of visibility</span>
+        <h2>Every plan starts from your audit.</h2>
+        <p class="sub">Pick the outcome you want. Where you start depends on what the audit finds. Pricing is set on the call.</p>
+        <a href="#audit" class="btn btn-primary">Run free audit</a>
+      </div>
+      <img src="images/fowned-portrait-transparent.png" alt="Fowned" class="tiers-portrait">
+      <div class="tier-grid">
+  
+        <div class="tier-card">
+          <span class="label">01 / Get found</span>
+          <h3>Get found</h3>
+          <p>Footprint repair and listing cleanup so the directories and pages AI reads actually mention you. Monthly report included.</p>
+          <a href="#audit" class="btn btn-secondary">Start with an audit →</a>
+        </div>
+  
+        <div class="tier-card">
+          <span class="label">02 / Get cited</span>
+          <h3>Get cited</h3>
+          <p>Everything in Get found, plus on-site structure and content engineered so AI tools quote you as the answer, not a footnote.</p>
+          <a href="#audit" class="btn btn-secondary">Start with an audit →</a>
+        </div>
+  
+        <div class="tier-card">
+          <span class="label">03 / Get leads</span>
+          <h3>Get leads</h3>
+          <p>See which visitors arrived from an AI tool, and who to follow up with. A labelled list to act on, with the unknowns shown as unknown.</p>
+          <a href="#audit" class="btn btn-secondary">Start with an audit →</a>
+        </div>
+  
+      </div>
+    </div>
+  </section>  
+
+  <section id="why">
+    <div class="container">
+      <div class="feature">
+        <div>
+          <span class="label feature-eyebrow">What we can actually show you</span>
+          <h2>See which leads arrived from an AI tool.</h2>
+          <p>When someone reaches you from an AI assistant, their browser usually tells us where they came from. We record that referrer on the lead and classify it. What we cannot do is prove which specific answer caused the visit, so we do not claim it. Leads that arrive with no referrer are labelled unknown rather than guessed at.</p>
+        </div>
+        <div class="attr-card">
+          <span class="attr-legend">How every lead is labelled</span>
+          <div class="attr-row">
+            <span class="attr-src">AI referrer</span>
+            <span class="attr-name">Arrived from ChatGPT, Perplexity, Gemini, Claude or Copilot</span>
+          </div>
+          <div class="attr-row">
+            <span class="attr-src attr-src-alt">Other referrer</span>
+            <span class="attr-name">Arrived from a search engine, a link, or another site</span>
+          </div>
+          <div class="attr-row">
+            <span class="attr-src attr-src-muted">Unknown</span>
+            <span class="attr-name">No referrer sent. Not counted as direct, and never counted as AI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="container">
+      <div class="section-head">
+        <span class="label">How it works</span>
+        <h2>Three steps, one loop.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Audit</h3>
+          <p>We ask the AI tools about your category and see exactly how (or whether) they describe you today.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Fix</h3>
+          <p>We repair listings, citations, and on-site structure so the answers start naming you.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Track</h3>
+          <p>We record where each lead arrived from and label it, so you can see what share of your enquiries reach you through AI tools.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="audit">
+    <div class="container">
+      <div class="final-cta">
+        <h2>See how AI describes your business.</h2>
+        <p>We check your site against the things AI tools rely on when they decide who to name. The audit runs in about a minute. No account needed.</p>
+
+        <form class="audit-form" id="auditForm" novalidate>
+          <label class="sr-only" for="auditUrl">Your website address</label>
+          <input type="text" id="auditUrl" name="url" placeholder="yourbusiness.com" autocomplete="url" required>
+          <button type="submit" class="btn btn-primary" id="auditSubmit">Run my free audit →</button>
+        </form>
+
+        <div class="audit-panel" id="auditPanel" hidden aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+<footer id="contact">
+  <div class="container">
+
+    <div class="contact-top">
+      <h2>Start with the audit. Then we talk.</h2>
+      <p class="contact-sub">Run the free audit above and leave your email with the result. If you would rather speak to someone first, the number below reaches us directly.</p>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-col">
+        <span class="label">Menu</span>
+        <a href="#why">Why GEO</a>
+        <a href="#tiers">Outcomes</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <div class="contact-col">
+        <span class="label">Phone</span>
+        <a href="tel:+18313320184" target="_blank" rel="noopener noreferrer">+1 (831) 332 0184</a>
+      </div>
+
+      <div class="contact-col">
+        <span class="label">Social</span>
+        <a href="https://www.linkedin.com/company/fowned/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">LinkedIn</a>
+      </div>
+    </div>
+
+    <div class="contact-bottom">
+      <span>© 2026 Fowned. All rights reserved.</span>
+    </div>
+
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/audit.js"></script>
+</body>
+</html>
