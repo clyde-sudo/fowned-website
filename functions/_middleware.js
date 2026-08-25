@@ -73,7 +73,20 @@ export async function onRequest(context) {
   if (url.pathname === "/robots.txt") {
     return new Response(
       temporary ? ROBOTS_TEMPORARY : ROBOTS_INDEXABLE(url.origin),
-      { headers: { "Content-Type": "text/plain; charset=utf-8" } }
+      {
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          /* Without this the response inherits the zone-wide Browser Cache TTL,
+           * which is four hours, and a deploy does NOT evict an already-cached
+           * Function response. That combination cost a real verification: a
+           * corrected robots.txt shipped and the edge kept serving the old body
+           * for hours while every check looked like the deploy had failed.
+           * Five minutes is short enough that a crawler-access mistake is
+           * recoverable by redeploying, and robots.txt is small enough that
+           * serving it fresh is not a cost worth optimising. */
+          "Cache-Control": "public, max-age=300",
+        },
+      }
     );
   }
 
