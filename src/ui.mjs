@@ -1,6 +1,7 @@
 /** Small shared render helpers. Markup lives here so every surface renders the
  *  same concept the same way - a truth state in particular. */
 import { TRUTH_STATES, SOURCES } from "./data.mjs";
+import { bookRel } from "./layout.mjs";
 
 export const esc = (s) =>
   String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
@@ -56,7 +57,7 @@ export const cta = ({ h, p, primary, secondary }) => `  <section class="band">
         <p>${esc(p)}</p>
         <div class="hero-ctas">
           <a href="${primary.href}" class="btn btn-primary" data-ev="cta_click" data-ev-label="${esc(primary.ev)}">${esc(primary.text)}</a>
-          ${secondary ? `<a href="${secondary.href}" class="btn btn-secondary" data-ev="${secondary.booking ? "booking_click" : "cta_click"}" data-ev-label="${esc(secondary.ev)}">${esc(secondary.text)}</a>` : ""}
+          ${secondary ? `<a href="${secondary.href}"${secondary.booking ? bookRel() : ""} class="btn btn-secondary" data-ev="${secondary.booking ? "booking_click" : "cta_click"}" data-ev-label="${esc(secondary.ev)}">${esc(secondary.text)}</a>` : ""}
         </div>
       </div>
     </div>
