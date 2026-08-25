@@ -84,3 +84,70 @@ never in the repo, the bundle, the HTML, this file or the logs.
    `Referer`, and collapsing the two would invent attribution.
 5. No opportunity chain claims causality. Each one carries an explicit note
    naming what it does not claim.
+
+---
+
+## Launching on fowned.live
+
+Everything below the two operator steps is already built. Nothing here needs
+code changes.
+
+### Step 1 (operator) — put the zone in Cloudflare
+
+The current API token has `zone (read)` only, so zone creation returns
+`Requires permission "com.cloudflare.api.account.zone.create"`. Add the zone
+from the dashboard: **Add a site → fowned.live → Free plan**.
+
+Apex domains on Pages need the zone inside Cloudflare. Squarespace DNS has no
+ALIAS/ANAME at the apex and Pages publishes no stable IPs, so a CNAME at the
+root only works with Cloudflare's CNAME flattening. Adding the zone changes
+nothing live until the nameservers move, so it is a safe, reversible step.
+
+### Step 2 (operator) — move the nameservers at Squarespace
+
+Point fowned.live at the two Cloudflare nameservers the dashboard gives you.
+
+Checked before writing this: fowned.live has **no MX records** and its SPF is
+`v=spf1 -all`. No email depends on this domain, so the nameserver change
+cannot break mail.
+
+### Step 3 — attach and rebuild
+
+    npx wrangler pages domain add fowned.live --project-name=fowned
+    npx wrangler pages domain add www.fowned.live --project-name=fowned
+    SITE_ORIGIN=https://fowned.live node build.mjs
+    npx wrangler pages deploy dist --project-name=fowned
+
+`SITE_ORIGIN` is what puts the real host into canonical tags, `og:url`, the
+sitemap and the JSON-LD. It stays pointed at pages.dev until DNS resolves,
+because a canonical naming a host that does not answer is wrong, not "ready".
+
+### Step 4 — verify by probe, not by assumption
+
+    curl -sI https://fowned.live/            # expect NO x-robots-tag header
+    curl -s  https://fowned.live/robots.txt  # expect Allow: / and the sitemap line
+    curl -sI https://www.fowned.live/        # expect 301 to the apex
+    curl -sI https://fowned.pages.dev/       # expect x-robots-tag: noindex, nofollow
+
+All four already pass against a local `wrangler pages dev` run with the Host
+header set, and the pages.dev pair passes in production. Only the two
+fowned.live rows are unproven, because the host does not resolve yet.
+
+### Booking
+
+    BOOKING_URL=https://cal.com/<the-real-one> SITE_ORIGIN=https://fowned.live node build.mjs
+
+One variable. Set it and every booking CTA on the site points at the calendar,
+the contact page grows a "Book a call" card, and the audit result offers it.
+Leave it unset and every one of those falls back to /contact/, which submits
+for real. No calendar URL is guessed anywhere in the codebase.
+
+### Reading the telemetry
+
+    npx wrangler pages deployment tail --project-name=fowned
+
+`FOWNED_EVENT` lines are anonymous traffic. `FOWNED_LEAD` lines are people who
+asked to be contacted. **A log is a fragile place for a lead.** Choosing the
+durable sink (KV, an email forward, or the Citability pipeline once the agency
+backend opens) is the last decision in this funnel and it is an operator call.
+Until it is made, somebody has to read the tail.
