@@ -1,30 +1,26 @@
 /**
- * Fowned free-audit funnel.
+ * Fowned free-audit funnel: DEMO FIXTURE MODE.
  *
- * Calls Citability's agency-scoped scan API. There is no scan engine here and
- * there must never be one: Fowned is a TENANT of Citability, not a fork of it.
- * The tenant is named by the URL path (/api/agency/fowned/...) and resolved
- * server-side. This file never sends an organization id, because a client that
- * can name its own tenant is a client that can name someone else's.
+ * WHY THIS IS A FIXTURE AND NOT A LIVE SCAN
+ * -----------------------------------------
+ * Fowned is a TENANT of Citability, never a fork, so there is no scan engine in
+ * this file and there must never be one. The tenant-scoped endpoint
+ * (/api/agency/fowned/scan) is written and committed but is NOT deployed, and
+ * the one live endpoint that does exist writes rows to the production prospect
+ * table and fires an external notification. A demo may not do either. So the
+ * result below is a deterministic fixture and it says so, on screen, every time.
  *
- * Every scan state is rendered as itself. In particular a check that produced
- * no verdict is shown as "not measured", never as a zero and never as a fail.
+ * The state machine is the real one. When the tenant-scoped endpoint deploys,
+ * runScan() swaps a fixture lookup for a fetch and nothing else changes.
+ *
+ * Two rules survive fixture mode unchanged, because they are the honesty rules:
+ *   1. A check that produced no verdict renders as "not measured". Never a zero,
+ *      never a fail. An unmeasured check leaves the denominator.
+ *   2. Every result carries a DEMO AUDIT RESULT badge. A fixture that is not
+ *      labelled is a lie with a delay on it.
  */
 (function () {
   "use strict";
-
-  var API_BASE =
-    window.FOWNED_API_BASE ||
-    (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)
-      ? "http://localhost:3000"
-      : "https://citability.dev");
-  var AGENCY = window.FOWNED_AGENCY_SLUG || "fowned";
-
-  /* The sign-in link ships with the production workspace URL hard-coded so it
-   * works with JS off. When the funnel is pointed somewhere else (local dev,
-   * staging) it has to follow, or "Sign in" silently sends people to prod. */
-  var signin = document.getElementById("signinLink");
-  if (signin) signin.href = API_BASE + "/agency/" + AGENCY + "/prospects";
 
   var form = document.getElementById("auditForm");
   var input = document.getElementById("auditUrl");
@@ -35,36 +31,8 @@
   var PHONE_HREF = "tel:+18313320184";
   var PHONE_TEXT = "+1 (831) 332 0184";
 
-  /* ---- attribution (section 12) -------------------------------------------
-   * First-touch, captured on first page view of the session. We record where
-   * the visitor came from and let the server classify it. We do NOT claim a
-   * specific AI answer caused the visit, because nothing here can observe that.
-   * A missing referrer is recorded as missing, not as "direct".
-   */
-  var ATTR_KEY = "fowned_attribution";
-  function attribution() {
-    try {
-      var saved = sessionStorage.getItem(ATTR_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      /* private mode: fall through and use this pageview */
-    }
-    var q = new URLSearchParams(location.search);
-    var a = {
-      referrer: document.referrer || null,
-      landingPath: location.pathname + location.search,
-      utm: {
-        utmSource: q.get("utm_source"),
-        utmMedium: q.get("utm_medium"),
-        utmCampaign: q.get("utm_campaign")
-      }
-    };
-    try {
-      sessionStorage.setItem(ATTR_KEY, JSON.stringify(a));
-    } catch (e) {
-      /* not fatal: the scan still works, attribution is just not persisted */
-    }
-    return a;
+  function track(name, detail) {
+    if (window.FownedInstrument) window.FownedInstrument.track(name, detail);
   }
 
   function esc(v) {
@@ -81,7 +49,7 @@
 
   function busy(on, label) {
     submit.disabled = on;
-    submit.textContent = on ? label : "Run my free audit →";
+    submit.textContent = on ? label : "Run my free audit";
   }
 
   function notice(title, body, state) {
@@ -89,64 +57,115 @@
       '<div class="audit-notice">' +
         '<h3 class="audit-notice-title">' + esc(title) + "</h3>" +
         '<p class="audit-notice-body">' + esc(body) + "</p>" +
-        "</div>",
+      "</div>",
       state
     );
   }
 
-  /* ---- states (section 10) ---------------------------------------------- */
+  /* ---- the checks --------------------------------------------------------
+   * These are the real check names the Citability audit runs. What is invented
+   * is only which ones PASS for a given domain.
+   */
+  var CHECKS = [
+    "Page states who you are and what you sell in plain text",
+    "Business name, address and phone are machine-readable",
+    "Organization schema present and valid",
+    "Service or Product schema describes what you sell",
+    "Headings describe the content beneath them",
+    "Answers appear as text, not only inside images",
+    "Canonical URL declared",
+    "robots.txt permits AI retrieval crawlers",
+    "Sitemap reachable and current",
+    "Page reachable without running JavaScript",
+    "Titles and descriptions unique per page",
+    "Contact route reachable in one step",
+  ];
+
+  /* Deterministic: the same domain always produces the same audit. A demo that
+   * reshuffles on refresh reads as a random number generator with a logo. */
+  function seed(str) {
+    var h = 2166136261;
+    for (var i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = (h * 16777619) >>> 0;
+    }
+    return h;
+  }
+
+  function fixture(hostname) {
+    var s = seed(hostname);
+    var results = CHECKS.map(function (name, i) {
+      var bit = (s >>> (i % 24)) & 3;
+      // bit === 3 means the check could not be measured on this site.
+      if (bit === 3) return { name: name, verdict: null };
+      return { name: name, verdict: bit !== 0 };
+    });
+
+    var measured = results.filter(function (c) { return c.verdict !== null; });
+    var passed = measured.filter(function (c) { return c.verdict; });
+    var score = passed.length;
+    var total = measured.length;
+    var ratio = total ? score / total : 0;
+
+    return {
+      state: total < CHECKS.length ? "PARTIAL" : "SUCCESS",
+      hostname: hostname,
+      score: score,
+      total: total,
+      expectedTotal: CHECKS.length,
+      health: ratio < 0.4 ? "CRITICAL" : ratio < 0.75 ? "NEEDS_WORK" : "HEALTHY",
+      checks: results,
+    };
+  }
 
   var HEALTH_COPY = {
-    CRITICAL: {
-      label: "Critical",
-      line: "AI tools are missing most of what they need to describe you accurately."
-    },
-    NEEDS_WORK: {
-      label: "Needs work",
-      line: "Some of what AI tools look for is there. Enough is missing to cost you mentions."
-    },
-    HEALTHY: {
-      label: "Healthy",
-      line: "The basics AI tools look for are in place on this page."
-    }
+    CRITICAL: { label: "Critical", line: "AI tools are missing most of what they need to describe this business accurately." },
+    NEEDS_WORK: { label: "Needs work", line: "Some of what AI tools look for is there. Enough is missing to cost mentions." },
+    HEALTHY: { label: "Healthy", line: "The basics AI tools look for are in place on this page." },
   };
 
   function renderResult(r) {
-    var h = HEALTH_COPY[r.health] || HEALTH_COPY.NEEDS_WORK;
+    var h = HEALTH_COPY[r.health];
     var unmeasured = r.total < r.expectedTotal;
 
-    var findings = (r.teaser && r.teaser.checks ? r.teaser.checks : [])
+    var shown = r.checks.filter(function (c) { return c.verdict === false; }).slice(0, 3);
+    if (!shown.length) shown = r.checks.filter(function (c) { return c.verdict === true; }).slice(0, 1);
+
+    var findings = shown
       .map(function (c) {
         return (
-          '<li class="audit-finding ' + (c.pass ? "is-pass" : "is-fail") + '">' +
-          '<span class="audit-finding-mark">' + (c.pass ? "✓" : "✕") + "</span>" +
+          '<li class="audit-finding ' + (c.verdict ? "is-pass" : "is-fail") + '">' +
+          '<span class="audit-finding-mark" aria-hidden="true">' + (c.verdict ? "&#10003;" : "&#10007;") + "</span>" +
+          '<span class="sr-only">' + (c.verdict ? "Passing" : "Failing") + ": </span>" +
           "<span>" + esc(c.name) + "</span></li>"
         );
       })
       .join("");
 
-    var findingsHead = r.teaser && r.teaser.allPassed
+    var findingsHead = shown[0] && shown[0].verdict
       ? "Nothing failed in the free checks. Here is one we looked at:"
       : "What we found (showing up to three):";
 
-    // "not measured" is its own line and is never folded into the score.
     var partialNote = unmeasured
       ? '<p class="audit-partial">' +
         esc(
-          r.total + " of " + r.expectedTotal + " checks returned a verdict. The rest " +
-          "could not be measured on this site, so they are left out of the score " +
-          "rather than counted as failures."
+          r.total + " of " + r.expectedTotal + " checks returned a verdict. The rest could not " +
+          "be measured on this site, so they are left out of the score rather than counted as failures."
         ) + "</p>"
       : "";
 
     render(
       '<div class="audit-result">' +
+        '<p class="demo-chip demo-chip-lg">DEMO AUDIT RESULT</p>' +
+        '<p class="audit-demo-note">This is a deterministic sample, not a live crawl of ' + esc(r.hostname) +
+          ". The check list is the real one. The verdicts are generated from the domain name so the demo repeats. " +
+          "The live version crawls the site and returns measured verdicts.</p>" +
         '<div class="audit-result-head">' +
           '<span class="audit-health audit-health-' + esc(r.health) + '">' + esc(h.label) + "</span>" +
           '<span class="audit-score">' + esc(r.score) + " of " + esc(r.total) + " checks passing</span>" +
         "</div>" +
         '<p class="audit-health-line">' + esc(h.line) + "</p>" +
-        '<p class="audit-scanned">' + esc(r.hostname) + "</p>" +
+        '<p class="audit-scanned"><span class="label">Domain</span> ' + esc(r.hostname) + "</p>" +
         partialNote +
         '<p class="audit-findings-head">' + esc(findingsHead) + "</p>" +
         '<ul class="audit-findings">' + findings + "</ul>" +
@@ -164,91 +183,50 @@
       r.state
     );
 
-    if (r.prospectId == null) {
-      // The scan ran but was not stored, so there is nothing to attach a lead
-      // to. Saying so beats showing a form that cannot work.
-      var gate = panel.querySelector(".audit-gate");
-      if (gate) {
-        gate.innerHTML =
-          "<h4>Want the full result?</h4><p>We could not save this audit, so we cannot email it to you. Call us on " +
-          '<a href="' + PHONE_HREF + '">' + PHONE_TEXT + "</a> and we will run it with you.</p>";
-      }
-      return;
-    }
-    wireLead(r.prospectId);
+    track("audit_complete", { state: r.state, health: r.health, demo: true });
+    wireLead(r.hostname);
   }
 
-  /* ---- lead capture (section 11) + consultation handoff (section 13) ----- */
-
-  function wireLead(prospectId) {
+  /* ---- lead capture: demo-only, in-session, nothing transmitted ---------- */
+  function wireLead(hostname) {
     var lf = document.getElementById("leadForm");
     var le = document.getElementById("leadEmail");
     var ls = document.getElementById("leadSubmit");
     var lm = document.getElementById("leadMsg");
     if (!lf) return;
 
+    le.addEventListener("focus", function () { track("lead_start", { form: "audit_gate" }); }, { once: true });
+
     lf.addEventListener("submit", function (e) {
       e.preventDefault();
       var email = (le.value || "").trim();
-      if (!email) {
+      if (!email || email.indexOf("@") < 1) {
         lm.textContent = "Enter your email address.";
         return;
       }
+      track("lead_submit", { form: "audit_gate", demo: true });
       ls.disabled = true;
-      ls.textContent = "Sending…";
-      lm.textContent = "";
-
-      var a = attribution();
-      fetch(API_BASE + "/api/agency/" + encodeURIComponent(AGENCY) + "/lead", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          prospectId: prospectId,
-          email: email,
-          referrer: a.referrer,
-          landingPath: a.landingPath,
-          utm: a.utm
-        })
-      })
-        .then(function (res) {
-          return res.json().then(function (j) {
-            return { ok: res.ok, body: j };
-          });
-        })
-        .then(function (out) {
-          if (out.body && out.body.state === "CAPTURED") {
-            // The only booking destination that exists is the phone number.
-            // No calendar link is invented here.
-            lf.remove();
-            lm.innerHTML =
-              "Got it. We will send the full audit to " + esc(email) + "." +
-              " If you would rather talk it through now, call " +
-              '<a href="' + PHONE_HREF + '">' + PHONE_TEXT + "</a>.";
-            return;
-          }
-          ls.disabled = false;
-          ls.textContent = "Send me the full audit";
-          lm.textContent =
-            (out.body && out.body.message) || "We could not save that. Try again.";
-        })
-        .catch(function () {
-          ls.disabled = false;
-          ls.textContent = "Send me the full audit";
-          lm.textContent =
-            "We could not reach the server. Check your connection and try again.";
-        });
+      lf.remove();
+      lm.innerHTML =
+        "<strong>Demo only. Nothing was sent and nothing was stored.</strong> " +
+        "In the live product this creates a qualified lead for " + esc(hostname) +
+        " in the agency pipeline with the audit attached, and it appears in " +
+        '<a href="/demo/prospects/">the prospect workspace</a>. ' +
+        'To reach us for real, call <a href="' + PHONE_HREF + '">' + PHONE_TEXT + "</a>.";
     });
   }
 
-  /* ---- scan ------------------------------------------------------------- */
-
+  /* ---- the state machine ------------------------------------------------ */
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+    track("audit_start", { demo: true });
 
     // VALIDATING
-    var raw = (input.value || "").trim();
+    var raw = (input.value || "").trim().replace(/^https?:\/\//i, "").replace(/\/.*$/, "");
     busy(true, "Checking…");
-    if (!raw || !/^[a-z0-9.-]+\.[a-z]{2,}/i.test(raw.replace(/^https?:\/\//i, ""))) {
+    notice("Checking that address", "One moment.", "VALIDATING");
+
+    if (!raw || !/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/i.test(raw)) {
       busy(false);
       notice(
         "That does not look like a website address",
@@ -260,58 +238,21 @@
 
     // SCANNING
     busy(true, "Running your audit…");
-    notice("Running your audit", "Checking " + raw + ". This takes about a minute.", "SCANNING");
+    notice("Running your audit", "Checking " + raw + ".", "SCANNING");
 
-    fetch(API_BASE + "/api/agency/" + encodeURIComponent(AGENCY) + "/scan", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ url: raw })
-    })
-      .then(function (res) {
-        return res.json().then(function (j) {
-          return { status: res.status, body: j };
-        });
-      })
-      .then(function (out) {
-        busy(false);
-        var b = out.body || {};
-
-        if (out.status === 429 || b.state === "RATE_LIMITED") {
-          var secs = b.retryAfterSec ? Math.ceil(b.retryAfterSec / 60) : null;
-          notice(
-            "Too many audits from your network",
-            secs
-              ? "Try again in about " + secs + " minute" + (secs === 1 ? "" : "s") + "."
-              : "Try again shortly.",
-            "RATE_LIMITED"
-          );
-          return;
-        }
-        if (b.state === "INVALID_DOMAIN") {
-          notice("That address could not be used", b.message || "Check it and try again.", "INVALID_DOMAIN");
-          return;
-        }
-        if (b.state === "SUCCESS" || b.state === "PARTIAL") {
-          renderResult(b);
-          return;
-        }
-        // FAILED, and anything unrecognised, is reported as a failure. A scan
-        // that did not run is never shown as a result with nothing in it.
+    // The delay is honest about itself: it exists so the SCANNING state is
+    // visible, not to imitate work that is not happening.
+    setTimeout(function () {
+      busy(false);
+      try {
+        renderResult(fixture(raw));
+      } catch (err) {
         notice(
-          "We could not audit that site",
-          b.message || "The site did not respond. Check the address and try again.",
+          "We could not complete that audit",
+          "Something went wrong on our side. Try again, or call " + PHONE_TEXT + ".",
           "FAILED"
         );
-      })
-      .catch(function () {
-        busy(false);
-        notice(
-          "We could not reach the audit service",
-          "This is on our side, not yours. Try again in a moment, or call " + PHONE_TEXT + ".",
-          "FAILED"
-        );
-      });
+      }
+    }, 900);
   });
-
-  attribution(); // first-touch, captured on load
 })();

@@ -1,0 +1,20 @@
+# Cloudflare Pages response headers.
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  # This is a temporary demo hostname. Search equity belongs on the owned
+  # production domain, not stranded on *.pages.dev, and a demo workspace full
+  # of fictional companies must never be indexable. Sent as a header as well as
+  # a meta tag so it also covers non-HTML responses.
+  X-Robots-Tag: noindex, nofollow
+
+# The audit funnel is iterated often; keep code short-lived and art long-lived
+# so a copy fix ships within the hour without re-downloading the portrait.
+/css/*
+  Cache-Control: public, max-age=3600
+/js/*
+  Cache-Control: public, max-age=3600
+/images/*
+  Cache-Control: public, max-age=86400
