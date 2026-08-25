@@ -26,11 +26,16 @@
  * launch", they are wrong. The flip happens when DNS does, not before. */
 const ORIGIN = process.env.SITE_ORIGIN || "https://fowned.pages.dev";
 
-/* Cal.com booking link, supplied by Jack. Empty string = not yet provided.
- * While it is empty every BOOK A CALL button routes to /contact/, which carries
- * the phone number and the consultation form, so the CTA is never a dead link
- * and no Cal.com username is invented. Filling this in is a one-line change. */
-const BOOKING_URL = process.env.BOOKING_URL || "";
+/* Booking link. Calendly, Clyde Sada's 30-minute slot, supplied by the operator
+ * 2026-08-25 and verified live (HTTP 200) before it was written here. The
+ * earlier note expected a Cal.com link from Jack; the real one is Calendly, so
+ * the provider is named as what it is rather than what was anticipated.
+ *
+ * A literal default rather than env-var-only: BOOKING_URL still overrides it,
+ * but a build that forgets the flag now ships the real link instead of silently
+ * reverting every BOOK A CALL button to /contact/. Set this back to "" to
+ * deliberately route bookings at the contact form again. */
+const BOOKING_URL = process.env.BOOKING_URL || "https://calendly.com/clyde-thrulead/30min";
 
 /* RB2B visitor-identification key. Empty string = not installed, which is the
  * correct state today. Deliberately NOT populated with the Citability key: that
