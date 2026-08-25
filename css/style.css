@@ -885,6 +885,25 @@
     background: var(--color-hairline);
   }
   
+  /* the band is black, so the secondary button has to invert too. Without this
+     it keeps the default black text on a black background and disappears. */
+  .final-cta .btn-secondary {
+    color: var(--color-white);
+    border-color: var(--color-white);
+  }
+  
+  .final-cta .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  
+  /* .final-cta p sets the muted grey for text on the black band, and it outranks
+     .demo-chip's own black. The chip sits on its own pale background inside the
+     result card, so it has to keep the colour app.css gave it. Colour only: the
+     chip's inherited layout from .final-cta p is intentional. */
+  .final-cta p.demo-chip {
+    color: var(--color-black);
+  }
+  
   /* footer / contact */
   
   #contact {
