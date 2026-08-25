@@ -71,6 +71,21 @@ Allow: /
 # Seeded with invented companies. Reachable for a walkthrough, not for a SERP.
 Disallow: /demo/
 
+# AI assistants are named explicitly rather than left to the wildcard above.
+# Without a matching group these crawlers fall through to "User-agent: *", which
+# happens to permit them today, but that is an accident of the wildcard rather
+# than a stated intent, and a later edit to the wildcard would silently change
+# it. The rule below states the intent: Fowned WANTS to be read and cited by
+# assistants, and the only exclusion is the invented-company demo workspace.
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: Google-Extended
+Allow: /
+Disallow: /demo/
+
 Sitemap: ${SITE.origin}/sitemap.xml
 `);
 
@@ -84,6 +99,33 @@ writeFileSync(join(OUT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url><loc>${SITE.origin}${u}</loc></url>`).join("\n")}
 </urlset>
+`);
+
+/* ---- llms.txt ---------------------------------------------------------- */
+/* A plain-text map of the site for assistants that fetch it, generated from the
+ * same page list the sitemap uses so the two can never disagree. citability
+ * scores this as a CRAWL-ACCESS signal, not a citation lever: there is no
+ * published evidence that the file lifts citation rates, so it is here because
+ * it makes the site legible in one request, not because it buys rankings.
+ *
+ * The demo workspace is excluded for the third time in this file, which is the
+ * point: robots, sitemap and llms.txt are three different readers being told
+ * the same thing, and a page that is invented data should be missing from all
+ * three or it will be quoted as fact by whichever one was forgotten. */
+const listed = pages.filter((p) => p.path !== "/404/" && !p.path.startsWith("/demo/"));
+writeFileSync(join(OUT, "llms.txt"), `# ${SITE.name}
+
+> ${SITE.name} is a generative engine optimization agency. We audit how AI assistants describe a business, repair the signals they read, and report which leads arrived from an AI tool.
+
+## Pages
+
+${listed.map((p) => `- [${p.title.replace(/ \| Fowned$/, "")}](${SITE.origin}${p.path}): ${p.description}`).join("\n")}
+
+## Contact
+
+- Book a call: ${SITE.bookingUrl || SITE.origin + "/contact/"}
+- Phone: ${SITE.phoneText}
+- LinkedIn: ${SITE.linkedin}
 `);
 
 /* ---- link check: fail the build on a dead internal link ---------------- */

@@ -30,6 +30,21 @@ Allow: /
 # search result, so it is excluded here rather than left to chance.
 Disallow: /demo/
 
+# AI assistants are named explicitly rather than left to the wildcard above.
+# Without a matching group these crawlers fall through to "User-agent: *", which
+# happens to permit them today, but that is an accident of the wildcard rather
+# than a stated intent, and a later edit to the wildcard would silently change
+# it. The rule below states the intent: Fowned WANTS to be read and cited by
+# assistants, and the only exclusion is the invented-company demo workspace.
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: Google-Extended
+Allow: /
+Disallow: /demo/
+
 Sitemap: ${origin}/sitemap.xml
 `;
 
