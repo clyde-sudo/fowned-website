@@ -293,7 +293,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: url('../images/starry-lineart-final.png') center top / cover no-repeat;
+    background: url('../images/starry-lineart-final.webp') center top / cover no-repeat;
     opacity: 0.5;
     z-index: 0;
   }
@@ -538,7 +538,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: url('../images/starry-lineart-final.png') center top / cover no-repeat;
+    background: url('../images/starry-lineart-final.webp') center top / cover no-repeat;
     opacity: 0.22;
     z-index: 0;
   }

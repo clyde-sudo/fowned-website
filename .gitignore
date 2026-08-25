@@ -3,3 +3,6 @@ node_modules/
 .env*
 !.env.example
 dist/
+
+# harness scratch, never part of the site
+.omc/

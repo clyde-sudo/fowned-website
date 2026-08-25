@@ -11,16 +11,53 @@
  * backend, which is a backend fact with no visual consequence.
  */
 
+/* ------------------------------------------------------------------------ *
+ * CONFIGURATION POINT. Everything an operator needs to change at launch is
+ * in this one object. Nothing below it needs editing.
+ * ------------------------------------------------------------------------ */
+
+/* Canonical origin. Defaults to the temporary Pages hostname and is overridden
+ * at build time once the real domain actually serves the site:
+ *
+ *     SITE_ORIGIN=https://fowned.live node build.mjs
+ *
+ * It is an env var rather than a constant because a canonical, a sitemap entry
+ * and an og:url that name a host which does not resolve yet are not "ready for
+ * launch", they are wrong. The flip happens when DNS does, not before. */
+const ORIGIN = process.env.SITE_ORIGIN || "https://fowned.pages.dev";
+
+/* Cal.com booking link, supplied by Jack. Empty string = not yet provided.
+ * While it is empty every BOOK A CALL button routes to /contact/, which carries
+ * the phone number and the consultation form, so the CTA is never a dead link
+ * and no Cal.com username is invented. Filling this in is a one-line change. */
+const BOOKING_URL = process.env.BOOKING_URL || "";
+
 export const SITE = {
   name: "Fowned",
-  // The demo lives on a temporary hostname. Canonicals point at THIS host on
-  // purpose: pointing them at a production domain that does not serve the page
-  // yet would be a lie that outlives the demo.
-  origin: "https://fowned.pages.dev",
+  origin: ORIGIN,
+  bookingUrl: BOOKING_URL,
+  /* Published on the upstream Fowned site and inherited from it. The meeting
+   * notes referenced a different suffix (821-2282), which does NOT match this
+   * number. Unreconciled, so the verified on-site number stands and the
+   * conflict is reported rather than silently resolved by guessing. */
   phoneHref: "tel:+18313320184",
   phoneText: "+1 (831) 332 0184",
   linkedin: "https://www.linkedin.com/company/fowned/",
 };
+
+/** Booking destination. External Cal.com when configured, /contact/ otherwise.
+ *  Chosen over an embedded Cal.com widget deliberately: an embed loads a
+ *  third-party bundle on first paint, is the least reliable element on mobile
+ *  Safari, and hides the referrer that tells us which page produced the
+ *  booking. A plain link keeps the page weight flat and keeps attribution. */
+export const bookHref = () => SITE.bookingUrl || "/contact/";
+export const bookRel = () =>
+  SITE.bookingUrl ? ' target="_blank" rel="noopener noreferrer"' : "";
+
+/** A BOOK A CALL button. Always instrumented as booking_click so the funnel
+ *  reads the same whether the destination is Cal.com or the contact page. */
+export const bookBtn = (text, label, cls = "btn btn-primary") =>
+  `<a href="${bookHref()}"${bookRel()} class="${cls}" data-ev="booking_click" data-ev-label="${label}">${text}</a>`;
 
 /* Every route in one place. The nav, the sitemap and the link checker all read
  * this, so a page cannot exist without being reachable or be linked without
@@ -63,11 +100,10 @@ function head(page) {
   <title>${esc(page.title)}</title>
   <meta name="description" content="${esc(page.description)}">
 
-  <!-- Temporary demo hostname: see DEPLOYMENT.md, "Indexing decision".
-       Search equity belongs on the owned production domain, not stranded here,
-       so this build is noindex everywhere and the header sends X-Robots-Tag too
-       (a header a crawler cannot miss even if it never parses the HTML). -->
-  <meta name="robots" content="noindex, nofollow">
+  <!-- No robots meta tag here on purpose. Indexability is host-dependent, and a
+       meta tag baked into the HTML cannot be: the same file is served on both
+       fowned.live (must index) and fowned.pages.dev (must not). The rule is
+       applied per-host by functions/_middleware.js instead. -->
   <link rel="canonical" href="${esc(canonical)}">
 
   <meta property="og:type" content="website">
@@ -124,6 +160,7 @@ ${links}
         <a href="/demo/client/">Client demo</a>
         <div class="menu-divider"></div>
         <a href="/audit/" class="btn btn-primary menu-btn-primary" data-ev="cta_click" data-ev-label="menu_audit">Run free audit</a>
+        ${bookBtn("Book a call", "menu_book", "btn btn-secondary menu-btn-secondary")}
       </div>
     </div>
   </header>`;
@@ -139,8 +176,11 @@ ${items.join("\n")}
   <div class="container">
     <div class="contact-top">
       <h2>Start with the audit. Then we talk.</h2>
-      <p class="contact-sub">Run the free audit and leave your email with the result. If you would rather speak to someone first, the number below reaches us directly.</p>
-      <a href="/audit/" class="btn btn-primary" data-ev="cta_click" data-ev-label="footer_audit">Run my free audit &rarr;</a>
+      <p class="contact-sub">Run the free audit and leave your email with the result. If you would rather speak to someone first, book a call or use the number below.</p>
+      <div class="hero-ctas contact-ctas">
+        <a href="/audit/" class="btn btn-primary" data-ev="cta_click" data-ev-label="footer_audit">Run my free audit &rarr;</a>
+        ${bookBtn("Book a call", "footer_book", "btn btn-secondary")}
+      </div>
     </div>
 
     <div class="contact-grid">
@@ -229,6 +269,7 @@ ${head(page)}
 ${header(page)}
 ${body}
 ${footer()}
+<script>window.FOWNED = { bookingUrl: ${JSON.stringify(SITE.bookingUrl)}, phoneHref: ${JSON.stringify(SITE.phoneHref)}, phoneText: ${JSON.stringify(SITE.phoneText)} };</script>
 <script src="/js/instrument.js"></script>
 <script src="/js/main.js"></script>
 ${page.scripts ? page.scripts.map((s) => `<script src="${s}"></script>`).join("\n") : ""}

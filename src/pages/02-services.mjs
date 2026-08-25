@@ -1,5 +1,7 @@
 import { head, answer, cta, table } from "../ui.mjs";
-import { SITE } from "../layout.mjs";
+import { SITE, bookBtn, bookHref } from "../layout.mjs";
+
+const BOOK_HREF = bookHref();
 
 export default {
   path: "/services/",
@@ -38,6 +40,8 @@ export default {
             <li>Business entity and category correction</li>
             <li>Monthly measurement report</li>
           </ul>
+          <p class="tier-who">Best for a business that is described inconsistently or not at all.</p>
+          ${bookBtn("Talk about this level &rarr;", "services_book_found", "btn btn-secondary tier-cta")}
         </div>
         <div class="tier-card">
           <span class="label">02 / Get cited</span>
@@ -49,6 +53,8 @@ export default {
             <li>Retrieval access review, including robots and WAF rules</li>
             <li>Server-rendered content where it is currently JavaScript-only</li>
           </ul>
+          <p class="tier-who">Best for a business that is found but never quoted as the answer.</p>
+          ${bookBtn("Talk about this level &rarr;", "services_book_cited", "btn btn-secondary tier-cta")}
         </div>
         <div class="tier-card">
           <span class="label">03 / Get leads</span>
@@ -60,6 +66,8 @@ export default {
             <li>Scheduled re-measurement</li>
             <li>Opportunity and intervention tracking</li>
           </ul>
+          <p class="tier-who">Best for a business that needs the work to show up as booked calls.</p>
+          ${bookBtn("Talk about this level &rarr;", "services_book_leads", "btn btn-secondary tier-cta")}
         </div>
       </div>
       <p class="center-link"><a class="inline-link" href="/demo/client/">See the client monitoring surface &rarr;</a></p>
@@ -107,6 +115,6 @@ ${cta({
   h: "Start with the audit.",
   p: "It takes about a minute and tells us both what we are actually dealing with.",
   primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "services_audit" },
-  secondary: { href: "/contact/", text: "Request a consultation", ev: "services_consult" },
+  secondary: { href: BOOK_HREF, text: "Book a call", ev: "services_book_footer", booking: true },
 })}`,
 };

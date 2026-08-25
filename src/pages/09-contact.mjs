@@ -1,5 +1,5 @@
 import { head } from "../ui.mjs";
-import { SITE } from "../layout.mjs";
+import { SITE, bookHref, bookRel } from "../layout.mjs";
 
 export default {
   path: "/contact/",
@@ -18,10 +18,15 @@ export default {
   <section>
     <div class="container narrow">
       <div class="contact-cards">
-        <div class="contact-card">
+${SITE.bookingUrl ? `        <div class="contact-card">
+          <span class="label">Book a call</span>
+          <p class="contact-big"><a href="${bookHref()}"${bookRel()} data-ev="booking_click" data-ev-label="contact_book">Pick a time &rarr;</a></p>
+          <p>Thirty minutes. We read your audit result together and tell you what it would take.</p>
+        </div>
+` : ""}        <div class="contact-card">
           <span class="label">Phone</span>
           <p class="contact-big"><a href="${SITE.phoneHref}" data-ev="cta_click" data-ev-label="contact_phone">${SITE.phoneText}</a></p>
-          <p>Reaches us directly. This is the only booking route we operate, so there is no calendar link here to invent one.</p>
+          <p>Reaches us directly during working hours.</p>
         </div>
         <div class="contact-card">
           <span class="label">LinkedIn</span>
@@ -39,11 +44,7 @@ export default {
 
   <section class="band">
     <div class="container narrow">
-${head({ label: "Consultation request", h: "Or leave your details here." })}
-      <div class="demo-inline">
-        <span class="demo-chip">DEMO</span>
-        <p>This demo build does <strong>not</strong> transmit messages anywhere. The form below demonstrates the intended flow and confirms in your browser only. Nothing is sent, stored on a server, or emailed. Use the phone number or LinkedIn above to reach us for real.</p>
-      </div>
+${head({ label: "Consultation request", h: "Or leave your details here.", sub: "A person reads these. We reply on working days." })}
       <form class="lead-form" id="contactForm" novalidate>
         <div class="field">
           <label for="cName">Your name</label>

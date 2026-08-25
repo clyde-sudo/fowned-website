@@ -1,5 +1,5 @@
 import { head, cta } from "../ui.mjs";
-import { SITE } from "../layout.mjs";
+import { SITE, bookBtn } from "../layout.mjs";
 
 export default {
   path: "/",
@@ -95,6 +95,10 @@ ${head({
           <p>See which visitors arrived from an AI tool, and who to follow up with. A labelled list to act on, with the unknowns shown as unknown.</p>
           <a href="/ai-visibility/" class="btn btn-secondary">What this covers &rarr;</a>
         </div>
+      </div>
+      <div class="tier-foot">
+        <p>Where you start depends on what the audit finds, so the level and the price are set together on the call rather than off a rate card.</p>
+        ${bookBtn("Book a call &rarr;", "tiers_book")}
       </div>
     </div>
   </section>

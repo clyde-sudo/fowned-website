@@ -7,7 +7,11 @@ export const esc = (s) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
   );
 
-export const head = ({ label, h, sub, cta }) => `      <div class="section-head">
+/* A section head reserves --space-xl (96px) below itself, which is correct when
+ * it carries a subhead and a button and leaves an obvious hole when it is only
+ * an eyebrow and a heading. `is-tight` restores proportion for that second case
+ * instead of nudging the shared margin and breaking the first. */
+export const head = ({ label, h, sub, cta }) => `      <div class="section-head${!sub && !cta ? " is-tight" : ""}">
         ${label ? `<span class="label">${esc(label)}</span>` : ""}
         <h2>${esc(h)}</h2>
         ${sub ? `<p class="sub">${esc(sub)}</p>` : ""}
@@ -52,7 +56,7 @@ export const cta = ({ h, p, primary, secondary }) => `  <section class="band">
         <p>${esc(p)}</p>
         <div class="hero-ctas">
           <a href="${primary.href}" class="btn btn-primary" data-ev="cta_click" data-ev-label="${esc(primary.ev)}">${esc(primary.text)}</a>
-          ${secondary ? `<a href="${secondary.href}" class="btn btn-secondary" data-ev="cta_click" data-ev-label="${esc(secondary.ev)}">${esc(secondary.text)}</a>` : ""}
+          ${secondary ? `<a href="${secondary.href}" class="btn btn-secondary" data-ev="${secondary.booking ? "booking_click" : "cta_click"}" data-ev-label="${esc(secondary.ev)}">${esc(secondary.text)}</a>` : ""}
         </div>
       </div>
     </div>

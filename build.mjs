@@ -56,21 +56,30 @@ for (const img of readdirSync("images")) {
 cpSync("_headers", join(OUT, "_headers"));
 
 /* ---- robots + sitemap -------------------------------------------------- */
-/* Indexing decision (section 12): the demo is NOINDEX. Search equity earned on
- * a temporary pages.dev hostname cannot be moved to the production domain
- * later, and a duplicate of the real site competing with it is a net loss. The
- * sitemap still ships so the structure is in place the day the owned domain
- * goes live; it is inert while robots disallows. */
-writeFileSync(join(OUT, "robots.txt"), `# Temporary demo hostname. See DEPLOYMENT.md, "Indexing decision".
-# This build is intentionally not indexable: search equity belongs on the
-# owned production domain, not stranded on a pages.dev host.
-User-agent: *
-Disallow: /
+/* robots.txt is normally served by functions/_middleware.js, which picks the
+ * body per hostname. This static file is the FALLBACK for the case where the
+ * Function fails to deploy, and it is deliberately the permissive one.
+ *
+ * The two failure modes are not symmetric. A stray Disallow on fowned.live
+ * costs the entire launch and does it silently, while the temporary pages.dev
+ * host being crawlable costs a duplicate nobody links to. So the fallback
+ * favours the real domain, and the middleware is verified by live probe on
+ * both hostnames rather than assumed. */
+writeFileSync(join(OUT, "robots.txt"), `User-agent: *
+Allow: /
+
+# Seeded with invented companies. Reachable for a walkthrough, not for a SERP.
+Disallow: /demo/
 
 Sitemap: ${SITE.origin}/sitemap.xml
 `);
 
-const urls = pages.filter((p) => p.path !== "/404/").map((p) => p.path);
+/* Sitemap carries the marketing property only. The demo workspace is excluded
+ * for the same reason robots excludes it, and listing a URL in a sitemap while
+ * disallowing it in robots is a contradiction crawlers report as an error. */
+const urls = pages
+  .filter((p) => p.path !== "/404/" && !p.path.startsWith("/demo/"))
+  .map((p) => p.path);
 writeFileSync(join(OUT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url><loc>${SITE.origin}${u}</loc></url>`).join("\n")}

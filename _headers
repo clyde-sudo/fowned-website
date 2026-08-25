@@ -4,11 +4,11 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
-  # This is a temporary demo hostname. Search equity belongs on the owned
-  # production domain, not stranded on *.pages.dev, and a demo workspace full
-  # of fictional companies must never be indexable. Sent as a header as well as
-  # a meta tag so it also covers non-HTML responses.
-  X-Robots-Tag: noindex, nofollow
+  # NOTE: X-Robots-Tag is deliberately NOT set here. _headers cannot see the
+  # request Host, and this one project answers on both the real property
+  # (must index) and the temporary *.pages.dev hostnames (must not). A blanket
+  # noindex here would silently deindex the launch domain. The per-host rule
+  # lives in functions/_middleware.js.
 
 # The audit funnel is iterated often; keep code short-lived and art long-lived
 # so a copy fix ships within the hour without re-downloading the portrait.

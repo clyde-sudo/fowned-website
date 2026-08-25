@@ -1,11 +1,17 @@
 /**
  * Front-end instrumentation contract (sections 10 and 11).
  *
- * This file DEFINES the event surface and buffers events in the page. It does
- * not ship them anywhere, because the destination is the Citability agency
- * endpoint and that is not deployed yet. Defining the contract now means the
- * events are already correct on the day a sink exists; inventing a second
- * telemetry engine here to have somewhere to send them would be the mistake.
+ * This file DEFINES the event surface and ships it to the site's own edge
+ * endpoint (functions/api/event.js), which structured-logs and stores nothing.
+ * That is deliberately the whole of it: Fowned needs to observe its own
+ * acquisition funnel from day one, and it does NOT need a second telemetry
+ * engine, a database, or a scheduler to do that. The Citability agency backend
+ * remains the system of record for customer telemetry and is untouched here.
+ *
+ * No cookies, no fingerprinting, no identifiers. An event carries the path, the
+ * referrer classification and the campaign tags, and nothing that names a
+ * person. Person-level identification, if it is ever added, comes from a vendor
+ * that returns an identity, and is kept separate from this first-party stream.
  *
  * Two rules the shape enforces:
  *   1. Source classification is a CLOSED vocabulary. A referrer is observed or
@@ -74,6 +80,23 @@
     return a;
   }
 
+  /* sendBeacon survives the page unload that a booking_click causes: a normal
+   * fetch on an outbound-link click is routinely cancelled by the navigation,
+   * which would lose exactly the event the funnel most depends on. Failures are
+   * swallowed on purpose. Losing an analytics event must never break the CTA
+   * the visitor just clicked. */
+  function ship(ev) {
+    try {
+      var body = JSON.stringify(ev);
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon("/api/event", new Blob([body], { type: "application/json" }));
+      } else {
+        fetch("/api/event", { method: "POST", body: body, keepalive: true,
+          headers: { "Content-Type": "application/json" } }).catch(function () {});
+      }
+    } catch (e) { /* never let instrumentation break the page */ }
+  }
+
   function track(name, detail) {
     var ev = {
       event: name,
@@ -83,8 +106,8 @@
       attribution: attribution(),
     };
     BUFFER.push(ev);
-    // No network call. There is no deployed sink, and a demo must not invent one.
     if (window.FOWNED_DEBUG) console.log("[fowned]", ev);
+    ship(ev);
   }
 
   /* Declarative CTA tracking: any element carrying data-ev fires on click. */

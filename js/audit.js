@@ -29,6 +29,17 @@
   if (!form || !panel) return;
 
   var PHONE_HREF = "tel:+18313320184";
+
+  /* The booking destination comes from the one config point in src/layout.mjs.
+   * Empty until Jack supplies the Cal.com link, in which case every booking CTA
+   * falls back to /contact/ rather than rendering a dead or invented link. */
+  function bookHref() {
+    return (window.FOWNED && window.FOWNED.bookingUrl) || "/contact/";
+  }
+  function bookAttrs() {
+    return (window.FOWNED && window.FOWNED.bookingUrl)
+      ? ' target="_blank" rel="noopener noreferrer"' : "";
+  }
   var PHONE_TEXT = "+1 (831) 332 0184";
 
   function track(name, detail) {
@@ -171,7 +182,7 @@
         '<ul class="audit-findings">' + findings + "</ul>" +
         '<div class="audit-gate">' +
           "<h4>Get the full result</h4>" +
-          "<p>Leave your email and we will send the complete list, including what to fix first.</p>" +
+          "<p>Leave your email and a person here will come back to you with the complete list, including what to fix first and in what order.</p>" +
           '<form class="audit-lead" id="leadForm" novalidate>' +
             '<label class="sr-only" for="leadEmail">Your email</label>' +
             '<input type="email" id="leadEmail" placeholder="you@yourbusiness.com" autocomplete="email" required>' +
@@ -179,16 +190,32 @@
           "</form>" +
           '<p class="audit-lead-msg" id="leadMsg" role="status"></p>' +
         "</div>" +
+        /* The pre-audit CTA's whole job: the visitor now holds a specific
+         * result and a specific gap, which is the only moment a sales call is
+         * worth more to them than to us. Offer the walkthrough here, once. */
+        '<div class="audit-book">' +
+          "<h4>Want us to walk you through this?</h4>" +
+          "<p>A short call goes through the findings for " + esc(r.hostname) +
+            ", what to fix first, and what it would take. Pricing is set on that call, against what the audit found.</p>" +
+          '<a href="' + bookHref() + '"' + bookAttrs() +
+            ' class="btn btn-primary" data-ev="booking_click" data-ev-label="audit_result_book">Book a call &rarr;</a>' +
+        "</div>" +
       "</div>",
       r.state
     );
 
     track("audit_complete", { state: r.state, health: r.health, demo: true });
-    wireLead(r.hostname);
+    wireLead(r);
   }
 
-  /* ---- lead capture: demo-only, in-session, nothing transmitted ---------- */
-  function wireLead(hostname) {
+  /* ---- lead capture ------------------------------------------------------
+   * The AUDIT is a demo fixture and stays labelled as one. The LEAD is real:
+   * a person typed their address on a live site and expects a human. Sending
+   * a fixture-derived audit to a real inbox would be the dishonest half, so
+   * the record carries the findings for context and the copy never claims the
+   * scan was live. */
+  function wireLead(r) {
+    var hostname = r.hostname;
     var lf = document.getElementById("leadForm");
     var le = document.getElementById("leadEmail");
     var ls = document.getElementById("leadSubmit");
@@ -204,16 +231,52 @@
         lm.textContent = "Enter your email address.";
         return;
       }
-      track("lead_submit", { form: "audit_gate", demo: true });
+      track("lead_submit", { form: "audit_gate" });
       ls.disabled = true;
-      lf.remove();
-      lm.innerHTML =
-        "<strong>Demo only. Nothing was sent and nothing was stored.</strong> " +
-        "In the live product this creates a qualified lead for " + esc(hostname) +
-        " in the agency pipeline with the audit attached, and it appears in " +
-        '<a href="/demo/prospects/">the prospect workspace</a>. ' +
-        'To reach us for real, call <a href="' + PHONE_HREF + '">' + PHONE_TEXT + "</a>.";
+      lm.textContent = "Sending…";
+
+      submitLead(email, r).then(function (ok) {
+        lf.remove();
+        lm.innerHTML = ok
+          ? "<strong>Got it. Someone here will come back to you about " + esc(hostname) + ".</strong> " +
+            "The checks above ran against a demonstration fixture, not a live crawl of your site, so the " +
+            "real audit is the one we run before we reply. " +
+            'If you would rather not wait, <a href="' + bookHref() + '"' + bookAttrs() +
+            ' data-ev="booking_click" data-ev-label="audit_lead_confirm_book">book a call</a> ' +
+            'or call <a href="' + PHONE_HREF + '">' + PHONE_TEXT + "</a>."
+          : "<strong>That did not go through.</strong> " +
+            'Please <a href="' + bookHref() + '"' + bookAttrs() +
+            ' data-ev="booking_click" data-ev-label="audit_lead_fallback_book">book a call</a> ' +
+            'or call <a href="' + PHONE_HREF + '">' + PHONE_TEXT + "</a> instead.";
+      });
     });
+  }
+
+  /* A failed send must SAY it failed and hand over a route that works. The
+   * tempting alternative, showing the success message regardless, loses the
+   * lead silently and the visitor never learns they should have called. */
+  function submitLead(email, r) {
+    var att = null;
+    try {
+      att = window.FownedInstrument && window.FownedInstrument.attribution();
+    } catch (e) { /* attribution is nice to have, never a blocker */ }
+
+    return fetch("/api/lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contact: email,
+        domain: r.hostname,
+        auditCompleted: true,
+        findings: r.checks
+          .filter(function (c) { return c.verdict === false; })
+          .slice(0, 6)
+          .map(function (c) { return c.name; }),
+        attribution: att,
+      }),
+    })
+      .then(function (res) { return res.ok; })
+      .catch(function () { return false; });
   }
 
   /* ---- the state machine ------------------------------------------------ */
