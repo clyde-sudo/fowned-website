@@ -32,6 +32,13 @@ const ORIGIN = process.env.SITE_ORIGIN || "https://fowned.pages.dev";
  * and no Cal.com username is invented. Filling this in is a one-line change. */
 const BOOKING_URL = process.env.BOOKING_URL || "";
 
+/* RB2B visitor-identification key. Empty string = not installed, which is the
+ * correct state today. Deliberately NOT populated with the Citability key: that
+ * key is scoped to a different tenant, so firing it here would attribute Fowned
+ * visitors to Citability's dashboard and poison both. When Fowned has its own
+ * key, set RB2B_KEY at build time; nothing else needs to change. */
+const RB2B_KEY = process.env.RB2B_KEY || "";
+
 export const SITE = {
   name: "Fowned",
   origin: ORIGIN,
@@ -51,6 +58,13 @@ export const SITE = {
  *  Safari, and hides the referrer that tells us which page produced the
  *  booking. A plain link keeps the page weight flat and keeps attribution. */
 export const bookHref = () => SITE.bookingUrl || "/contact/";
+
+/** RB2B snippet, or "" when no key is configured. Emitting nothing is the
+ *  point: an unconfigured tag must not become a third-party request. */
+export const rb2bTag = () =>
+  RB2B_KEY
+    ? `<script>!function(){var r=document.createElement("script");r.async=!0,r.src="https://ddwl4m2hdecbv.cloudfront.net/b/"+${JSON.stringify(RB2B_KEY)}+"/rb2b.js.gz",document.head.appendChild(r)}();</script>`
+    : "";
 export const bookRel = () =>
   SITE.bookingUrl ? ' target="_blank" rel="noopener noreferrer"' : "";
 
@@ -271,6 +285,7 @@ ${body}
 ${footer()}
 <script>window.FOWNED = { bookingUrl: ${JSON.stringify(SITE.bookingUrl)}, phoneHref: ${JSON.stringify(SITE.phoneHref)}, phoneText: ${JSON.stringify(SITE.phoneText)} };</script>
 <script src="/js/instrument.js"></script>
+${rb2bTag()}
 <script src="/js/main.js"></script>
 ${page.scripts ? page.scripts.map((s) => `<script src="${s}"></script>`).join("\n") : ""}
 </body>
