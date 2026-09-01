@@ -1,0 +1,20 @@
+# Cloudflare Pages response headers.
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  # NOTE: X-Robots-Tag is deliberately NOT set here. _headers cannot see the
+  # request Host, and this one project answers on both the real property
+  # (must index) and the temporary *.pages.dev hostnames (must not). A blanket
+  # noindex here would silently deindex the launch domain. The per-host rule
+  # lives in functions/_middleware.js.
+
+# The audit funnel is iterated often; keep code short-lived and art long-lived
+# so a copy fix ships within the hour without re-downloading the portrait.
+/css/*
+  Cache-Control: public, max-age=3600
+/js/*
+  Cache-Control: public, max-age=3600
+/images/*
+  Cache-Control: public, max-age=86400

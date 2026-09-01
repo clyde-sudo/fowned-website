@@ -1,1 +1,8 @@
-.DS_Store
+node_modules/
+.next/
+.env*
+!.env.example
+dist/
+
+# harness scratch, never part of the site
+.omc/
