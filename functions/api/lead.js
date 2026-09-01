@@ -1,5 +1,5 @@
 /**
- * POST /api/lead  ->  Fownd lead intake.
+ * POST /api/lead  ->  Fowned lead intake.
  *
  * Two sinks, and they fail differently on purpose.
  *
@@ -78,7 +78,7 @@ async function notify(env, record) {
       from,
       to,
       reply_to: record.CONTACT,
-      subject: `Fownd lead: ${record.COMPANY || record.DOMAIN || record.CONTACT}`,
+      subject: `Fowned lead: ${record.COMPANY || record.DOMAIN || record.CONTACT}`,
       text: notificationBody(record),
     }),
   });
@@ -185,7 +185,7 @@ export async function onRequestPost(context) {
 }
 
 export const onRequestGet = () =>
-  new Response("Fownd lead intake. POST only.\n", {
+  new Response("Fowned lead intake. POST only.\n", {
     status: 405,
     headers: { "Content-Type": "text/plain; charset=utf-8", Allow: "POST" },
   });

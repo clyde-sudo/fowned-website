@@ -1,20 +1,21 @@
 /**
  * First-party acquisition telemetry sink.
  *
- * Deliberately the smallest thing that is genuinely observable: it validates,
- * redacts and structured-logs. It does NOT store. Reading the stream is
- * `wrangler pages deployment tail --project-name fowned` or the Workers Logs
- * view in the Cloudflare dashboard.
+ * Validates against a closed vocabulary, redacts, then stores to D1
+ * (env.fowned_leads, table `events`). It used to only console.log, on the
+ * argument that a durable store was a product decision not yet made. That
+ * argument is settled: Cloudflare Pages keeps no log history, so the previous
+ * version was not deferring the decision, it was discarding the data.
  *
- * The reason it stores nothing is not laziness, it is scope. A durable store
- * for these events is a product decision (retention, access, who owns the
- * record) and the system of record for customer telemetry already exists in
- * the Citability backend. Standing up a second one here to have somewhere to
- * put a page_view would be the expensive mistake.
+ * Volume: this fires on every page view, so the write is deliberately cheap
+ * and deliberately non-blocking. It runs in waitUntil, after the 204 has
+ * already gone back to the client, because a beacon sent during page unload
+ * must never wait on a database. A failed insert is swallowed for the same
+ * reason: analytics that can break a page is worse than analytics with a gap.
  *
- * PRIVACY: the allowlist below is exhaustive. Anything a client sends that is
- * not on it is dropped rather than logged, so a future edit to the client
- * cannot quietly start logging an email address by adding a field.
+ * PRIVACY: the allowlist below is exhaustive, and the table mirrors it. What
+ * is not on the list is dropped rather than stored, so a future edit to the
+ * client cannot quietly start recording an email address by adding a field.
  */
 
 /** The closed event vocabulary. An unknown name is dropped, not logged. */
@@ -80,6 +81,41 @@ export async function onRequestPost(context) {
     country: context.request.cf?.country || null,
   };
 
+  /* The client is answered first. Storage happens after, in the background,
+   * and its failure is invisible on purpose: see the volume note at the top. */
+  const db = context.env.fowned_leads;
+  if (db) {
+    context.waitUntil(
+      db
+        .prepare(
+          `INSERT INTO events
+             (ev, at, path, label, state, landing, referrer, source, evidence,
+              utm_source, utm_medium, utm_campaign, utm_content, country)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        )
+        .bind(
+          record.ev,
+          record.at,
+          record.path,
+          record.label,
+          record.state,
+          record.landing,
+          record.referrer,
+          record.source,
+          record.evidence,
+          record.utm_source,
+          record.utm_medium,
+          record.utm_campaign,
+          record.utm_content,
+          record.country
+        )
+        .run()
+        .catch((err) => {
+          console.log("FOWNED_EVENT_STORE_FAILED " + String(err));
+        })
+    );
+  }
+
   console.log("FOWNED_EVENT " + JSON.stringify(record));
   return new Response(null, { status: 204 });
 }
@@ -87,7 +123,7 @@ export async function onRequestPost(context) {
 /* A GET is a human or a scanner poking the endpoint, not a client. Say so
  * plainly rather than 405-ing, so the surface is self-describing in a QA pass. */
 export const onRequestGet = () =>
-  new Response("Fowned first-party event sink. POST only. Nothing is stored.\n", {
+  new Response("Fowned first-party event sink. POST only.\n", {
     status: 405,
     headers: { "Content-Type": "text/plain; charset=utf-8", Allow: "POST" },
   });
