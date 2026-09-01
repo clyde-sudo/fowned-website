@@ -293,7 +293,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: url('../images/starry-lineart-final.png') center top / cover no-repeat;
+    background: url('../images/starry-lineart-final.webp') center top / cover no-repeat;
     opacity: 0.5;
     z-index: 0;
   }
@@ -538,7 +538,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: url('../images/starry-lineart-final.png') center top / cover no-repeat;
+    background: url('../images/starry-lineart-final.webp') center top / cover no-repeat;
     opacity: 0.22;
     z-index: 0;
   }
@@ -885,6 +885,25 @@
     background: var(--color-hairline);
   }
   
+  /* the band is black, so the secondary button has to invert too. Without this
+     it keeps the default black text on a black background and disappears. */
+  .final-cta .btn-secondary {
+    color: var(--color-white);
+    border-color: var(--color-white);
+  }
+  
+  .final-cta .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  
+  /* .final-cta p sets the muted grey for text on the black band, and it outranks
+     .demo-chip's own black. The chip sits on its own pale background inside the
+     result card, so it has to keep the colour app.css gave it. Colour only: the
+     chip's inherited layout from .final-cta p is intentional. */
+  .final-cta p.demo-chip {
+    color: var(--color-black);
+  }
+  
   /* footer / contact */
   
   #contact {
@@ -997,4 +1016,207 @@
     .contact-grid {
       grid-template-columns: 1fr 1fr;
     }
+  }
+  /* ── Phase A: audit funnel ───────────────────────────────────────────────
+     Reuses the existing tokens only. No new palette, no new type scale. */
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* legend for the attribution label key */
+  .attr-legend {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-gray);
+    padding: 10px 16px 4px;
+  }
+
+  /* the "no referrer" class must not read as an achievement */
+  .attr-src-muted {
+    background: #2a2a2a;
+    color: #9a9a9a;
+  }
+
+  .audit-form {
+    display: flex;
+    gap: 12px;
+    max-width: 560px;
+    margin: var(--space-sm) auto 0;
+  }
+
+  .audit-form input {
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius);
+    background: var(--color-white);
+    color: var(--color-black);
+  }
+
+  .audit-form input:focus-visible,
+  .audit-lead input:focus-visible {
+    outline: 2px solid var(--color-indigo);
+    outline-offset: 2px;
+  }
+
+  .audit-form .btn { white-space: nowrap; }
+
+  @media (max-width: 640px) {
+    .audit-form { flex-direction: column; }
+  }
+
+  .audit-panel {
+    max-width: 560px;
+    margin: var(--space-sm) auto 0;
+    text-align: left;
+  }
+
+  .audit-notice,
+  .audit-result {
+    background: var(--color-white);
+    /* the panel mounts inside .final-cta, which sets color:white for the black
+       band. A card that flips the background owes an explicit foreground in the
+       same rule, or its unstyled children inherit white and vanish. */
+    color: var(--color-black);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius);
+    padding: var(--space-sm);
+  }
+
+  .audit-notice-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .audit-notice-body { color: var(--color-gray); font-size: 15px; }
+
+  /* a failure must look like a failure, not like a neutral note */
+  .audit-panel[data-state="FAILED"] .audit-notice,
+  .audit-panel[data-state="INVALID_DOMAIN"] .audit-notice,
+  .audit-panel[data-state="RATE_LIMITED"] .audit-notice {
+    border-left: 3px solid var(--color-indigo);
+  }
+
+  .audit-result-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .audit-health {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-radius: 6px;
+    padding: 5px 9px;
+  }
+
+  .audit-health-CRITICAL  { background: var(--color-black);     color: var(--color-white); }
+  .audit-health-NEEDS_WORK{ background: var(--color-highlight); color: var(--color-black); }
+  .audit-health-HEALTHY   { background: var(--color-indigo);    color: var(--color-white); }
+
+  .audit-score {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-gray);
+  }
+
+  .audit-health-line { font-size: 16px; margin-bottom: 8px; }
+
+  .audit-scanned {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-gray);
+    margin-bottom: var(--space-xs);
+  }
+
+  /* unmeasured checks get their own visible line: not a score, not a failure */
+  .audit-partial {
+    font-size: 13px;
+    color: var(--color-gray);
+    background: var(--color-blush);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: var(--space-xs);
+  }
+
+  .audit-findings-head {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .audit-findings { list-style: none; margin-bottom: var(--space-sm); }
+
+  .audit-finding {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 15px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .audit-finding-mark { font-weight: 700; line-height: 1.35; }
+  .audit-finding.is-fail .audit-finding-mark { color: var(--color-indigo); }
+  .audit-finding.is-pass .audit-finding-mark { color: var(--color-gray); }
+
+  .audit-gate {
+    border-top: 1px solid var(--color-hairline);
+    padding-top: var(--space-xs);
+  }
+
+  .audit-gate h4 {
+    font-family: var(--font-display);
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+
+  .audit-gate p { font-size: 14px; color: var(--color-gray); margin-bottom: 14px; }
+
+  .audit-lead { display: flex; gap: 10px; }
+
+  .audit-lead input {
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    padding: 12px 14px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius);
+  }
+
+  @media (max-width: 640px) {
+    .audit-lead { flex-direction: column; }
+  }
+
+  .audit-lead-msg {
+    font-size: 14px;
+    margin-top: 12px;
+    color: var(--color-black);
+  }
+
+  .audit-lead-msg:empty { margin-top: 0; }
+
+  .contact-sub {
+    color: var(--color-gray);
+    font-size: 15px;
+    margin-top: 10px;
+    max-width: 46ch;
   }

@@ -48,9 +48,10 @@
         <a href="#why">Why GEO</a>
         <a href="#how">How it works</a>
         <a href="#contact">Contact</a>
+        <a href="https://citability.dev/agency/fowned/prospects" id="signinLink">Sign in</a>
         <div class="menu-divider"></div>
         <a href="#audit" class="btn btn-secondary menu-btn-secondary" data-link="audit">Run free audit</a>
-        <a href="#" class="btn btn-primary menu-btn-primary" data-link="bookCall">Book a call</a>
+        <a href="#audit" class="btn btn-primary menu-btn-primary" data-link="bookCall">Book a call</a>
       </div>
     </div>
   </header>
@@ -100,15 +101,6 @@
 
   <!-- Everything else -->
 
-  <div class="cred">
-    <div class="container cred-in">
-      <span class="cred-label">Businesses getting named</span>
-      <div class="logo-slot">Client logo</div>
-      <div class="logo-slot">Client logo</div>
-      <div class="logo-slot">Client logo</div>
-      <div class="logo-slot">Client logo</div>
-    </div>
-  </div>
 
   <section id="tiers">
     <div class="container">
@@ -117,10 +109,7 @@
         <span class="label">Three levels of visibility</span>
         <h2>Every plan starts from your audit.</h2>
         <p class="sub">Pick the outcome you want. Where you start depends on what the audit finds. Pricing is set on the call.</p>
-        <form class="audit-inline" onsubmit="event.preventDefault();">
-          <input type="url" placeholder="Your website URL" required>
-          <button type="submit" class="btn btn-primary">Run free audit</button>
-        </form>
+        <a href="#audit" class="btn btn-primary">Run free audit</a>
       </div>
       <img src="images/fowned-portrait-transparent.png" alt="Fowned" class="tiers-portrait">
       <div class="tier-grid">
@@ -142,7 +131,7 @@
         <div class="tier-card">
           <span class="label">03 / Get leads</span>
           <h3>Get leads</h3>
-          <p>See which visitors arrived from an AI answer, and who to follow up with. Proof the work is paying, plus a list to act on.</p>
+          <p>See which visitors arrived from an AI tool, and who to follow up with. A labelled list to act on, with the unknowns shown as unknown.</p>
           <a href="#audit" class="btn btn-secondary">Start with an audit →</a>
         </div>
   
@@ -154,25 +143,23 @@
     <div class="container">
       <div class="feature">
         <div>
-          <span class="label feature-eyebrow">The part nobody else can show you</span>
-          <h2>Know which leads came from AI.</h2>
-          <p>Most GEO stops at "you're more visible now." We close the loop: every lead is tagged with the AI answer that sent them, so you can follow up while they're still deciding and prove the spend.</p>
+          <span class="label feature-eyebrow">What we can actually show you</span>
+          <h2>See which leads arrived from an AI tool.</h2>
+          <p>When someone reaches you from an AI assistant, their browser usually tells us where they came from. We record that referrer on the lead and classify it. What we cannot do is prove which specific answer caused the visit, so we do not claim it. Leads that arrive with no referrer are labelled unknown rather than guessed at.</p>
         </div>
         <div class="attr-card">
+          <span class="attr-legend">How every lead is labelled</span>
           <div class="attr-row">
-            <span class="attr-src">ChatGPT</span>
-            <span class="attr-name">New consult request</span>
-            <span class="attr-meta">2m ago</span>
+            <span class="attr-src">AI referrer</span>
+            <span class="attr-name">Arrived from ChatGPT, Perplexity, Gemini, Claude or Copilot</span>
           </div>
           <div class="attr-row">
-            <span class="attr-src attr-src-alt">Perplexity</span>
-            <span class="attr-name">Quote form started</span>
-            <span class="attr-meta">1h ago</span>
+            <span class="attr-src attr-src-alt">Other referrer</span>
+            <span class="attr-name">Arrived from a search engine, a link, or another site</span>
           </div>
           <div class="attr-row">
-            <span class="attr-src">ChatGPT</span>
-            <span class="attr-name">Called the office</span>
-            <span class="attr-meta">Today</span>
+            <span class="attr-src attr-src-muted">Unknown</span>
+            <span class="attr-name">No referrer sent. Not counted as direct, and never counted as AI</span>
           </div>
         </div>
       </div>
@@ -199,20 +186,7 @@
         <div class="step">
           <div class="step-num">3</div>
           <h3>Track</h3>
-          <p>We tag every lead that comes from an AI answer, so you see the work turn into booked calls.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="testimonial">
-    <div class="container">
-      <div class="quote">
-        <span class="quote-flag">Testimonial (placeholder)</span>
-        <blockquote>"Client quote 🔥"</blockquote>
-        <div class="quote-who">
-          <span class="avatar"></span>
-          <span><strong>Client name</strong>, Title · Company</span>
+          <p>We record where each lead arrived from and label it, so you can see what share of your enquiries reach you through AI tools.</p>
         </div>
       </div>
     </div>
@@ -222,8 +196,15 @@
     <div class="container">
       <div class="final-cta">
         <h2>See how AI describes your business.</h2>
-        <p>The audit is free and takes a few minutes to request. You'll see exactly where you stand before we talk.</p>
-        <a href="#" class="btn btn-primary">Run my free audit →</a>
+        <p>We check your site against the things AI tools rely on when they decide who to name. The audit runs in about a minute. No account needed.</p>
+
+        <form class="audit-form" id="auditForm" novalidate>
+          <label class="sr-only" for="auditUrl">Your website address</label>
+          <input type="text" id="auditUrl" name="url" placeholder="yourbusiness.com" autocomplete="url" required>
+          <button type="submit" class="btn btn-primary" id="auditSubmit">Run my free audit →</button>
+        </form>
+
+        <div class="audit-panel" id="auditPanel" hidden aria-live="polite"></div>
       </div>
     </div>
   </section>
@@ -232,11 +213,8 @@
   <div class="container">
 
     <div class="contact-top">
-      <h2>Stay updated with Fowned's latest GEO insights.</h2>
-      <form class="subscribe-form" onsubmit="event.preventDefault();">
-        <input type="email" placeholder="Enter your email" required>
-        <button type="submit" class="btn btn-primary">Subscribe now</button>
-      </form>
+      <h2>Start with the audit. Then we talk.</h2>
+      <p class="contact-sub">Run the free audit above and leave your email with the result. If you would rather speak to someone first, the number below reaches us directly.</p>
     </div>
 
     <div class="contact-grid">
@@ -245,11 +223,6 @@
         <a href="#why">Why GEO</a>
         <a href="#tiers">Outcomes</a>
         <a href="#contact">Contact</a>
-      </div>
-
-      <div class="contact-col">
-        <span class="label">Email</span>
-        <a href="mailto:placeholder@fowned.com" target="_blank" rel="noopener noreferrer">placeholder@fowned.com</a>
       </div>
 
       <div class="contact-col">
@@ -265,16 +238,12 @@
 
     <div class="contact-bottom">
       <span>© 2026 Fowned. All rights reserved.</span>
-      <div class="contact-legal">
-        <a href="#">Privacy Policy</a>
-        <span>|</span>
-        <a href="#">Terms of Service</a>
-      </div>
     </div>
 
   </div>
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/audit.js"></script>
 </body>
 </html>
