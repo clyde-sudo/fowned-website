@@ -55,7 +55,22 @@ const BOOKING_URL = process.env.BOOKING_URL || "https://calendly.com/clyde-thrul
  * key, set RB2B_KEY at build time; nothing else needs to change. */
 const RB2B_KEY = process.env.RB2B_KEY || "";
 
+/* Turnstile is wired end to end but INERT until both keys exist: the public
+ * site key here (build time) and TURNSTILE_SECRET_KEY as a Pages secret (run
+ * time). Shipping the widget with an empty key would render a permanently
+ * failing challenge and block every real enquiry, so an unset key means the
+ * widget is simply not emitted and the honeypot plus the origin check carry
+ * the load on their own. */
+const TURNSTILE_SITE_KEY = process.env.TURNSTILE_SITE_KEY || "";
+
+/* Empty means the audit runs in fixture mode. Set it to the tenant-scoped
+ * Citability endpoint ONLY once that endpoint answers for fowned.live, because
+ * the value flipping the switch is also the value the browser calls. */
+const AUDIT_SCAN_URL = process.env.AUDIT_SCAN_URL || "";
+
 export const SITE = {
+  turnstileSiteKey: TURNSTILE_SITE_KEY,
+  scanUrl: AUDIT_SCAN_URL,
   name: "Fowned",
   origin: ORIGIN,
   bookingUrl: BOOKING_URL,
@@ -196,7 +211,11 @@ ${links}
   </header>`;
 }
 
-function footer() {
+/* The "Demo build" note is scoped to the demo shell on purpose. On a public
+ * marketing page it reads as "this whole company is a mock-up", which is the
+ * opposite of true and costs real enquiries; inside /demo/ it is the honest
+ * label the fixture screens need. */
+function footer(isDemo) {
   const col = (label, items) =>
     `      <div class="contact-col">
         <span class="label">${esc(label)}</span>
@@ -238,7 +257,11 @@ ${col("Contact", [
 
     <div class="contact-bottom">
       <span>&copy; 2026 Fowned. All rights reserved.</span>
-      <span class="footer-note">Demo build. Product surfaces marked DEMO DATA are illustrative.</span>
+      <span class="contact-legal">
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+      </span>
+${isDemo ? '      <span class="footer-note">Demo build. Product surfaces marked DEMO DATA are illustrative.</span>' : ""}
     </div>
   </div>
 </footer>`;
@@ -298,8 +321,9 @@ ${head(page)}
   <a class="skip-link" href="#main">Skip to content</a>
 ${header(page)}
 ${body}
-${footer()}
-<script>window.FOWNED = { bookingUrl: ${JSON.stringify(SITE.bookingUrl)}, phoneHref: ${JSON.stringify(SITE.phoneHref)}, phoneText: ${JSON.stringify(SITE.phoneText)} };</script>
+${footer(isDemo)}
+<script>window.FOWNED = { bookingUrl: ${JSON.stringify(SITE.bookingUrl)}, phoneHref: ${JSON.stringify(SITE.phoneHref)}, phoneText: ${JSON.stringify(SITE.phoneText)}, turnstileSiteKey: ${JSON.stringify(SITE.turnstileSiteKey)}, scanUrl: ${JSON.stringify(SITE.scanUrl)} };</script>
+${SITE.turnstileSiteKey ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ""}
 <script src="/js/instrument.js"></script>
 ${rb2bTag()}
 <script src="/js/main.js"></script>

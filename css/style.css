@@ -1220,3 +1220,14 @@
     margin-top: 10px;
     max-width: 46ch;
   }
+
+/* Honeypot. Off-screen rather than display:none, because a bot that reads
+ * computed style skips a hidden field and the trap catches nothing. Real
+ * people never reach it: it is out of the tab order and hidden from AT. */
+.hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

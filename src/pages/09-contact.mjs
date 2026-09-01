@@ -62,7 +62,12 @@ ${head({ label: "Consultation request", h: "Or leave your details here.", sub: "
           <label for="cNote">What would you like to fix?</label>
           <textarea id="cNote" name="note" rows="4"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" id="contactSubmit">Request a consultation</button>
+        <div class="hp" aria-hidden="true">
+        <label for="cCompanyUrl">Company URL</label>
+        <input type="text" id="cCompanyUrl" name="company_url" tabindex="-1" autocomplete="off">
+      </div>
+${SITE.turnstileSiteKey ? `      <div class="cf-turnstile" data-sitekey="${SITE.turnstileSiteKey}"></div>` : ""}
+      <button type="submit" class="btn btn-primary" id="contactSubmit">Request a consultation</button>
         <p class="audit-lead-msg" id="contactMsg" role="status"></p>
       </form>
     </div>

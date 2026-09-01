@@ -21,6 +21,10 @@
  *   LEAD_NOTIFY_TO    comma-separated recipients
  * Missing any of them degrades to store-only, which is still better than the
  * behaviour this replaces.
+ *
+ *   TURNSTILE_SECRET_KEY  optional. Set it and the bot challenge is enforced;
+ *                         leave it unset and the challenge is skipped entirely
+ *                         (see the gate comments below).
  */
 
 /** Whoever picks the lead up. UNASSIGNED until a human claims it. */
@@ -87,12 +91,74 @@ async function notify(env, record) {
   return null;
 }
 
+/**
+ * Three cheap gates, in cost order, all of them BEFORE the database is touched.
+ *
+ *   1. Honeypot. A field real people never see and never fill. A bot that
+ *      posts every input it finds fills it, and gets a 200 with nothing
+ *      stored, so it has no failure to learn from.
+ *   2. Origin. A browser attaches Origin to a cross-site POST and cannot forge
+ *      it. A request with a foreign Origin is somebody else's page posting
+ *      into our database. A request with NO Origin is curl, which is how the
+ *      deploy proof (tools/notify-test.sh) submits, so absence is allowed
+ *      deliberately: this stops embedded abuse, not scripted abuse. The
+ *      honeypot and Turnstile are what cover the scripted case.
+ *   3. Turnstile, only when TURNSTILE_SECRET_KEY is set. Unset means the keys
+ *      have not been minted yet, and a challenge that cannot be verified must
+ *      not reject real enquiries, so it stays off rather than failing closed.
+ */
+function originAllowed(request) {
+  const origin = request.headers.get("Origin");
+  if (!origin) return true;
+  try {
+    return new URL(origin).host === new URL(request.url).host;
+  } catch {
+    return false;
+  }
+}
+
+async function turnstileOk(env, token, ip) {
+  const secret = env.TURNSTILE_SECRET_KEY;
+  if (!secret) return true; // not configured yet, so not enforced
+  if (!token) return false;
+  const form = new FormData();
+  form.append("secret", secret);
+  form.append("response", token);
+  if (ip) form.append("remoteip", ip);
+  try {
+    const res = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      { method: "POST", body: form }
+    );
+    const out = await res.json();
+    return Boolean(out.success);
+  } catch {
+    // Cloudflare's own verifier being unreachable is our outage, not the
+    // visitor's fault. Let the lead through rather than lose it.
+    return true;
+  }
+}
+
 export async function onRequestPost(context) {
   let body;
   try {
     body = await context.request.json();
   } catch {
     return json({ ok: false, error: "BAD_JSON" }, 400);
+  }
+
+  // Honeypot: answered means a bot. 200 so it learns nothing, no row written.
+  if (str(body?.company_url, 256)) {
+    return json({ ok: true, owner: "UNASSIGNED" }, 200);
+  }
+
+  if (!originAllowed(context.request)) {
+    return json({ ok: false, error: "BAD_ORIGIN" }, 403);
+  }
+
+  const ip = context.request.headers.get("CF-Connecting-IP");
+  if (!(await turnstileOk(context.env, str(body?.turnstileToken, 2048), ip))) {
+    return json({ ok: false, error: "CHALLENGE_FAILED" }, 403);
   }
 
   const contact = str(body?.contact, 160);

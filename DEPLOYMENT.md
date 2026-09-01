@@ -34,22 +34,35 @@ not to invite crawling that `robots.txt` is simultaneously refusing.
 sitemap follow. The demo routes under `/demo/` should stay excluded at that
 point, because they are still fiction.
 
-## The audit is a labelled fixture, not a live scan
+## The audit has two modes, and the mode is a build-time switch
 
-`js/audit.js` runs the real eight-state machine against a deterministic fixture
-and shows a `DEMO AUDIT RESULT` badge on every result.
+`js/audit.js` runs the real eight-state machine. What feeds it depends on one
+environment variable at build time:
 
-It is not wired to a live scan, on purpose. The tenant-scoped endpoint
-(`/api/agency/fowned/scan`) is written and committed on the Citability side but
-is **not deployed**. The one scan endpoint that is live in production writes rows
-to the prospect table and fires an external notification, so pointing a public
-demo at it would create real records for whatever domain a stranger types. The
-fixture is derived from the entered domain by hash, so the same domain always
-returns the same audit and a walkthrough repeats exactly.
+| `AUDIT_SCAN_URL` | Mode | Result |
+|---|---|---|
+| unset (default) | fixture | Deterministic verdicts hashed from the entered domain, badged `DEMO AUDIT RESULT` on every render |
+| set | live | One POST to the tenant-scoped Citability endpoint, real verdicts, no demo badge |
 
-**When this reverses.** When the tenant-scoped endpoint deploys, replace the
-`setTimeout` fixture lookup in `runScan` with the `fetch` it stands in for. The
-states, the labels, and the partial-measurement rule are already correct.
+It is a build-time switch, not a runtime probe, because the audit page must
+never ship a live path that 404s while a visitor watches it spin. In live mode a
+failed scan says it failed; it never falls back to the fixture, because a made-up
+result wearing a live badge is worse than either mode on its own.
+
+**What has to be true before the switch is flipped.** The endpoint
+(`/api/agency/fowned/scan`) is deployed on the Citability side. It answers only
+when BOTH of these are true there, and neither is true as of 31 August 2026:
+
+1. An `organizations` row with `slug = 'fowned'` exists in the Citability
+   production database. Without it the endpoint returns
+   `404 {"state":"FAILED","message":"Unknown agency."}`.
+2. `https://fowned.live` is in `AGENCY_ALLOWED_ORIGINS` in that project's
+   Vercel production environment, followed by a redeploy. Without it no CORS
+   headers are returned and the browser rejects the response, even though curl
+   would see a body.
+
+Both are changes to Citability production, not to this repository. Verify with a
+real POST before setting `AUDIT_SCAN_URL`.
 
 ## Build
 
@@ -69,9 +82,23 @@ publishing internal docs. The build additionally:
 
     node build.mjs && npx wrangler pages deploy dist --project-name=fowned
 
-No secrets are involved: there are no Functions, no environment variables and no
-bindings. If that ever changes, the secret goes in Wrangler secret storage and
-never in the repo, the bundle, the HTML, this file or the logs.
+Secrets live in Wrangler secret storage and never in the repo, the bundle, the
+HTML, this file or the logs. `wrangler pages secret put` reads the value from
+STDIN, never from argv, and a secret only takes effect on the NEXT deployment.
+
+| Name | Where | Missing means |
+|---|---|---|
+| `fowned_leads` | D1 binding, `wrangler.toml` | `/api/lead` returns 503 and stores nothing |
+| `RESEND_API_KEY` | Pages secret | Leads still store; nobody is emailed |
+| `LEAD_NOTIFY_FROM` / `LEAD_NOTIFY_TO` | Pages secret | Same as above |
+| `TURNSTILE_SECRET_KEY` | Pages secret | The bot challenge is not enforced. The honeypot and the origin check still are |
+| `TURNSTILE_SITE_KEY` | Build-time env | The Turnstile widget is not rendered at all |
+| `AUDIT_SCAN_URL` | Build-time env | The audit runs in fixture mode |
+
+The two Turnstile keys are minted together in the Cloudflare dashboard and are
+useless apart: a site key with no secret means the widget renders and nothing
+verifies it, and a secret with no site key means every submission is rejected
+for a token no form produced. Set both, then rebuild AND redeploy.
 
 ## Data honesty rules that must survive any edit
 

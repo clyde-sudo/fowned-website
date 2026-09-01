@@ -1,23 +1,29 @@
 /**
- * Fowned free-audit funnel: DEMO FIXTURE MODE.
+ * Fowned free-audit funnel. TWO MODES, and the mode is a build-time decision.
  *
- * WHY THIS IS A FIXTURE AND NOT A LIVE SCAN
- * -----------------------------------------
  * Fowned is a TENANT of Citability, never a fork, so there is no scan engine in
  * this file and there must never be one. The tenant-scoped endpoint
- * (/api/agency/fowned/scan) is written and committed but is NOT deployed, and
- * the one live endpoint that does exist writes rows to the production prospect
- * table and fires an external notification. A demo may not do either. So the
- * result below is a deterministic fixture and it says so, on screen, every time.
+ * (/api/agency/fowned/scan) IS deployed on the Citability side. It answers only
+ * when two things are true there: the fowned organization row exists, and
+ * fowned.live is in that project's allowed CORS origins.
  *
- * The state machine is the real one. When the tenant-scoped endpoint deploys,
- * runScan() swaps a fixture lookup for a fetch and nothing else changes.
+ * So the switch is FOWNED.scanUrl, set from AUDIT_SCAN_URL at build time:
  *
- * Two rules survive fixture mode unchanged, because they are the honesty rules:
+ *   unset  -> DEMO FIXTURE MODE. A deterministic result derived from the domain
+ *             name, badged DEMO AUDIT RESULT on every render.
+ *   set    -> LIVE MODE. One POST to the tenant endpoint, real verdicts, no
+ *             demo badge, and a failure says it failed instead of quietly
+ *             falling back to the fixture (a fixture shown as a live result is
+ *             the one outcome neither mode may produce).
+ *
+ * It is a build-time switch rather than a runtime probe on purpose: the audit
+ * page must never ship a live path that 404s while somebody watches it spin.
+ *
+ * Two rules survive both modes unchanged, because they are the honesty rules:
  *   1. A check that produced no verdict renders as "not measured". Never a zero,
  *      never a fail. An unmeasured check leaves the denominator.
- *   2. Every result carries a DEMO AUDIT RESULT badge. A fixture that is not
- *      labelled is a lie with a delay on it.
+ *   2. A fixture result always carries a DEMO AUDIT RESULT badge. A fixture that
+ *      is not labelled is a lie with a delay on it.
  */
 (function () {
   "use strict";
@@ -167,10 +173,12 @@
 
     render(
       '<div class="audit-result">' +
-        '<p class="demo-chip demo-chip-lg">DEMO AUDIT RESULT</p>' +
-        '<p class="audit-demo-note">This is a deterministic sample, not a live crawl of ' + esc(r.hostname) +
-          ". The check list is the real one. The verdicts are generated from the domain name so the demo repeats. " +
-          "The live version crawls the site and returns measured verdicts.</p>" +
+        (r.live
+          ? ""
+          : '<p class="demo-chip demo-chip-lg">DEMO AUDIT RESULT</p>' +
+            '<p class="audit-demo-note">This is a deterministic sample, not a live crawl of ' + esc(r.hostname) +
+              ". The check list is the real one. The verdicts are generated from the domain name so the demo repeats. " +
+              "The live version crawls the site and returns measured verdicts.</p>") +
         '<div class="audit-result-head">' +
           '<span class="audit-health audit-health-' + esc(r.health) + '">' + esc(h.label) + "</span>" +
           '<span class="audit-score">' + esc(r.score) + " of " + esc(r.total) + " checks passing</span>" +
@@ -186,6 +194,11 @@
           '<form class="audit-lead" id="leadForm" novalidate>' +
             '<label class="sr-only" for="leadEmail">Your email</label>' +
             '<input type="email" id="leadEmail" placeholder="you@yourbusiness.com" autocomplete="email" required>' +
+            '<div class="hp" aria-hidden="true">' +
+              '<label for="leadCompanyUrl">Company URL</label>' +
+              '<input type="text" id="leadCompanyUrl" name="company_url" tabindex="-1" autocomplete="off">' +
+            "</div>" +
+            '<div class="cf-turnstile" id="leadTurnstile"></div>' +
             '<button type="submit" class="btn btn-primary" id="leadSubmit">Send me the full audit</button>' +
           "</form>" +
           '<p class="audit-lead-msg" id="leadMsg" role="status"></p>' +
@@ -222,6 +235,17 @@
     var lm = document.getElementById("leadMsg");
     if (!lf) return;
 
+    /* The widget is injected after Turnstile's own script has already scanned
+     * the document, so auto-render never sees it. Render it by hand when both
+     * the script and a site key are present; with neither, the container stays
+     * an empty div and the honeypot plus the origin check stand alone. */
+    var siteKey = (window.FOWNED || {}).turnstileSiteKey;
+    if (siteKey && window.turnstile) {
+      try {
+        window.turnstile.render(document.getElementById("leadTurnstile"), { sitekey: siteKey });
+      } catch (e) { /* a challenge that will not render must not eat the form */ }
+    }
+
     le.addEventListener("focus", function () { track("lead_start", { form: "audit_gate" }); }, { once: true });
 
     lf.addEventListener("submit", function (e) {
@@ -235,12 +259,14 @@
       ls.disabled = true;
       lm.textContent = "Sending…";
 
-      submitLead(email, r).then(function (ok) {
+      submitLead(email, r, lf).then(function (ok) {
         lf.remove();
         lm.innerHTML = ok
           ? "<strong>Got it. Someone here will come back to you about " + esc(hostname) + ".</strong> " +
-            "The checks above ran against a demonstration fixture, not a live crawl of your site, so the " +
-            "real audit is the one we run before we reply. " +
+            (r.live
+              ? "The full audit goes well past the checks above, and that is what we will send. "
+              : "The checks above ran against a demonstration fixture, not a live crawl of your site, so the " +
+                "real audit is the one we run before we reply. ") +
             'If you would rather not wait, <a href="' + bookHref() + '"' + bookAttrs() +
             ' data-ev="booking_click" data-ev-label="audit_lead_confirm_book">book a call</a> ' +
             'or call <a href="' + PHONE_HREF + '">' + PHONE_TEXT + "</a>."
@@ -255,7 +281,7 @@
   /* A failed send must SAY it failed and hand over a route that works. The
    * tempting alternative, showing the success message regardless, loses the
    * lead silently and the visitor never learns they should have called. */
-  function submitLead(email, r) {
+  function submitLead(email, r, form) {
     var att = null;
     try {
       att = window.FownedInstrument && window.FownedInstrument.attribution();
@@ -273,16 +299,66 @@
           .slice(0, 6)
           .map(function (c) { return c.name; }),
         attribution: att,
+        company_url: (document.getElementById("leadCompanyUrl") || {}).value || "",
+        turnstileToken: (form.querySelector('[name="cf-turnstile-response"]') || {}).value || "",
       }),
     })
       .then(function (res) { return res.ok; })
       .catch(function () { return false; });
   }
 
+  /* ---- live mode --------------------------------------------------------- */
+
+  /* The tenant endpoint returns a TEASER, at most three failing checks (or one
+   * passing check when nothing failed), plus the score over the full set. That
+   * is the same shape the fixture produces, so renderResult is untouched: only
+   * the source of the verdicts changes. `score` and `total` come from the real
+   * run, so a partial run still reports "n of N returned a verdict" honestly. */
+  function fromLive(j) {
+    var checks = (j.teaser && j.teaser.checks) || [];
+    return {
+      state: j.state,
+      live: true,
+      hostname: j.hostname,
+      score: j.score,
+      total: j.total,
+      expectedTotal: j.expectedTotal,
+      health: j.health,
+      checks: checks.map(function (c) {
+        return { name: c.name, verdict: Boolean(c.pass) };
+      }),
+    };
+  }
+
+  function runScan(hostname) {
+    var url = (window.FOWNED || {}).scanUrl;
+    if (!url) {
+      // Fixture mode. The delay exists so the SCANNING state is visible, and it
+      // is honest about that: it is not imitating work that is not happening.
+      return new Promise(function (resolve) {
+        setTimeout(function () { resolve(fixture(hostname)); }, 900);
+      });
+    }
+    return fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: hostname }),
+    })
+      .then(function (res) {
+        return res.json().then(function (j) {
+          if (j.state === "SUCCESS" || j.state === "PARTIAL") return fromLive(j);
+          // RATE_LIMITED, INVALID_DOMAIN, FAILED and any 404 from an
+          // unconfigured tenant all land here. Never fall back to the fixture:
+          // a made-up result wearing a live badge is the worst of both modes.
+          throw new Error(j.message || j.state || "SCAN_FAILED");
+        });
+      });
+  }
+
   /* ---- the state machine ------------------------------------------------ */
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    track("audit_start", { demo: true });
+    track("audit_start", { demo: !(window.FOWNED || {}).scanUrl });
 
     // VALIDATING
     var raw = (input.value || "").trim().replace(/^https?:\/\//i, "").replace(/\/.*$/, "");
@@ -305,17 +381,18 @@
 
     // The delay is honest about itself: it exists so the SCANNING state is
     // visible, not to imitate work that is not happening.
-    setTimeout(function () {
-      busy(false);
-      try {
-        renderResult(fixture(raw));
-      } catch (err) {
+    runScan(raw)
+      .then(function (r) {
+        busy(false);
+        renderResult(r);
+      })
+      .catch(function () {
+        busy(false);
         notice(
           "We could not complete that audit",
           "Something went wrong on our side. Try again, or call " + PHONE_TEXT + ".",
           "FAILED"
         );
-      }
-    }, 900);
+      });
   });
 })();

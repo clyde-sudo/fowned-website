@@ -36,6 +36,7 @@
     msg.textContent = "Sending…";
     track("lead_submit", { form: "consultation" });
 
+    var hp = document.getElementById("cCompanyUrl");
     var att = null;
     try {
       att = window.FownedInstrument && window.FownedInstrument.attribution();
@@ -51,6 +52,8 @@
         message: note,
         auditCompleted: false,
         attribution: att,
+        company_url: hp ? hp.value : "",
+        turnstileToken: (form.querySelector('[name="cf-turnstile-response"]') || {}).value || "",
       }),
     })
       .then(function (res) { return res.ok; })
