@@ -1,3 +1,10 @@
 name = "fowned"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-08-24"
+
+# Durable sink for /api/lead. Before this binding existed the handler ended in a
+# console.log, and Pages keeps no log history, so every lead since launch is gone.
+[[d1_databases]]
+binding = "fowned_leads"
+database_name = "fowned-leads"
+database_id = "2f13675e-33f2-4781-aa84-34713beca6d8"
