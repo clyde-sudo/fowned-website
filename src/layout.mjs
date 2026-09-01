@@ -23,8 +23,19 @@
  *
  * It is an env var rather than a constant because a canonical, a sitemap entry
  * and an og:url that name a host which does not resolve yet are not "ready for
- * launch", they are wrong. The flip happens when DNS does, not before. */
-const ORIGIN = process.env.SITE_ORIGIN || "https://fowned.pages.dev";
+ * launch", they are wrong. The flip happens when DNS does, not before.
+ *
+ * DNS flipped, so the default flipped with it (2026-08-31). It defaulted to the
+ * pages.dev host for the pre-launch window, and every production build after
+ * launch quietly inherited that default because nobody remembered to export the
+ * variable. The result was the whole site telling search engines its canonical
+ * URL was on fowned.pages.dev, a host whose robots.txt disallows everything, so
+ * the real domain was pointing crawlers at a page they are forbidden to read.
+ * A default that has to be remembered on every deploy is not a default. The
+ * real domain is now the default and the temporary host is the override, which
+ * is also harmless there: _middleware.js already serves the pages.dev host a
+ * noindex, so a canonical naming the real site is exactly what it should say. */
+const ORIGIN = process.env.SITE_ORIGIN || "https://fowned.live";
 
 /* Booking link. Calendly, Clyde Sada's 30-minute slot, supplied by the operator
  * 2026-08-25 and verified live (HTTP 200) before it was written here. The
