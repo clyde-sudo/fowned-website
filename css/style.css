@@ -1209,6 +1209,10 @@
 
   @media (max-width: 640px) {
     .audit-lead { flex-direction: column; }
+
+    /* In a column the main axis is vertical, so order:1 would push the
+     * challenge BELOW the submit button. Stacked, it belongs above it. */
+    .audit-lead .cf-turnstile { order: 0; }
   }
 
   .audit-lead-msg {
