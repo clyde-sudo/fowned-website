@@ -42,6 +42,18 @@ ${answer(
     </div>
   </section>
 
+  <section>
+    <div class="container narrow">
+${head({ label: "Single answers", h: "Three questions that come up on their own." })}
+      <p>Each of these has its own page, because a question asked in isolation deserves an answer that can be read in isolation.</p>
+      <ul class="check-list">
+        <li><a href="/answers/why-my-business-is-not-showing-up-on-chatgpt/">Why is my business not showing up on ChatGPT?</a> Three separate causes, and how to tell which one you have.</li>
+        <li><a href="/answers/how-to-get-chatgpt-to-recommend-my-business/">How to get ChatGPT to recommend my business</a> The two levers that exist, and three that are sold but do not.</li>
+        <li><a href="/answers/how-to-get-your-business-listed-in-chatgpt/">How to get your business listed in ChatGPT</a> There is no list. What the question actually means.</li>
+      </ul>
+    </div>
+  </section>
+
 ${cta({
   h: "Start with your own numbers.",
   p: "Generic answers only go so far. The audit tells you which of these apply to your site.",

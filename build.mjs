@@ -54,6 +54,8 @@ for (const img of readdirSync("images")) {
 }
 
 cpSync("_headers", join(OUT, "_headers"));
+// Bing Webmaster Tools file verification. Root-served, contents never logged.
+cpSync("BingSiteAuth.xml", join(OUT, "BingSiteAuth.xml"));
 
 /* ---- robots + sitemap -------------------------------------------------- */
 /* robots.txt is normally served by functions/_middleware.js, which picks the
