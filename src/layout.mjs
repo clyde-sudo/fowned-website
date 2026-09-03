@@ -61,6 +61,38 @@ const RB2B_KEY = process.env.RB2B_KEY || "";
  * failing challenge and block every real enquiry, so an unset key means the
  * widget is simply not emitted and the honeypot plus the origin check carry
  * the load on their own. */
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+
+/* Cache-bust local assets by content hash.
+ *
+ * /css/* and /js/* are served with max-age=3600 and no fingerprint in the
+ * filename, and a Pages deploy does NOT evict an object the edge already
+ * holds. Correct CSS shipped twice in one session and stayed invisible to
+ * real visitors for up to an hour each time, which is not a caching nicety:
+ * it means a shipped fix is not actually delivered. A content hash in the
+ * query string changes the cache key, so a changed file is fetched at once
+ * and an unchanged one still gets a cache hit. Verified on this zone that
+ * the query string is part of the cache key. */
+const assetVersions = new Map();
+function v(path) {
+  if (!assetVersions.has(path)) {
+    let out = path;
+    try {
+      const hash = createHash("sha256")
+        .update(readFileSync("." + path))
+        .digest("hex")
+        .slice(0, 8);
+      out = `${path}?v=${hash}`;
+    } catch {
+      /* A missing asset is the build's link checker to report, not ours to
+       * crash on. Fall back to the bare path. */
+    }
+    assetVersions.set(path, out);
+  }
+  return assetVersions.get(path);
+}
+
 /* The site key is PUBLIC by design: Cloudflare ships it in the HTML for every
  * visitor to read. It is checked in deliberately, because when it lived only
  * in a shell env var a plain `node build.mjs` silently dropped the widget from
@@ -194,8 +226,8 @@ function head(page) {
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="icon" type="image/svg+xml" href="/images/fowned_logo.svg">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="${v("/css/style.css")}">
+  <link rel="stylesheet" href="${v("/css/app.css")}">
 ${schema.map((s) => `  <script type="application/ld+json">\n${s}\n  </script>`).join("\n")}`;
 }
 
@@ -351,10 +383,10 @@ ${body}
 ${footer(isDemo)}
 <script>window.FOWNED = { bookingUrl: ${JSON.stringify(SITE.bookingUrl)}, phoneHref: ${JSON.stringify(SITE.phoneHref)}, phoneText: ${JSON.stringify(SITE.phoneText)}, turnstileSiteKey: ${JSON.stringify(SITE.turnstileSiteKey)}, scanUrl: ${JSON.stringify(SITE.scanUrl)} };</script>
 ${SITE.turnstileSiteKey ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ""}
-<script src="/js/instrument.js"></script>
+<script src="${v("/js/instrument.js")}"></script>
 ${rb2bTag()}
-<script src="/js/main.js"></script>
-${page.scripts ? page.scripts.map((s) => `<script src="${s}"></script>`).join("\n") : ""}
+<script src="${v("/js/main.js")}"></script>
+${page.scripts ? page.scripts.map((s) => `<script src="${v(s)}"></script>`).join("\n") : ""}
 </body>
 </html>`;
 }
