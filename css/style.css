@@ -1191,10 +1191,15 @@
 
   .audit-gate p { font-size: 14px; color: var(--color-gray); margin-bottom: 14px; }
 
-  .audit-lead { display: flex; gap: 10px; }
+  /* The Turnstile widget is a fixed ~300px iframe that will not shrink, so on
+   * one line it squeezes the submit button into a wrapped sliver. Let the row
+   * wrap and give the challenge its own full line. */
+  .audit-lead { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .audit-lead .cf-turnstile { flex: 0 0 100%; order: 1; }
 
   .audit-lead input {
-    flex: 1;
+    flex: 1 1 200px;
     font-family: var(--font-sans);
     font-size: 15px;
     padding: 12px 14px;
