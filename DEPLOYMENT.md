@@ -1,38 +1,49 @@
-# Fowned demo deployment
+# Fowned deployment
 
 ## What this is
 
-A browser-verifiable demonstration of the whole intended Fowned experience, from
-a cold visitor arriving to an agency operator working the resulting lead and a
-client reading their monitoring. It is a **demo**. It is not the product running
-on live customer data, and every surface says which it is.
+The live Fowned marketing site, published at **https://fowned.live**. The
+marketing pages are real: the lead form writes to D1 and the calendar link books
+a real call. The subtree under `/demo/` is the part that is a demonstration, a
+browser-verifiable walkthrough of the whole intended experience from a cold
+visitor arriving to an agency operator working the resulting lead. That subtree
+is seeded with invented companies and every surface of it says so.
 
-## Indexing decision (deliberate: NOINDEX)
+## Indexing decision (host-aware, launched 3 September 2026)
 
-This build is **not indexable**, enforced in three places:
+The rule is no longer one blanket answer. Two questions are being asked at once
+and they have opposite answers, so they are enforced in two different places:
 
-| Layer | Mechanism |
-|---|---|
-| Response header | `X-Robots-Tag: noindex, nofollow` on every path, via `_headers` |
-| HTML | `<meta name="robots" content="noindex, nofollow">` on every page |
-| Crawl | `robots.txt` sends `Disallow: /` |
+| Scope | Answer | Mechanism |
+|---|---|---|
+| Marketing pages on `fowned.live` | **index** | nothing suppresses them; `robots.txt` sends `Allow: /` |
+| Every path on any `*.pages.dev` host | **noindex** | `X-Robots-Tag: noindex, nofollow`, set per-request in `functions/_middleware.js` |
+| Anything under `/demo/`, on every host | **noindex** | `<meta name="robots" content="noindex, nofollow">`, baked in by `src/layout.mjs` |
 
-**Why.** Search equity should accumulate on the owned production domain, never on
-a temporary `*.pages.dev` hostname. Anything indexed here would have to be
-migrated or killed later, and a redirect from a hostname we do not own is not a
-migration. There is a second reason that is not about SEO at all: the demo
-workspace is populated with invented companies. A fictional prospect list that
-gets indexed becomes a fictional prospect list that gets *found*.
+**Why the split, and why not `_headers`.** `_headers` cannot see the request
+Host, and this one Pages project answers on both the launch domain that must
+index and the temporary hostnames that must not. A blanket `X-Robots-Tag` there
+would silently deindex the launch domain, so the host-dependent half lives in
+middleware, which can read the Host. The `/demo/` rule is the opposite kind: it
+is host-INDEPENDENT, because invented companies must never index anywhere, and
+that is exactly what makes it safe to bake into the HTML.
 
-A sitemap is still generated and still served. It is there so the crawl surface
-can be inspected and so the eventual production launch inherits a correct file,
-not to invite crawling that `robots.txt` is simultaneously refusing.
+**Why `/demo/` is crawlable rather than disallowed.** A disallowed URL is never
+fetched, so its `noindex` is never read, while a followed internal link can
+still put the bare URL into an index with no snippet. Crawlable-and-noindex is
+the only combination that reliably keeps a page out. Four pages link into
+`/demo/` (ai-visibility, how-it-works, services, 404), so the followed-link path
+is real rather than hypothetical. `/demo/` is additionally absent from the
+sitemap and from `llms.txt`, which are two more readers being told the same
+thing a third way.
 
-**When this reverses.** On the move to the owned production domain: drop the
-`X-Robots-Tag` line from `_headers`, drop the meta tag from `layout.mjs`, change
-`robots.txt` to `Allow: /`, and re-point `SITE.origin` so canonicals and the
-sitemap follow. The demo routes under `/demo/` should stay excluded at that
-point, because they are still fiction.
+**Crawler groups are named explicitly.** `robots.txt` lists ten AI crawlers by
+name rather than leaving them to the wildcard. The wildcard permits them today,
+but that is an accident of the wildcard rather than a stated intent, and a later
+edit to it would silently change the answer. Retrieval and training crawlers are
+also different agents: `GPTBot` trains, while `OAI-SearchBot` builds the index
+ChatGPT actually retrieves from. For a citation goal the retrieval half is the
+one that matters, and it was the half originally missing.
 
 ## The audit has two modes, and the mode is a build-time switch
 
@@ -49,9 +60,15 @@ never ship a live path that 404s while a visitor watches it spin. In live mode a
 failed scan says it failed; it never falls back to the fixture, because a made-up
 result wearing a live badge is worse than either mode on its own.
 
+**Current mode: FIXTURE.** `scanUrl` is empty in the config object served on
+`/audit/`, verified 3 September 2026, so the switch has never been flipped and
+every audit result carries its `DEMO AUDIT RESULT` badge.
+
 **What has to be true before the switch is flipped.** The endpoint
 (`/api/agency/fowned/scan`) is deployed on the Citability side. It answers only
-when BOTH of these are true there, and neither is true as of 31 August 2026:
+when BOTH of these are true there. Neither was true as of 31 August 2026 and
+neither has been re-checked since, because checking means a real POST to
+Citability production:
 
 1. An `organizations` row with `slug = 'fowned'` exists in the Citability
    production database. Without it the endpoint returns
@@ -80,7 +97,22 @@ publishing internal docs. The build additionally:
 
 ## Deploy
 
-    node build.mjs && npx wrangler pages deploy dist --project-name=fowned
+    BOOKING_URL=https://calendly.com/clyde-thrulead/30min \
+      SITE_ORIGIN=https://fowned.live node build.mjs \
+      && npx wrangler pages deploy dist --project-name=fowned --branch=main
+
+Both flags on that command are load-bearing and both fail silently if omitted.
+
+`SITE_ORIGIN` and `BOOKING_URL` are read at BUILD time. Without them the build
+succeeds and produces canonicals, `og:url`, the sitemap and the JSON-LD pointing
+at the pages.dev host, and every booking CTA falling back to `/contact/`. That
+is a correct build of the wrong site, and nothing in the output says so.
+
+`--branch=main` is what makes it a production deploy. `wrangler pages deploy`
+infers the branch from git, and Pages promotes only the PRODUCTION branch to the
+custom domain. Deploying from a feature branch yields a preview URL, a green
+deploy log, and an untouched `fowned.live`. Every production deployment of this
+project has used branch `main`.
 
 Secrets live in Wrangler secret storage and never in the repo, the bundle, the
 HTML, this file or the logs. `wrangler pages secret put` reads the value from
@@ -94,6 +126,23 @@ STDIN, never from argv, and a secret only takes effect on the NEXT deployment.
 | `TURNSTILE_SECRET_KEY` | Pages secret | The bot challenge is not enforced. The honeypot and the origin check still are |
 | `TURNSTILE_SITE_KEY` | Build-time env | The Turnstile widget is not rendered at all |
 | `AUDIT_SCAN_URL` | Build-time env | The audit runs in fixture mode |
+
+**The cache rules in `_headers` depend on a zone setting.** Cloudflare's
+zone-level Browser Cache TTL takes the GREATER of the zone value and the
+origin `Cache-Control`. It is a floor, not an override, so any `_headers` rule
+asking for a SHORTER max-age is ignored with no error anywhere. The zone was on
+`4 hours`, which silently raised the 300 on `/robots.txt` and the 3600 on
+`/css/*` and `/js/*` to 14400 while `/images/*` at 86400 passed through
+untouched. It was set to **Respect Existing Headers** on 3 September 2026 and
+`/robots.txt` now serves 300 as written. If a cache rule here ever appears to be
+ignored, check that setting before editing this file.
+
+Related and separate: changing a TTL does not evict an object already in the
+edge cache, and neither does a deploy. A corrected `robots.txt` once shipped
+while the edge kept serving the stale body for hours and every check read as a
+failed deploy. Read origin truth with a cache-busting query string
+(`curl -sI 'https://fowned.live/robots.txt?cb=1'`) before concluding a deploy
+did not land.
 
 The two Turnstile keys are minted together in the Cloudflare dashboard and are
 useless apart: a site key with no secret means the widget renders and nothing
@@ -114,67 +163,77 @@ for a token no form produced. Set both, then rebuild AND redeploy.
 
 ---
 
-## Launching on fowned.live
+## Launch: DONE
 
-Everything below the two operator steps is already built. Nothing here needs
-code changes.
-
-### Step 1 (operator) — put the zone in Cloudflare
-
-The current API token has `zone (read)` only, so zone creation returns
-`Requires permission "com.cloudflare.api.account.zone.create"`. Add the zone
-from the dashboard: **Add a site → fowned.live → Free plan**.
+`fowned.live` is live and indexable. The zone is in Cloudflare, the nameservers
+moved off Squarespace, both hostnames are attached to the Pages project, and the
+site was built with the real origin. Kept here because the reasoning still
+explains the shape of the setup:
 
 Apex domains on Pages need the zone inside Cloudflare. Squarespace DNS has no
 ALIAS/ANAME at the apex and Pages publishes no stable IPs, so a CNAME at the
-root only works with Cloudflare's CNAME flattening. Adding the zone changes
-nothing live until the nameservers move, so it is a safe, reversible step.
+root only works with Cloudflare's CNAME flattening. Before the nameservers
+moved, `fowned.live` had **no MX records** and an SPF of `v=spf1 -all`, so no
+email depended on the domain and the change could not break mail.
 
-### Step 2 (operator) — move the nameservers at Squarespace
+The API token still has `zone (read)` only, with no `zone (edit)` and no cache
+purge. Zone creation, zone settings and cache purges are therefore dashboard
+work, not scriptable from this repository.
 
-Point fowned.live at the two Cloudflare nameservers the dashboard gives you.
+### The four-probe regression check
 
-Checked before writing this: fowned.live has **no MX records** and its SPF is
-`v=spf1 -all`. No email depends on this domain, so the nameserver change
-cannot break mail.
-
-### Step 3 — attach and rebuild
-
-    npx wrangler pages domain add fowned.live --project-name=fowned
-    npx wrangler pages domain add www.fowned.live --project-name=fowned
-    SITE_ORIGIN=https://fowned.live node build.mjs
-    npx wrangler pages deploy dist --project-name=fowned
-
-`SITE_ORIGIN` is what puts the real host into canonical tags, `og:url`, the
-sitemap and the JSON-LD. It stays pointed at pages.dev until DNS resolves,
-because a canonical naming a host that does not answer is wrong, not "ready".
-
-### Step 4 — verify by probe, not by assumption
+These are the standing probes. Run them after any deploy that touches routing,
+`_headers`, `functions/_middleware.js` or `robots.txt`. All four pass in
+production as of 3 September 2026:
 
     curl -sI https://fowned.live/            # expect NO x-robots-tag header
     curl -s  https://fowned.live/robots.txt  # expect Allow: / and the sitemap line
     curl -sI https://www.fowned.live/        # expect 301 to the apex
     curl -sI https://fowned.pages.dev/       # expect x-robots-tag: noindex, nofollow
 
-All four already pass against a local `wrangler pages dev` run with the Host
-header set, and the pages.dev pair passes in production. Only the two
-fowned.live rows are unproven, because the host does not resolve yet.
+Two more worth running, because they cover the `/demo/` half that the four above
+do not touch:
 
-### Booking
+    curl -s https://fowned.live/demo/prospects/ | grep -o '<meta name="robots"[^>]*>'
+    curl -s https://fowned.live/sitemap.xml | grep -c '/demo/'   # expect 0
 
-    BOOKING_URL=https://cal.com/<the-real-one> SITE_ORIGIN=https://fowned.live node build.mjs
+### Booking: SET
 
-One variable. Set it and every booking CTA on the site points at the calendar,
-the contact page grows a "Book a call" card, and the audit result offers it.
-Leave it unset and every one of those falls back to /contact/, which submits
-for real. No calendar URL is guessed anywhere in the codebase.
+`BOOKING_URL` is `https://calendly.com/clyde-thrulead/30min`, confirmed live in
+the `FOWNED` config object served on `/audit/`. Every booking CTA points at that
+calendar, the contact page carries a "Book a call" card, and the audit result
+offers it.
+
+It is a build-time variable, so it must be passed on every rebuild or the site
+silently reverts to `/contact/` on the next deploy. That is why it is part of
+the deploy command above rather than a footnote. No calendar URL is guessed
+anywhere in the codebase.
+
+### Turnstile: NOT ACTIVE
+
+`turnstileSiteKey` is empty in the live config object, so the widget is not
+rendered and the bot challenge is not enforced. The honeypot and the origin
+check still are. Both Turnstile keys are needed together, per the table above.
+
+### Where a lead actually goes
+
+The durable sink was chosen and built. A lead is written to the D1 `leads` table
+by `functions/api/lead.js`, then emailed through Resend, and the outcome of that
+send is recorded back onto the row as `notified` and `notify_error`. Nobody has
+to read a log to find a lead, and a failed email does not lose one.
+
+**The log lines are now failure paths, not the sink.** `FOWNED_LEAD_NO_BINDING`
+means the D1 binding was missing and the lead exists only in the log.
+`FOWNED_LEAD_STORE_FAILED` means the insert threw. Either one is an incident:
+that lead is not in the table.
+
+`tools/notify-test.sh` exercises the whole path end to end against remote D1,
+posting a stamped lead and then asserting the row exists and its `notified` flag
+is set. Run it after any change to the lead path.
 
 ### Reading the telemetry
 
     npx wrangler pages deployment tail --project-name=fowned
 
-`FOWNED_EVENT` lines are anonymous traffic. `FOWNED_LEAD` lines are people who
-asked to be contacted. **A log is a fragile place for a lead.** Choosing the
-durable sink (KV, an email forward, or the Citability pipeline once the agency
-backend opens) is the last decision in this funnel and it is an operator call.
-Until it is made, somebody has to read the tail.
+`FOWNED_EVENT` lines are anonymous traffic. The two `FOWNED_LEAD_*` lines above
+are the ones worth alerting on.
