@@ -54,7 +54,7 @@ sleep 3
 ROW=$(npx --yes wrangler d1 execute fowned-leads --remote --json --command \
   "SELECT id, audit_completed, key_audit_findings, notified, notify_error, source
      FROM leads WHERE contact = '$STAMP@example.com'" 2>/dev/null \
-  | python3 -c 'import sys,json;r=json.load(sys.stdin)[0]["results"];print(json.dumps(r[0]) if r else "")')
+  | python3 -c 'import sys,json;t=sys.stdin.read();t=t[t.index(chr(91)):];r=json.loads(t)[0]["results"];print(json.dumps(r[0]) if r else "")')
 [ -n "$ROW" ] || fail "no row in D1: the lead was accepted and then lost"
 pass "stored"
 
