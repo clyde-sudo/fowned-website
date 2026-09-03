@@ -61,7 +61,14 @@ const RB2B_KEY = process.env.RB2B_KEY || "";
  * failing challenge and block every real enquiry, so an unset key means the
  * widget is simply not emitted and the honeypot plus the origin check carry
  * the load on their own. */
-const TURNSTILE_SITE_KEY = process.env.TURNSTILE_SITE_KEY || "";
+/* The site key is PUBLIC by design: Cloudflare ships it in the HTML for every
+ * visitor to read. It is checked in deliberately, because when it lived only
+ * in a shell env var a plain `node build.mjs` silently dropped the widget from
+ * every page, and with TURNSTILE_SECRET_KEY set the API is fail-closed, so
+ * that build would have 403'd every real lead. The env var still overrides,
+ * for staging keys. The SECRET key is a Pages secret and is never in git. */
+const TURNSTILE_SITE_KEY =
+  process.env.TURNSTILE_SITE_KEY || "0x4AAAAAAEmXEc7D3kVZl4Hn";
 
 /* Empty means the audit runs in fixture mode. Set it to the tenant-scoped
  * Citability endpoint ONLY once that endpoint answers for fowned.live, because
