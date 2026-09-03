@@ -36,7 +36,7 @@
 
   var PHONE_HREF = "tel:+18313320184";
 
-  /* The booking destination comes from the one config point in src/layout.mjs.
+  /* The booking destination comes from the single build-time config point.
    * Empty until Jack supplies the Cal.com link, in which case every booking CTA
    * falls back to /contact/ rather than rendering a dead or invented link. */
   function bookHref() {

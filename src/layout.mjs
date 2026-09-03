@@ -136,19 +136,39 @@ const esc = (s) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
   );
 
+/* A robots meta tag is emitted for /demo/ pages ONLY. The asymmetry IS the
+ * rule, not an oversight.
+ *
+ * Marketing pages must not carry one. The same file is served on the real
+ * property (must index) and on the temporary Cloudflare hostname (must not),
+ * and a tag baked into the HTML cannot tell those apart. Only
+ * functions/_middleware.js can, because it is the one layer that reads the
+ * request Host.
+ *
+ * Demo pages are different in kind. They are seeded with invented companies,
+ * so they must never index on ANY host. That makes the rule host-independent,
+ * which is exactly what makes it safe to bake in.
+ *
+ * This tag is also what lets robots.txt stop disallowing /demo/. A disallowed
+ * URL is never fetched, so its noindex is never read, while a followed
+ * internal link can still put the bare URL in an index with no snippet.
+ * Crawlable-and-noindex is the only combination that actually keeps a page
+ * out. Four pages link into /demo/ (ai-visibility, how-it-works, services,
+ * 404), so the followed-link path is real rather than hypothetical.
+ *
+ * Nothing in this comment reaches the output: naming internal hostnames and
+ * file paths in an HTML comment ships them on every page. */
 function head(page) {
   const canonical = SITE.origin + page.path;
   const ogImage = SITE.origin + "/images/og-fowned.jpg";
   const schema = page.schema ? page.schema.map((s) => JSON.stringify(s, null, 2)) : [];
+  const robots = page.path.startsWith("/demo/")
+    ? `\n  <meta name="robots" content="noindex, nofollow">`
+    : "";
   return `  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(page.title)}</title>
-  <meta name="description" content="${esc(page.description)}">
-
-  <!-- No robots meta tag here on purpose. Indexability is host-dependent, and a
-       meta tag baked into the HTML cannot be: the same file is served on both
-       fowned.live (must index) and fowned.pages.dev (must not). The rule is
-       applied per-host by functions/_middleware.js instead. -->
+  <meta name="description" content="${esc(page.description)}">${robots}
   <link rel="canonical" href="${esc(canonical)}">
 
   <meta property="og:type" content="website">

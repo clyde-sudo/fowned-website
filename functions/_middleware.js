@@ -22,32 +22,6 @@ const isTemporaryHost = (host) => host.endsWith(".pages.dev");
 /** Canonical apex. www redirects here so link equity lands on one hostname. */
 const CANONICAL_HOST = "fowned.live";
 
-const ROBOTS_INDEXABLE = (origin) => `User-agent: *
-Allow: /
-
-# The demo workspace is seeded with invented companies. It is reachable for a
-# human being walked through it, but it is not content anyone should find in a
-# search result, so it is excluded here rather than left to chance.
-Disallow: /demo/
-
-# AI assistants are named explicitly rather than left to the wildcard above.
-# Without a matching group these crawlers fall through to "User-agent: *", which
-# happens to permit them today, but that is an accident of the wildcard rather
-# than a stated intent, and a later edit to the wildcard would silently change
-# it. The rule below states the intent: Fowned WANTS to be read and cited by
-# assistants, and the only exclusion is the invented-company demo workspace.
-User-agent: ClaudeBot
-User-agent: anthropic-ai
-User-agent: GPTBot
-User-agent: ChatGPT-User
-User-agent: PerplexityBot
-User-agent: Google-Extended
-Allow: /
-Disallow: /demo/
-
-Sitemap: ${origin}/sitemap.xml
-`;
-
 const ROBOTS_TEMPORARY = `# Temporary Cloudflare hostname, not the Fowned property.
 # The real site is https://fowned.live and search equity belongs there. Equity
 # earned on a *.pages.dev host cannot be moved later, and a full duplicate of
@@ -70,24 +44,25 @@ export async function onRequest(context) {
 
   const temporary = isTemporaryHost(host);
 
-  if (url.pathname === "/robots.txt") {
-    return new Response(
-      temporary ? ROBOTS_TEMPORARY : ROBOTS_INDEXABLE(url.origin),
-      {
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          /* Without this the response inherits the zone-wide Browser Cache TTL,
-           * which is four hours, and a deploy does NOT evict an already-cached
-           * Function response. That combination cost a real verification: a
-           * corrected robots.txt shipped and the edge kept serving the old body
-           * for hours while every check looked like the deploy had failed.
-           * Five minutes is short enough that a crawler-access mistake is
-           * recoverable by redeploying, and robots.txt is small enough that
-           * serving it fresh is not a cost worth optimising. */
-          "Cache-Control": "public, max-age=300",
-        },
-      }
-    );
+  /* Only the temporary host needs a robots.txt this layer can generate; it is
+   * the one body that has to differ from what the build produced. Every other
+   * host falls through to the static dist/robots.txt, which is why that file
+   * is now the single source of the real property's crawler policy instead of
+   * a second copy maintained in parallel with this one.
+   *
+   * The short cache TTL that used to be set here moved to _headers, and it is
+   * not a nicety: without it the response inherits the zone-wide Browser Cache
+   * TTL of four hours, and a deploy does NOT evict an already-cached edge
+   * response. That combination cost a real verification once, when a corrected
+   * robots.txt shipped and the edge kept serving the old body for hours while
+   * every check looked like the deploy had failed. */
+  if (temporary && url.pathname === "/robots.txt") {
+    return new Response(ROBOTS_TEMPORARY, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "public, max-age=300",
+      },
+    });
   }
 
   const response = await next();

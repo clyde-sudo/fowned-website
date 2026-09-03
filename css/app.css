@@ -805,7 +805,7 @@ section:first-of-type {
 }
 
 /* A section head with no subhead and no button needs less room beneath it than
- * one carrying both. Same rhythm, proportionate gap. See src/ui.mjs. */
+ * one carrying both. Same rhythm, proportionate gap. */
 .section-head.is-tight {
   margin-bottom: var(--space-md);
 }

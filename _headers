@@ -9,6 +9,21 @@
   # (must index) and the temporary *.pages.dev hostnames (must not). A blanket
   # noindex here would silently deindex the launch domain. The per-host rule
   # lives in functions/_middleware.js.
+  #
+  # The /demo/ pages are the one exception, and they are handled where they
+  # belong rather than here: their exclusion is host-INDEPENDENT (invented
+  # companies, never indexable anywhere), so it is a robots meta tag baked into
+  # those pages by src/layout.mjs.
+
+# robots.txt on the real property is now the static file this build produced,
+# not a Function response, so the short TTL it used to set for itself has to be
+# set here instead. Without it the file inherits the zone-wide four-hour Browser
+# Cache TTL, and a deploy does not evict an already-cached edge response: a
+# corrected robots.txt once shipped while the edge served the stale body for
+# hours and every check read as a failed deploy. Five minutes keeps a
+# crawler-access mistake recoverable by redeploying.
+/robots.txt
+  Cache-Control: public, max-age=300
 
 # The audit funnel is iterated often; keep code short-lived and art long-lived
 # so a copy fix ships within the hour without re-downloading the portrait.
