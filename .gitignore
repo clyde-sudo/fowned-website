@@ -7,3 +7,7 @@ dist/
 # harness scratch, never part of the site
 .omc/
 .wrangler/
+
+# Generated previews (regenerate with: node tools/email-test.mjs --preview)
+tools/email-lead-preview.html
+tools/*.bak-*
