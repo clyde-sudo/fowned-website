@@ -45,9 +45,15 @@ cpSync("js", join(OUT, "js"), { recursive: true });
 
 const html = pages.map((p) => render(p)).join("\n") + readFileSync("css/style.css", "utf8");
 mkdirSync(join(OUT, "images"), { recursive: true });
+/* The BIMI logo is referenced by a DNS TXT record, never by a page, so the
+ * unreferenced-image prune below would silently drop it and the BIMI record
+ * would point at a 404. ponytail: one-name allowlist; widen to an array if a
+ * second DNS-referenced asset ever appears. */
+const ALWAYS_COPY = new Set(["fowned-bimi.svg"]);
+
 let copied = 0, skipped = [];
 for (const img of readdirSync("images")) {
-  if (html.includes("images/" + img)) {
+  if (html.includes("images/" + img) || ALWAYS_COPY.has(img)) {
     cpSync(join("images", img), join(OUT, "images", img));
     copied++;
   } else skipped.push(img);
