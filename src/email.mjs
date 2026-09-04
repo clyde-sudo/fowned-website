@@ -54,6 +54,17 @@ const MONO = "'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace";
  * because these values are interpolated into attributes (a mailto href), where
  * an unescaped quote ends the attribute and starts a new one.
  */
+// Human-readable Pacific time. ISO strings are for machines; a person reads
+// "Fri, Sep 4, 12:12 PM PDT". Falls back to the raw value if it does not parse.
+export function humanTime(ts) {
+  const d = new Date(ts);
+  if (isNaN(d)) return ts || "-";
+  return d.toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles", weekday: "short", month: "short",
+    day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short",
+  });
+}
+
 export function escapeHtml(v) {
   return String(v == null ? "" : v)
     .replace(/&/g, "&amp;")
@@ -151,7 +162,7 @@ export function shell(opts) {
     ' bgcolor="' + TOKENS.blush + '" style="background-color:' + TOKENS.blush + ';">' +
     '<tr><td align="center" style="padding:40px 16px;">' +
     '<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"' +
-    ' bgcolor="' + TOKENS.white + '" style="width:600px;max-width:100%;background-color:' +
+    ' bgcolor="' + TOKENS.white + '" style="width:100%;max-width:600px;background-color:' +
     TOKENS.white + ";border:1px solid " + TOKENS.hairline + ';border-radius:8px;">' +
 
     // masthead
@@ -202,7 +213,7 @@ export function leadAlertText(record) {
     "Audit:    " + (record.AUDIT_COMPLETED ? "completed on site" : "not run"),
     "Booking:  " + (record.BOOKING_CLICK ? "clicked" : "no"),
     "Owner:    " + record.OWNER,
-    "Time:     " + record.TIMESTAMP,
+    "Time:     " + humanTime(record.TIMESTAMP),
   ];
   if (record.KEY_AUDIT_FINDINGS && record.KEY_AUDIT_FINDINGS.length) {
     lines.push("", "Findings the visitor saw:");
@@ -247,7 +258,7 @@ export function leadAlertEmail(record) {
         ["Landed", record.LANDING_PAGE],
         ["Booking", record.BOOKING_CLICK ? "Clicked" : "No"],
         ["Owner", record.OWNER],
-        ["Time", record.TIMESTAMP],
+        ["Time", humanTime(record.TIMESTAMP)],
       ]),
       "20px 32px 4px"
     )

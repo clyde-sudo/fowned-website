@@ -12,6 +12,7 @@
  */
 import { leadAlertEmail, escapeHtml, TOKENS } from "../src/email.mjs";
 import { writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 
 let pass = 0;
 const fail = [];
@@ -70,7 +71,8 @@ console.log("\nemail client constraints");
 ok("no CSS custom properties", !h.includes("var(--"));
 ok("no external stylesheet", !/<link[^>]+stylesheet/i.test(h));
 ok("table-based layout", h.includes('role="presentation"'));
-ok("fixed 600px card", h.includes('width="600"') && h.includes("max-width:100%"));
+ok("no ISO timestamp reaches the reader", !/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(h));
+ok("fluid card capped at 600px", h.includes('width="600"') && h.includes("width:100%;max-width:600px"));
 ok("declares a doctype", h.startsWith("<!doctype html>"));
 ok("has a preheader", h.includes("max-height:0;overflow:hidden"));
 ok("pins colour scheme against dark-mode inversion",
@@ -111,6 +113,8 @@ if (process.argv.includes("--preview")) {
     MESSAGE: "We show up on Google but ChatGPT never names us.\nCan you tell us why?",
   }).html);
   console.log("\npreview written to " + out);
+  // ponytail: macOS only; opens the preview on screen so no one has to go find the file
+  if (process.platform === "darwin" && !process.argv.includes("--no-open")) spawnSync("open", [out]);
 }
 
 console.log("\n" + (fail.length ? fail.length + " FAILED: " + fail.join(", ")
