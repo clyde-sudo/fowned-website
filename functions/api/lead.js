@@ -22,6 +22,18 @@
  * Missing any of them degrades to store-only, which is still better than the
  * behaviour this replaces.
  *
+ *   SLACK_WEBHOOK_URL      optional. One or MORE comma-separated Slack Incoming
+ *                          Webhooks. One webhook reaches one channel in one
+ *                          workspace, so two watchers in different workspaces
+ *                          need two URLs. Unset makes the Slack path a silent
+ *                          no-op, so this file behaves exactly as it did before
+ *                          with or without Slack.
+ *   SLACK_NOTIFY_MENTIONS  optional. Comma-separated Slack MEMBER IDs (the
+ *                          `U…`/`W…` string from a profile, NOT a display name;
+ *                          a name renders as literal text and pings nobody).
+ *                          Rendered as <@U…> so named people get a real
+ *                          notification instead of relying on channel-watching.
+ *
  *   TURNSTILE_SECRET_KEY  optional. Set it and the bot challenge is enforced;
  *                         leave it unset and the challenge is skipped entirely
  *                         (see the gate comments below).
@@ -89,6 +101,150 @@ async function notify(env, record) {
 
   if (!res.ok) return `RESEND_${res.status}: ${(await res.text()).slice(0, 400)}`;
   return null;
+}
+
+/**
+ * Slack's documented mrkdwn escape set.
+ *
+ * This is a trust boundary, not cosmetics. Every field below reaches us from a
+ * public form, and `<https://evil.example|Approve invoice>` is VALID mrkdwn: an
+ * unescaped company name renders in the team's own channel as a disguised
+ * clickable link that looks like it came from us. Escaping these three
+ * characters kills link and mention syntax. Residual `*`/`_` are cosmetic only
+ * and deliberately left alone.
+ */
+export function esc(v) {
+  return String(v == null ? "" : v)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/**
+ * Build the Slack card. Split out from the POST so it is callable, and
+ * therefore testable, without a webhook or a network (tools/slack-card-test.mjs).
+ *
+ * Shape is chosen for a phone: who + how to reach them first, context second,
+ * the visitor's own words last. The mentions line is separate from the body so
+ * an unset SLACK_NOTIFY_MENTIONS changes nothing else about the card.
+ */
+export function slackCard(record, mentionIds) {
+  const who = record.COMPANY || record.DOMAIN || record.CONTACT;
+  const heat = record.AUDIT_COMPLETED ? "\u{1F525}" : "\u{1F4E5}";
+
+  const facts = [
+    record.DOMAIN ? `*Domain:* ${esc(record.DOMAIN)}` : null,
+    `*Email:* ${esc(record.CONTACT)}`,
+    record.CONTACT_NAME ? `*Name:* ${esc(record.CONTACT_NAME)}` : null,
+    `*Source:* ${esc(record.SOURCE)}`,
+    record.LANDING_PAGE ? `*Landed:* ${esc(record.LANDING_PAGE)}` : null,
+    `*Audit:* ${record.AUDIT_COMPLETED ? "completed on site" : "not run"}`,
+    record.BOOKING_CLICK ? "*Booking:* clicked" : null,
+    `*Owner:* ${esc(record.OWNER)}`,
+  ].filter(Boolean);
+
+  const blocks = [
+    {
+      type: "section",
+      text: { type: "mrkdwn", text: `${heat} *New Fowned lead:* ${esc(who)}` },
+    },
+    { type: "section", text: { type: "mrkdwn", text: facts.join("\n") } },
+  ];
+
+  if (record.KEY_AUDIT_FINDINGS.length) {
+    blocks.push({
+      type: "context",
+      elements: [
+        {
+          type: "mrkdwn",
+          text:
+            "*They saw:* " +
+            record.KEY_AUDIT_FINDINGS.map((f) => esc(f)).join(" \u00b7 "),
+        },
+      ],
+    });
+  }
+
+  if (record.MESSAGE) {
+    blocks.push({
+      type: "context",
+      elements: [{ type: "mrkdwn", text: `\u201c${esc(record.MESSAGE)}\u201d` }],
+    });
+  }
+
+  if (mentionIds.length) {
+    blocks.push({
+      type: "context",
+      elements: [
+        { type: "mrkdwn", text: mentionIds.map((id) => `<@${id}>`).join(" ") },
+      ],
+    });
+  }
+
+  return {
+    // Fallback text is what a phone lock screen and a screen reader get, so it
+    // has to stand alone rather than say "New lead" and hide the detail in
+    // blocks nothing in that path renders. It is ALSO rendered as mrkdwn, so it
+    // needs the same escaping as the blocks: this line shipped unescaped once
+    // and tools/slack-card-test.mjs is what caught it.
+    text: `New Fowned lead: ${esc(who)} (${esc(record.CONTACT)})`,
+    blocks,
+  };
+}
+
+/**
+ * Post the card. Same contract as notify(): returns null on success or a short
+ * reason string, never throws, and never blocks the visitor's response for more
+ * than the timeout. A Slack outage must not cost a lead.
+ */
+export async function notifySlack(env, record) {
+  /* Comma-separated, because ONE incoming webhook reaches exactly one channel
+   * in one workspace. Fowned's two watchers do not necessarily share a
+   * workspace, and the single-URL version of this quietly served whichever of
+   * them happened to be in the workspace the webhook was minted in. A list is
+   * the difference between "both are notified" and "one is, and nothing says
+   * which". */
+  const urls = (env.SLACK_WEBHOOK_URL || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!urls.length) return "SLACK_NOT_CONFIGURED";
+
+  const mentionIds = (env.SLACK_NOTIFY_MENTIONS || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const body = JSON.stringify(slackCard(record, mentionIds));
+
+  const results = await Promise.allSettled(
+    urls.map((url) =>
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+        signal: AbortSignal.timeout(5000),
+      }).then(async (res) =>
+        // Slack answers a webhook with a plain-text body ("ok" /
+        // "invalid_payload"), not JSON, and a revoked webhook is a 403 with
+        // "no_service". Carrying that word out is the difference between a
+        // five-second diagnosis and re-reading this file.
+        res.ok ? null : `${res.status}: ${(await res.text()).slice(0, 120)}`
+      )
+    )
+  );
+
+  /* Report by INDEX, never by URL: a webhook URL is a credential, and
+   * notify_error is stored in D1 and read in a terminal. "webhook 2 of 2
+   * failed" is enough to act on and leaks nothing. */
+  const errors = results
+    .map((r, i) => {
+      const reason = r.status === "fulfilled" ? r.value : String(r.reason).slice(0, 120);
+      return reason ? `webhook ${i + 1}/${urls.length} ${reason}` : null;
+    })
+    .filter(Boolean);
+
+  return errors.length ? errors.join("; ") : null;
 }
 
 /**
@@ -229,17 +385,38 @@ export async function onRequestPost(context) {
   }
 
   // The lead is safe from here on. Everything below is best effort.
-  let notifyError = null;
-  try {
-    notifyError = await notify(context.env, record);
-  } catch (err) {
-    notifyError = String(err).slice(0, 400);
-  }
+  //
+  // Two independent channels, run CONCURRENTLY. Sequentially they would stack
+  // their timeouts onto the visitor's wait for a form that has already done its
+  // job. Neither can reject the other's promise, because allSettled is what is
+  // being awaited, so one channel being down cannot suppress the other.
+  const [mailed, slacked] = await Promise.allSettled([
+    notify(context.env, record),
+    notifySlack(context.env, record),
+  ]);
+  const reason = (r) =>
+    r.status === "fulfilled" ? r.value : String(r.reason).slice(0, 400);
+  const emailError = reason(mailed);
+  const slackError = reason(slacked);
+
+  /* `notified` answers one question: did ANY human hear about this lead? So a
+   * Slack card landing is enough to clear it even when email is down, and the
+   * idx_leads_unnotified index keeps meaning what its name says. The prefixes
+   * matter because "which channel failed" is otherwise unrecoverable from a
+   * single column. */
+  const heard = !emailError || !slackError;
+  const notifyError =
+    [
+      emailError ? `EMAIL ${emailError}` : null,
+      slackError ? `SLACK ${slackError}` : null,
+    ]
+      .filter(Boolean)
+      .join(" | ") || null;
 
   try {
     await db
       .prepare(`UPDATE leads SET notified = ?, notify_error = ? WHERE id = ?`)
-      .bind(notifyError ? 0 : 1, notifyError, id)
+      .bind(heard ? 1 : 0, notifyError, id)
       .run();
   } catch {
     // A lost flag is not worth failing a stored lead over.

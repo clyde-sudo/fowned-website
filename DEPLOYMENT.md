@@ -124,8 +124,41 @@ STDIN, never from argv, and a secret only takes effect on the NEXT deployment.
 | `RESEND_API_KEY` | Pages secret | Leads still store; nobody is emailed |
 | `LEAD_NOTIFY_FROM` / `LEAD_NOTIFY_TO` | Pages secret | Same as above |
 | `TURNSTILE_SECRET_KEY` | Pages secret | The bot challenge is not enforced. The honeypot and the origin check still are |
+| `SLACK_WEBHOOK_URL` | Pages secret | Leads still store and still email; no Slack card. Comma-separate to post to more than one workspace |
+| `SLACK_NOTIFY_MENTIONS` | Pages secret | The card posts without pinging anyone by name |
 | `TURNSTILE_SITE_KEY` | Build-time env | The Turnstile widget is not rendered at all |
 | `AUDIT_SCAN_URL` | Build-time env | The audit runs in fixture mode |
+
+### Slack lead alerts
+
+Every lead posts a card to Slack as well as an email. Both channels are best
+effort and run concurrently; the D1 row is still the only authoritative sink,
+and `notified` now means *any* channel landed, so a Slack card clears it even
+while email is down. `notify_error` prefixes each failure with `EMAIL` or
+`SLACK` because one column otherwise cannot say which half broke.
+
+`SLACK_WEBHOOK_URL` is comma-separated on purpose. **One incoming webhook
+reaches exactly one channel in one workspace**, so two people in two different
+workspaces need two URLs. A failure is reported by position (`webhook 2/2 403:
+no_service`) and never by URL, because that URL is a credential and this string
+is stored in D1.
+
+To mint one: <https://api.slack.com/apps> -> Create New App -> From scratch ->
+pick the workspace -> Incoming Webhooks -> On -> Add New Webhook to Workspace ->
+choose the channel. Then, per workspace:
+
+    printf %s 'https://hooks.slack.com/services/AAA/BBB/CCC' \
+      | npx wrangler pages secret put SLACK_WEBHOOK_URL --project-name=fowned
+
+`SLACK_NOTIFY_MENTIONS` takes Slack **member IDs** (`U...`/`W...`, from a
+profile's "Copy member ID"), not display names. A display name renders as
+literal text and pings nobody, which looks identical to working.
+
+A secret only takes effect on the NEXT deployment. Verify the card renders
+before trusting it, since Slack validates blocks server-side:
+
+    node tools/slack-card-test.mjs          # offline, 17 checks, no webhook needed
+    SLACK_WEBHOOK_URL=... node tools/slack-card-test.mjs --live-post
 
 **The cache rules in `_headers` depend on a zone setting.** Cloudflare's
 zone-level Browser Cache TTL takes the GREATER of the zone value and the
