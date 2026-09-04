@@ -39,6 +39,8 @@
  *                         (see the gate comments below).
  */
 
+import { leadAlertEmail } from "../../src/email.mjs";
+
 /** Whoever picks the lead up. UNASSIGNED until a human claims it. */
 const OWNERS = new Set(["PHOENIX", "CLYDE", "UNASSIGNED"]);
 
@@ -51,29 +53,6 @@ const json = (payload, status) =>
     headers: { "Content-Type": "application/json" },
   });
 
-/** Plain text, because a lead alert is read on a phone in three seconds. */
-function notificationBody(record) {
-  const lines = [
-    `Company:  ${record.COMPANY || "-"}`,
-    `Domain:   ${record.DOMAIN || "-"}`,
-    `Name:     ${record.CONTACT_NAME || "-"}`,
-    `Email:    ${record.CONTACT}`,
-    ``,
-    `Source:   ${record.SOURCE}`,
-    `Landed:   ${record.LANDING_PAGE || "-"}`,
-    `Audit:    ${record.AUDIT_COMPLETED ? "completed on site" : "not run"}`,
-    `Booking:  ${record.BOOKING_CLICK ? "clicked" : "no"}`,
-    `Owner:    ${record.OWNER}`,
-    `Time:     ${record.TIMESTAMP}`,
-  ];
-  if (record.KEY_AUDIT_FINDINGS.length) {
-    lines.push(``, `Findings the visitor saw:`);
-    for (const f of record.KEY_AUDIT_FINDINGS) lines.push(`  - ${f}`);
-  }
-  if (record.MESSAGE) lines.push(``, `Message:`, record.MESSAGE);
-  return lines.join("\n");
-}
-
 async function notify(env, record) {
   const key = env.RESEND_API_KEY;
   const from = env.LEAD_NOTIFY_FROM;
@@ -83,6 +62,10 @@ async function notify(env, record) {
     .filter(Boolean);
 
   if (!key || !from || !to.length) return "NOTIFY_NOT_CONFIGURED";
+
+  /* Built by src/email.mjs, the only place a Fowned email body is composed.
+   * html and text are the same facts, not a rich version and a lesser one. */
+  const mail = leadAlertEmail(record);
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -94,8 +77,9 @@ async function notify(env, record) {
       from,
       to,
       reply_to: record.CONTACT,
-      subject: `Fowned lead: ${record.COMPANY || record.DOMAIN || record.CONTACT}`,
-      text: notificationBody(record),
+      subject: mail.subject,
+      html: mail.html,
+      text: mail.text,
     }),
   });
 

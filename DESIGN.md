@@ -128,3 +128,40 @@ Only `observed`, `inferred`, `unknown`. A missing referrer is `unknown`, never "
 AI surfaces routinely strip `Referer`, so the two must stay distinguishable. `.attr-src-muted`
 exists so "no referrer" cannot read as an achievement. Do not add a fourth class without a
 source that can actually be observed.
+
+## Email
+
+Every message from `send.fowned.live` is built by `src/email.mjs`. That module is the only
+place a Fowned email body is composed, and the Pages Function imports it rather than
+hand-writing a payload. This is the point: the previous design system lived in a standalone
+file under `tools/`, so nothing imported it, so it could not constrain the next email anyone
+wrote, and the lead alert went out as a plain field dump.
+
+**Every email carries both parts.** `html` and `text` are the same facts, not a rich version
+and a lesser one. A recipient reading the text alternative must not learn less.
+
+Four constraints apply to email that do not apply to the site, all of them because the
+renderer is Gmail, Outlook, or Apple Mail rather than a browser:
+
+1. **No CSS custom properties.** The tokens are the same values as the site, but resolved to
+   literal hex at author time. Outlook renders through Word, which drops `var(--x)`.
+2. **No external stylesheet and no web font.** Gmail strips `<link>`. Instrument Sans, Space
+   Grotesk, and IBM Plex Mono will not load, so every family ships with a real fallback stack
+   and the layout must survive the fallback.
+3. **Tables, not flex or grid.** `role="presentation"` tables with inline styles, one 600px
+   card with `max-width:100%`.
+4. **The colour scheme is pinned.** `color-scheme` and `supported-color-schemes` are declared
+   so a dark-mode client does not invert the card into something Fowned never designed.
+
+The site rules still bind, and these three are the ones a generator breaks first:
+
+- **IBM Plex Mono is for labels only** — the small uppercase field names and the badge.
+  Never a heading, never body copy, never a button label.
+- **Indigo is a link colour, never a fill.** A primary button is black fill on white, always.
+- **Never a Citability token.** Fowned is a tenant, not a fork.
+
+Visitor input reaches the HTML through `escapeHtml`, which covers `& < > "`. The quote is in
+that set because values land inside attributes, `mailto:` hrefs among them, where an
+unescaped quote closes the attribute and the rest becomes markup. `tools/email-test.mjs`
+asserts all of the above against a record whose every field carries an injection payload.
+Run it before changing the module.
