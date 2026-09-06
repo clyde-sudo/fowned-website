@@ -260,9 +260,6 @@ function header(page) {
       <div class="menu-panel" id="menuPanel">
 ${links}
         <div class="menu-divider"></div>
-        <a href="/demo/prospects/">Agency demo</a>
-        <a href="/demo/client/">Client demo</a>
-        <div class="menu-divider"></div>
         <a href="/audit/" class="btn btn-primary menu-btn-primary" data-ev="cta_click" data-ev-label="menu_audit">Run free audit</a>
         ${bookBtn("Book a call", "menu_book", "btn btn-secondary menu-btn-secondary")}
       </div>
@@ -302,10 +299,6 @@ ${col("Company", [
   '        <a href="/case-studies/">Case study</a>',
   '        <a href="/about/">About</a>',
   '        <a href="/resources/">Resources</a>',
-])}
-${col("Product demo", [
-  '        <a href="/demo/prospects/">Agency pipeline</a>',
-  '        <a href="/demo/client/">Client monitoring</a>',
 ])}
 ${col("Contact", [
   `        <a href="${SITE.phoneHref}">${SITE.phoneText}</a>`,

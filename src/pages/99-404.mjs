@@ -16,7 +16,6 @@ export default {
         <li><a class="inline-link" href="/how-it-works/">How it works</a> &mdash; the six-step loop</li>
         <li><a class="inline-link" href="/geo/">What is GEO</a> &mdash; the definition</li>
         <li><a class="inline-link" href="/ai-visibility/">AI visibility</a> &mdash; how measurement works</li>
-        <li><a class="inline-link" href="/demo/client/">Client demo</a> &mdash; the monitoring surface</li>
         <li><a class="inline-link" href="/contact/">Contact</a> &mdash; phone and LinkedIn</li>
       </ul>
     </div>

@@ -30,7 +30,6 @@ ${head({ label: "Principles", h: "Four rules we run the work by." })}
 ${head({ label: "Platform", h: "How the measurement runs." })}
       <p>Fowned's audits, monitoring and lead attribution run on a dedicated visibility measurement platform operated for us. Your data stays inside your own workspace on it, scoped so that one client's records are not reachable from another's.</p>
       <p>What that buys you in practice: the same checks run the same way every time, results are stored with a timestamp so before and after are comparable, and a failed run is recorded as a failed run rather than quietly retried until it produces a number.</p>
-      <p class="fineprint">The agency product surfaces shown in this demo are marked DEMO DATA. They are the intended experience, built against the real data shapes, ahead of the client rollout.</p>
     </div>
   </section>
 

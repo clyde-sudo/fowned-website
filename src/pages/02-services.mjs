@@ -70,7 +70,6 @@ export default {
           ${bookBtn("Talk about this level &rarr;", "services_book_leads", "btn btn-secondary tier-cta")}
         </div>
       </div>
-      <p class="center-link"><a class="inline-link" href="/demo/client/">See the client monitoring surface &rarr;</a></p>
     </div>
   </section>
 

@@ -55,7 +55,6 @@ export default {
         <li><span class="loop-num">5</span><div><h2>Intervention</h2><p>The change is applied, by us or by your team, and the date is recorded. Without a date, before and after are not distinguishable.</p></div></li>
         <li><span class="loop-num">6</span><div><h2>Re-measure</h2><p>The same measurement runs again on schedule. Until it returns, the intervention has an unknown effect, and that is exactly how it is reported.</p></div></li>
       </ol>
-      <p class="center-link"><a class="inline-link" href="/demo/client/opportunities/">See the loop on a worked example &rarr;</a></p>
     </div>
   </section>
 
