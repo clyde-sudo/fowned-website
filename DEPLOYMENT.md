@@ -9,6 +9,14 @@ browser-verifiable walkthrough of the whole intended experience from a cold
 visitor arriving to an agency operator working the resulting lead. That subtree
 is seeded with invented companies and every surface of it says so.
 
+## /demo/ retired (6 September 2026)
+
+The `/demo/` subtree described below no longer builds. Its eight pages and
+`js/demo.js` were removed and `_redirects` sends `/demo/*` to `/audit/` with a
+301. The paragraphs that mention `/demo/` are kept as the record of why it was
+noindex while it existed; the sitemap and `llms.txt` filters in `build.mjs` are
+now no-ops.
+
 ## Indexing decision (host-aware, launched 3 September 2026)
 
 The rule is no longer one blanket answer. Two questions are being asked at once
