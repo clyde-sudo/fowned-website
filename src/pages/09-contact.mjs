@@ -26,7 +26,7 @@ ${SITE.bookingUrl ? `        <div class="contact-card">
 ` : ""}        <div class="contact-card">
           <span class="label">Phone</span>
           <p class="contact-big"><a href="${SITE.phoneHref}" data-ev="cta_click" data-ev-label="contact_phone">${SITE.phoneText}</a></p>
-          <p>Reaches us directly during working hours.</p>
+          <p>Reaches us directly during working hours. If nobody picks up, you get a call back within two business days.</p>
         </div>
         <div class="contact-card">
           <span class="label">LinkedIn</span>
@@ -44,7 +44,7 @@ ${SITE.bookingUrl ? `        <div class="contact-card">
 
   <section class="band">
     <div class="container narrow">
-${head({ label: "Consultation request", h: "Or leave your details here.", sub: "A person reads these. We reply on working days." })}
+${head({ label: "Consultation request", h: "Or leave your details here.", sub: "A person reads these. You get a reply within two business days." })}
       <form class="lead-form" id="contactForm" novalidate>
         <div class="field">
           <label for="cName">Your name</label>

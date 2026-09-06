@@ -33,6 +33,14 @@ ${head({ label: "Platform", h: "How the measurement runs." })}
     </div>
   </section>
 
+  <section>
+    <div class="container narrow">
+${head({ label: "Accountability", h: "Who answers for the work." })}
+      <p>Clyde Sada is accountable for whether an early Fowned client is satisfied with what was delivered. If the work is not what you were told it would be, you raise it with him and he owns the answer rather than passing you to a queue.</p>
+      <p>You get a reply within two business days on every channel published on the contact page. If an audit result looks wrong to you, say so and we re-run it rather than defending the first number. Pricing is agreed on the call and contracted with you directly, so nothing is charged through this website.</p>
+    </div>
+  </section>
+
 ${cta({
   h: "See it applied to your site.",
   p: "The audit is the same first step every Fowned engagement starts from.",
