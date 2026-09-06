@@ -48,12 +48,12 @@ export default {
   <section>
     <div class="container">
       <ol class="loop-list">
-        <li><span class="loop-num">1</span><div><h3>Observation</h3><p>Something measurable is recorded. "Search agents received a 403 on every request for nine days." No interpretation yet, just what was seen and when.</p></div></li>
-        <li><span class="loop-num">2</span><div><h3>Diagnosis</h3><p>The mechanism behind the observation, identified and stated as a claim that could be wrong. "A firewall rule is challenging non-browser clients." This is where most agencies skip straight to selling.</p></div></li>
-        <li><span class="loop-num">3</span><div><h3>Opportunity</h3><p>What would be worth having if the diagnosis is correct, sized honestly. Not a revenue projection, because that would require causal evidence we do not have yet.</p></div></li>
-        <li><span class="loop-num">4</span><div><h3>Recommendation</h3><p>The specific change, at the level of a named rule or a named page. Vague advice cannot be checked afterwards, which is precisely why vague advice is popular.</p></div></li>
-        <li><span class="loop-num">5</span><div><h3>Intervention</h3><p>The change is applied, by us or by your team, and the date is recorded. Without a date, before and after are not distinguishable.</p></div></li>
-        <li><span class="loop-num">6</span><div><h3>Re-measure</h3><p>The same measurement runs again on schedule. Until it returns, the intervention has an unknown effect, and that is exactly how it is reported.</p></div></li>
+        <li><span class="loop-num">1</span><div><h2>Observation</h2><p>Something measurable is recorded. "Search agents received a 403 on every request for nine days." No interpretation yet, just what was seen and when.</p></div></li>
+        <li><span class="loop-num">2</span><div><h2>Diagnosis</h2><p>The mechanism behind the observation, identified and stated as a claim that could be wrong. "A firewall rule is challenging non-browser clients." This is where most agencies skip straight to selling.</p></div></li>
+        <li><span class="loop-num">3</span><div><h2>Opportunity</h2><p>What would be worth having if the diagnosis is correct, sized honestly. Not a revenue projection, because that would require causal evidence we do not have yet.</p></div></li>
+        <li><span class="loop-num">4</span><div><h2>Recommendation</h2><p>The specific change, at the level of a named rule or a named page. Vague advice cannot be checked afterwards, which is precisely why vague advice is popular.</p></div></li>
+        <li><span class="loop-num">5</span><div><h2>Intervention</h2><p>The change is applied, by us or by your team, and the date is recorded. Without a date, before and after are not distinguishable.</p></div></li>
+        <li><span class="loop-num">6</span><div><h2>Re-measure</h2><p>The same measurement runs again on schedule. Until it returns, the intervention has an unknown effect, and that is exactly how it is reported.</p></div></li>
       </ol>
       <p class="center-link"><a class="inline-link" href="/demo/client/opportunities/">See the loop on a worked example &rarr;</a></p>
     </div>

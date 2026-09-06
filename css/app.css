@@ -384,7 +384,7 @@ section:first-of-type {
   gap: 12px;
   align-items: flex-start;
 }
-.prospect-head h3 {
+.prospect-head h2 {
   font-size: 17px;
 }
 .prospect-domain {
@@ -862,4 +862,12 @@ section:first-of-type {
   font-size: 14.5px;
   margin: 0 0 var(--space-xs);
   max-width: 560px;
+}
+
+/* section-h: an in-flow h2 above an answer run, sized like an answer heading so the outline stays h1 > h2 > h3 */
+.section-h {
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-md);
 }

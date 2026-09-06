@@ -4,7 +4,7 @@ export default {
   path: "/resources/",
   title: "Resources | plain answers on AI visibility | Fowned",
   description:
-    "Short, sourceable answers to the questions businesses actually ask about being named by AI assistants, including the ones where the honest answer is that nobody knows yet.",
+    "Short, sourceable answers to the questions local businesses ask about being named by AI assistants, including the ones where the honest answer is unknown.",
   body: `  <section class="page-hero">
     <div class="container narrow">
       <span class="label">Resources</span>
@@ -15,6 +15,7 @@ export default {
 
   <section>
     <div class="container narrow">
+      <h2 class="section-h">Straight answers about AI visibility</h2>
 ${answer(
   "Why does my business show up in Google but not in ChatGPT?",
   "The two systems retrieve differently. A search index can rank a page it fetched months ago; an assistant answering a live question often needs to fetch something now, and many sites block or challenge the non-browser clients that do the fetching. The second common cause is that the specific fact being asked about, such as a service area or opening hours, exists only inside an image, a PDF or a JavaScript-rendered component and is not in the text at all."
@@ -39,6 +40,20 @@ ${answer(
   "Can I do this myself?",
   "The retrieval and consistency work, largely yes, and the audit will tell you what to fix in specific terms whether or not you hire anyone. The parts that are harder to do alone are sustained re-measurement and knowing which of six simultaneous changes mattered."
 )}
+    </div>
+  </section>
+
+  <section>
+    <div class="container narrow">
+${head({ label: "Guides", h: "Five longer reads for a local business owner." })}
+      <p>Each guide answers one question in full and ends at the audit, because the audit is where a generic answer turns into your answer.</p>
+      <ul class="check-list">
+        <li><a href="/guides/local-seo-vs-geo-vs-aeo/">Local SEO vs GEO vs AEO for local businesses</a> Three acronyms, one plain comparison table, and which one to fund first.</li>
+        <li><a href="/guides/what-sources-chatgpt-uses-to-recommend-local-businesses/">What sources ChatGPT uses to recommend local businesses</a> What is observable about its retrieval, and what is only claimed.</li>
+        <li><a href="/guides/ai-visibility-audit-for-local-businesses/">AI visibility audit for local businesses: what we check and why</a> Every check in the free audit, with the reason it exists.</li>
+        <li><a href="/guides/how-to-choose-an-ai-seo-agency-for-a-local-business/">How to choose an AI SEO or GEO agency for a local business</a> Nine questions to ask, and the answers that should end the call.</li>
+        <li><a href="/guides/how-to-track-leads-from-chatgpt/">How to track leads from ChatGPT and AI search without guessing</a> What the referrer can prove, what it cannot, and what to record instead.</li>
+      </ul>
     </div>
   </section>
 

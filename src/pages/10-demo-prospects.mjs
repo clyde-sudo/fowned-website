@@ -4,7 +4,7 @@ import { PROSPECTS, LIFECYCLE, OWNERS } from "../data.mjs";
 const card = (p) => `        <article class="prospect" data-owner="${esc(p.owner)}" data-status="${esc(p.status)}">
           <div class="prospect-head">
             <div>
-              <h3>${esc(p.company)}</h3>
+              <h2>${esc(p.company)}</h2>
               <p class="prospect-domain">${esc(p.domain)}</p>
             </div>
             <div class="prospect-marks">
@@ -13,7 +13,7 @@ const card = (p) => `        <article class="prospect" data-owner="${esc(p.owner
             </div>
           </div>
           <dl class="prospect-fields">
-            <div><dt>Contact</dt><dd>${esc(p.contact)}</dd></div>
+            <div><dt>Contact</dt><dd><!--email_off-->${esc(p.contact)}<!--/email_off--></dd></div>
             <div><dt>Source</dt><dd>${source(p.source)}</dd></div>
             <div><dt>Landing page</dt><dd><code>${esc(p.landing)}</code></dd></div>
             <div><dt>Audit health</dt><dd>${esc(p.score)} checks passing</dd></div>
