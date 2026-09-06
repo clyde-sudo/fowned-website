@@ -90,7 +90,7 @@ ${table(
     ["Opportunity tracking", "&mdash;", "&mdash;", "Yes"],
   ]
 )}
-      <p class="fineprint">Pricing is set on the call, against what the audit finds. We do not publish a rate card because the work is scoped to the gap, and a fixed price before a diagnosis is either padded or unprofitable.</p>
+      <p class="fineprint">Pricing is set on the call, against what the audit finds. The one exception is the Visibility Sprint, which starts at a published $4,500 because its scope is fixed in advance. Everything else is scoped to the gap, and a fixed price before a diagnosis is either padded or unprofitable.</p>
     </div>
   </section>
 
