@@ -60,7 +60,6 @@ ${head({ label: "Failure states", h: "A measurement that did not happen is not a
         <li><strong>Failed.</strong> The run executed and could not produce a verdict.</li>
         <li><strong>Never.</strong> This has never been successfully measured. It is not zero, and it is not drawn as zero.</li>
       </ul>
-      <p class="center-link"><a class="inline-link" href="/demo/client/">See the five states on a live-shaped dashboard &rarr;</a></p>
     </div>
   </section>
 
@@ -68,6 +67,5 @@ ${cta({
   h: "See your own numbers.",
   p: "The free audit runs the retrieval-health checks described above and reports each one as itself.",
   primary: { href: "/audit/", text: "Run my free audit →", ev: "aiv_audit" },
-  secondary: { href: "/demo/client/", text: "See the dashboard", ev: "aiv_demo" },
 })}`,
 };

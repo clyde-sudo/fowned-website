@@ -60,6 +60,7 @@ for (const img of readdirSync("images")) {
 }
 
 cpSync("_headers", join(OUT, "_headers"));
+cpSync("_redirects", join(OUT, "_redirects"));
 
 /* ---- IndexNow key ------------------------------------------------------ */
 /* IndexNow lets us TELL Bing (and Yandex, Seznam, Naver) a URL changed instead
