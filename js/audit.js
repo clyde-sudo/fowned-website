@@ -3,9 +3,12 @@
  *
  * Fowned is a TENANT of Citability, never a fork, so there is no scan engine in
  * this file and there must never be one. The tenant-scoped endpoint
- * (/api/agency/fowned/scan) IS deployed on the Citability side. It answers only
- * when two things are true there: the fowned organization row exists, and
- * fowned.live is in that project's allowed CORS origins.
+ * (/api/agency/fowned/scan) is NOT deployed yet: as of 2026-09-06 a live POST
+ * returns 404, because app/api/agency/** sits on an unmerged branch in
+ * citability-dev while /api/scan (the house route) answers normally. Go-live
+ * needs four things on the Citability side: that branch merged and deployed,
+ * the fowned organization row created, fowned.live added to
+ * AGENCY_ALLOWED_ORIGINS, and then AUDIT_SCAN_URL set at build time here.
  *
  * So the switch is FOWNED.scanUrl, set from AUDIT_SCAN_URL at build time:
  *
