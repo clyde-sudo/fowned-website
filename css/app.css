@@ -871,3 +871,9 @@ section:first-of-type {
   letter-spacing: -0.01em;
   margin: 0 0 var(--space-md);
 }
+
+/* A four-column comparison needs more than the 560px text column on wide
+   screens; let the wrapper grow past .narrow instead of forcing a scroll. */
+@media (min-width: 900px) {
+  .narrow .table-wrap { width: 760px; max-width: none; }
+}

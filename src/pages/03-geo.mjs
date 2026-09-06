@@ -49,7 +49,7 @@ ${head({ label: "Honesty note", h: "Three claims we will not make." })}
 ${cta({
   h: "Find out where you stand.",
   p: "The free audit reports which of these foundations exist on your site today.",
-  primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "geo_audit" },
+  primary: { href: "/audit/", text: "Run my free audit →", ev: "geo_audit" },
   secondary: { href: "/ai-visibility/", text: "How we measure it", ev: "geo_measure" },
 })}`,
 };

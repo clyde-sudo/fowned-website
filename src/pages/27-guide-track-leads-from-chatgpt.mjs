@@ -89,7 +89,7 @@ ${head({ label: "What this cannot tell you", h: "Stated once, so no report has t
 ${cta({
   h: "Before tracking leads, make sure you can be found.",
   p: "The free audit checks whether AI retrieval can reach your site at all. Attribution on a site nothing can fetch measures nothing.",
-  primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "guide_track_leads" },
+  primary: { href: "/audit/", text: "Run my free audit →", ev: "guide_track_leads" },
   secondary: { href: "/demo/client/", text: "See the five labels on a dashboard", ev: "guide_track_leads_demo" },
 })}`,
 };

@@ -83,7 +83,7 @@ ${head({ label: "What is not on the list", h: "And why." })}
 ${cta({
   h: "Run the twelve checks on your site.",
   p: "About a minute. Each check reports as pass, fail or could not measure, with the repair named next to every fail.",
-  primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "guide_audit_checks" },
+  primary: { href: "/audit/", text: "Run my free audit →", ev: "guide_audit_checks" },
   secondary: { href: "/how-it-works/", text: "How the results turn into work", ev: "guide_audit_checks_hiw" },
 })}`,
 };

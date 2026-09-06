@@ -80,7 +80,7 @@ ${answer(
 ${cta({
   h: "Step one is free.",
   p: "The audit is the observation stage of the loop. Everything else follows from what it finds.",
-  primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "how_audit" },
+  primary: { href: "/audit/", text: "Run my free audit →", ev: "how_audit" },
   secondary: { href: "/services/", text: "See service levels", ev: "how_services" },
 })}`,
 };

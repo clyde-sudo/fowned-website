@@ -72,7 +72,7 @@ ${head({ label: "Single answers", h: "Three questions that come up on their own.
 ${cta({
   h: "Start with your own numbers.",
   p: "Generic answers only go so far. The audit tells you which of these apply to your site.",
-  primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "res_audit" },
+  primary: { href: "/audit/", text: "Run my free audit →", ev: "res_audit" },
   secondary: { href: "/geo/", text: "What is GEO", ev: "res_geo" },
 })}`,
 };

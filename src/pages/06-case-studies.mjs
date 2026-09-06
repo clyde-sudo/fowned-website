@@ -59,7 +59,7 @@ export default {
 ${cta({
   h: "Run the first step on your own site.",
   p: "The audit produces the observation stage of exactly this walkthrough, with your numbers instead of invented ones.",
-  primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "case_audit" },
+  primary: { href: "/audit/", text: "Run my free audit →", ev: "case_audit" },
   secondary: { href: "/how-it-works/", text: "See the method", ev: "case_how" },
 })}`,
 };

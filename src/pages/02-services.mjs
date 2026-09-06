@@ -114,7 +114,7 @@ ${answer(
 ${cta({
   h: "Start with the audit.",
   p: "It takes about a minute and tells us both what we are actually dealing with.",
-  primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "services_audit" },
+  primary: { href: "/audit/", text: "Run my free audit →", ev: "services_audit" },
   secondary: { href: BOOK_HREF, text: "Book a call after the audit", ev: "services_book_footer", booking: true },
 })}`,
 };

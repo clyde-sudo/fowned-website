@@ -37,7 +37,7 @@ ${head({ label: "Platform", h: "How the measurement runs." })}
 ${cta({
   h: "See it applied to your site.",
   p: "The audit is the same first step every Fowned engagement starts from.",
-  primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "about_audit" },
+  primary: { href: "/audit/", text: "Run my free audit →", ev: "about_audit" },
   secondary: { href: "/contact/", text: "Talk to us", ev: "about_contact" },
 })}`,
 };

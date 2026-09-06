@@ -81,7 +81,7 @@ ${head({ label: "Not observable", h: "What is sold as known but is not." })}
 ${cta({
   h: "See which of these sources can reach you today.",
   p: "The free audit checks whether AI retrieval crawlers are permitted, whether your facts are in the served text and whether your identity is machine-readable.",
-  primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "guide_chatgpt_sources" },
+  primary: { href: "/audit/", text: "Run my free audit →", ev: "guide_chatgpt_sources" },
   secondary: { href: "/answers/how-to-get-chatgpt-to-recommend-my-business/", text: "The two levers that exist", ev: "guide_chatgpt_sources_answer" },
 })}`,
 };

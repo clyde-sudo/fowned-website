@@ -97,7 +97,7 @@ ${head({ label: "Our answers", h: "How we answer the nine, so you can compare." 
 ${cta({
   h: "Start with the diagnosis, whoever you hire.",
   p: "The free audit gives you the answer to question one before you ask it of anyone.",
-  primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "guide_choose_agency" },
+  primary: { href: "/audit/", text: "Run my free audit →", ev: "guide_choose_agency" },
   secondary: { href: BOOK_HREF, text: "Book a call after the audit", ev: "guide_choose_agency_book", booking: true },
 })}`,
 };
