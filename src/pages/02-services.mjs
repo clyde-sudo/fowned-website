@@ -7,7 +7,7 @@ export default {
   path: "/services/",
   title: "Services | audit, fix and monitor AI visibility | Fowned",
   description:
-    "Three service levels: repair the footprint AI reads, engineer the pages it cites, and track which leads arrive from an AI tool. Every level starts from an audit.",
+    "Three service levels for a local business: repair the footprint AI reads, engineer the pages it cites, track leads from AI tools. Each starts from an audit.",
   schema: [
     {
       "@context": "https://schema.org",
@@ -32,7 +32,7 @@ export default {
       <div class="tier-grid">
         <div class="tier-card">
           <span class="label">01 / Get found</span>
-          <h3>Footprint repair</h3>
+          <h2>Footprint repair</h2>
           <p>The directories, listings and pages AI assistants read are cleaned up and made consistent. Contradictory addresses, stale phone numbers and missing hours are the most common reasons a business is described wrongly.</p>
           <ul class="tick-list">
             <li>Directory and listing audit</li>
@@ -45,7 +45,7 @@ export default {
         </div>
         <div class="tier-card">
           <span class="label">02 / Get cited</span>
-          <h3>On-site engineering</h3>
+          <h2>On-site engineering</h2>
           <p>Everything in Get found, plus the pages themselves. Content is restructured so an assistant can lift a complete answer out of it, and the business is identified in machine-readable form.</p>
           <ul class="tick-list">
             <li>Answer-ready page structure</li>
@@ -58,7 +58,7 @@ export default {
         </div>
         <div class="tier-card">
           <span class="label">03 / Get leads</span>
-          <h3>Attribution and pipeline</h3>
+          <h2>Attribution and pipeline</h2>
           <p>Everything above, plus the lead side. Each enquiry is labelled with where it actually came from, and the unknowns stay labelled unknown.</p>
           <ul class="tick-list">
             <li>Referrer capture and source classification</li>
@@ -115,6 +115,6 @@ ${cta({
   h: "Start with the audit.",
   p: "It takes about a minute and tells us both what we are actually dealing with.",
   primary: { href: "/audit/", text: "Run my free audit &rarr;", ev: "services_audit" },
-  secondary: { href: BOOK_HREF, text: "Book a call", ev: "services_book_footer", booking: true },
+  secondary: { href: BOOK_HREF, text: "Book a call after the audit", ev: "services_book_footer", booking: true },
 })}`,
 };

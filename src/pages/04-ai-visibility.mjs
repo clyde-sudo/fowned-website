@@ -16,6 +16,7 @@ export default {
   <section>
     <div class="container narrow">
 ${head({ label: "Method", h: "Three things get measured, separately." })}
+      <p>Retrieval health comes from the free audit on this site. Answer presence is measured with <a class="inline-link" href="https://citability.dev/" rel="noopener">Citability</a>, the measurement platform this service is built on; it runs the question set, keeps the history and records the denominator. Fowned does the implementation work a measurement points to. The two are separate on purpose, so the instrument is never grading its own repair.</p>
 ${answer(
   "Retrieval health",
   "Whether an automated client can fetch your pages and find the facts in them. This is directly observable, it either works or it does not, and it is the only one of the three that is fully under your control. Checks include server-rendered content, structured data, access rules and consistency of business details."

@@ -4,7 +4,7 @@ export default {
   path: "/answers/how-to-get-your-business-listed-in-chatgpt/",
   title: "How to get your business listed in ChatGPT | Fowned",
   description:
-    "There is no list, no directory and no submission form. What people mean by listed is appearing in the sources an assistant retrieves. Here is where those sources actually live.",
+    "There is no list, no directory and no submission form. Listed means appearing in the sources an assistant retrieves. Here is where those sources live.",
   schema: [
     {
       "@context": "https://schema.org",

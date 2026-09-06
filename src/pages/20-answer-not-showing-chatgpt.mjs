@@ -4,7 +4,7 @@ export default {
   path: "/answers/why-my-business-is-not-showing-up-on-chatgpt/",
   title: "Why is my business not showing up on ChatGPT? | Fowned",
   description:
-    "Three distinct causes, each with a different fix: the assistant cannot fetch your pages, it can fetch them but the fact is not in the text, or nothing outside your own site corroborates you. How to tell which one you have.",
+    "Three causes, three fixes: the assistant cannot fetch your pages, the fact is not in the text, or nothing outside your site corroborates you. Which is yours?",
   schema: [
     {
       "@context": "https://schema.org",

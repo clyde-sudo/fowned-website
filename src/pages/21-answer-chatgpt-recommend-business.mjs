@@ -4,7 +4,7 @@ export default {
   path: "/answers/how-to-get-chatgpt-to-recommend-my-business/",
   title: "How to get ChatGPT to recommend my business | Fowned",
   description:
-    "You cannot make an assistant recommend you, and anyone selling that is selling a guess. What you can do is become retrievable and corroborated, which is what it selects on. The two levers, in order.",
+    "You cannot make an assistant recommend you, and anyone selling that sells a guess. You can become retrievable and corroborated, which is what it selects on.",
   schema: [
     {
       "@context": "https://schema.org",
