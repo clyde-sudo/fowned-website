@@ -1,4 +1,4 @@
-import { head, answer, cta, table } from "../ui.mjs";
+import { head, answer, cta, table, relatedGuides } from "../ui.mjs";
 import { SITE } from "../layout.mjs";
 
 /* Primary query: "local seo vs geo vs aeo" (and "geo vs aeo for local business").
@@ -82,6 +82,8 @@ ${head({ label: "Order", h: "Which one to fund first." })}
       <p>The honest version of GEO for a local business is not a separate service. It is the shared foundation, measured on a schedule, with the answer-presence number reported against its denominator. That is what the audit on this site checks, and what <a class="inline-link" href="/services/">the services</a> repair.</p>
     </div>
   </section>
+
+${relatedGuides("/guides/local-seo-vs-geo-vs-aeo/")}
 
 ${cta({
   h: "Find out which layer is broken on your site.",

@@ -62,3 +62,60 @@ export const cta = ({ h, p, primary, secondary }) => `  <section class="band">
       </div>
     </div>
   </section>`;
+
+/* ------------------------------------------------------------------------ *
+ * GUIDE REGISTRY.
+ *
+ * The five guides were published (2026-09-06) reachable only from /resources/,
+ * with no link between them and none from the homepage: three clicks from the
+ * front door down a single path, and no sibling link to pass authority along.
+ * Google had them as "discovered, currently not indexed", which is what thin
+ * internal linking looks like from the crawler's side.
+ *
+ * One list, read by the guide cross-link block and the homepage section, so a
+ * new guide is linked from every place it should be by adding one row here.
+ * ------------------------------------------------------------------------ */
+export const GUIDES = [
+  {
+    path: "/guides/local-seo-vs-geo-vs-aeo/",
+    title: "Local SEO vs GEO vs AEO for local businesses",
+    blurb: "Three acronyms, one plain comparison table, and which one to fund first.",
+  },
+  {
+    path: "/guides/what-sources-chatgpt-uses-to-recommend-local-businesses/",
+    title: "What sources ChatGPT uses to recommend local businesses",
+    blurb: "What is observable about its retrieval, and what is only claimed.",
+  },
+  {
+    path: "/guides/ai-visibility-audit-for-local-businesses/",
+    title: "AI visibility audit for local businesses: what we check and why",
+    blurb: "Every check in the free audit, with the reason it exists.",
+  },
+  {
+    path: "/guides/how-to-choose-an-ai-seo-agency-for-a-local-business/",
+    title: "How to choose an AI SEO or GEO agency for a local business",
+    blurb: "Nine questions to ask, and the answers that should end the call.",
+  },
+  {
+    path: "/guides/how-to-track-leads-from-chatgpt/",
+    title: "How to track leads from ChatGPT and AI search without guessing",
+    blurb: "What the referrer can prove, what it cannot, and what to record instead.",
+  },
+];
+
+/** The guide list as a <ul>, optionally minus the page drawing it. */
+export const guideList = (excludePath = "") =>
+  `      <ul class="check-list">
+${GUIDES.filter((g) => g.path !== excludePath)
+  .map((g) => `        <li><a href="${g.path}">${esc(g.title)}</a> ${esc(g.blurb)}</li>`)
+  .join("\n")}
+      </ul>`;
+
+/** Sibling-guide block for the foot of a guide, above its CTA band. */
+export const relatedGuides = (currentPath) => `  <section>
+    <div class="container narrow">
+${head({ label: "Keep reading", h: "The other guides in this set." })}
+${guideList(currentPath)}
+      <p class="center-link"><a class="inline-link" href="/resources/">Every guide and answer &rarr;</a></p>
+    </div>
+  </section>`;

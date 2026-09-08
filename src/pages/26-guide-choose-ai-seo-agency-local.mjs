@@ -1,4 +1,4 @@
-import { head, answer, cta, table } from "../ui.mjs";
+import { head, answer, cta, table, relatedGuides } from "../ui.mjs";
 import { SITE, bookHref } from "../layout.mjs";
 
 /* Primary query: "how to choose an ai seo agency" / "geo agency for local
@@ -94,6 +94,8 @@ ${head({ label: "Our answers", h: "How we answer the nine, so you can compare." 
       <p class="fineprint">This page exists to help you judge any provider, including us. When you are ready to judge us specifically, the three service levels, what each one delivers and what we refuse to claim are set out on <a class="inline-link" href="/services/">the services page</a>.</p>
     </div>
   </section>
+
+${relatedGuides("/guides/how-to-choose-an-ai-seo-agency-for-a-local-business/")}
 
 ${cta({
   h: "Start with the diagnosis, whoever you hire.",
