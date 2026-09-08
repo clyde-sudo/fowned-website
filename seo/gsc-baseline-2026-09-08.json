@@ -1,0 +1,62 @@
+{
+  "captured": "2026-09-08",
+  "property": "sc-domain:fowned.live",
+  "deploy_sha": "bd2363d",
+  "context": "Internal-link fix shipped: guide registry in src/ui.mjs now feeds the homepage guides section, /resources/, and sibling cross-links at the foot of each guide. Request Indexing submitted in the GSC UI for all five URLs on this date; every submission confirmed by the 'URL was added to a priority crawl queue' toast.",
+  "instrument_note": "The GSC UI and the URL Inspection API disagreed on the same URLs within the same hour. Both readings are recorded. On re-inspection, compare API-to-API. Require two consistent reads before reporting a state change (Hermes lesson hp-b20b829f).",
+  "urls": [
+    {
+      "url": "https://fowned.live/guides/local-seo-vs-geo-vs-aeo/",
+      "api_coverage_state": "Discovered - currently not indexed",
+      "api_sitemap": "https://fowned.live/sitemap.xml",
+      "api_inspection_id": "i_7o30RhzvJ49QXIrle4Eg",
+      "ui_coverage_state": "URL is unknown to Google",
+      "ui_sitemap": "No referring sitemaps detected",
+      "ui_referring_page": "None detected",
+      "ui_last_crawl": "N/A",
+      "ui_inspection_id": "7dU0tGhoEpmf6iwx3uuEZQ",
+      "indexing_requested": true
+    },
+    {
+      "url": "https://fowned.live/guides/what-sources-chatgpt-uses-to-recommend-local-businesses/",
+      "api_coverage_state": null,
+      "ui_coverage_state": "URL is unknown to Google",
+      "ui_sitemap": "No referring sitemaps detected",
+      "ui_referring_page": "None detected",
+      "ui_last_crawl": "N/A",
+      "ui_inspection_id": "KjzBS1T2wc6AEKu2jQ9h8A",
+      "indexing_requested": true
+    },
+    {
+      "url": "https://fowned.live/guides/ai-visibility-audit-for-local-businesses/",
+      "api_coverage_state": null,
+      "ui_coverage_state": "Discovered - currently not indexed",
+      "ui_sitemap": "https://fowned.live/sitemap.xml",
+      "ui_referring_page": "None detected",
+      "ui_last_crawl": "N/A",
+      "ui_inspection_id": "n6EXXEc_BKAV6RoXNXavOQ",
+      "indexing_requested": true
+    },
+    {
+      "url": "https://fowned.live/guides/how-to-choose-an-ai-seo-agency-for-a-local-business/",
+      "api_coverage_state": null,
+      "ui_coverage_state": "Discovered - currently not indexed",
+      "ui_sitemap": "https://fowned.live/sitemap.xml",
+      "ui_referring_page": "None detected",
+      "ui_last_crawl": "N/A",
+      "ui_inspection_id": "cVpmiyYT2iU5QSuwLTBJnA",
+      "indexing_requested": true
+    },
+    {
+      "url": "https://fowned.live/guides/how-to-track-leads-from-chatgpt/",
+      "api_coverage_state": null,
+      "ui_coverage_state": "Discovered - currently not indexed",
+      "ui_sitemap": "https://fowned.live/sitemap.xml",
+      "ui_referring_page": "None detected",
+      "ui_last_crawl": "N/A",
+      "ui_inspection_id": "RXcGHuwNJ3ol4T1JqeGHdg",
+      "indexing_requested": true
+    }
+  ],
+  "recheck_due": "2026-09-22"
+}
