@@ -1,7 +1,12 @@
 /** Small shared render helpers. Markup lives here so every surface renders the
  *  same concept the same way - a truth state in particular. */
 import { TRUTH_STATES, SOURCES } from "./data.mjs";
-import { bookRel } from "./layout.mjs";
+import { bookRel, guideList } from "./layout.mjs";
+
+/* GUIDES and guideList live in layout.mjs beside NAV: one registry for every
+ * surface that links a guide (nav panel, footer, homepage, /resources/,
+ * sibling block). Re-exported so page modules keep importing it from here. */
+export { guideList };
 
 export const esc = (s) =>
   String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
@@ -75,42 +80,6 @@ export const cta = ({ h, p, primary, secondary }) => `  <section class="band">
  * One list, read by the guide cross-link block and the homepage section, so a
  * new guide is linked from every place it should be by adding one row here.
  * ------------------------------------------------------------------------ */
-export const GUIDES = [
-  {
-    path: "/guides/local-seo-vs-geo-vs-aeo/",
-    title: "Local SEO vs GEO vs AEO for local businesses",
-    blurb: "Three acronyms, one plain comparison table, and which one to fund first.",
-  },
-  {
-    path: "/guides/what-sources-chatgpt-uses-to-recommend-local-businesses/",
-    title: "What sources ChatGPT uses to recommend local businesses",
-    blurb: "What is observable about its retrieval, and what is only claimed.",
-  },
-  {
-    path: "/guides/ai-visibility-audit-for-local-businesses/",
-    title: "AI visibility audit for local businesses: what we check and why",
-    blurb: "Every check in the free audit, with the reason it exists.",
-  },
-  {
-    path: "/guides/how-to-choose-an-ai-seo-agency-for-a-local-business/",
-    title: "How to choose an AI SEO or GEO agency for a local business",
-    blurb: "Nine questions to ask, and the answers that should end the call.",
-  },
-  {
-    path: "/guides/how-to-track-leads-from-chatgpt/",
-    title: "How to track leads from ChatGPT and AI search without guessing",
-    blurb: "What the referrer can prove, what it cannot, and what to record instead.",
-  },
-];
-
-/** The guide list as a <ul>, optionally minus the page drawing it. */
-export const guideList = (excludePath = "") =>
-  `      <ul class="check-list">
-${GUIDES.filter((g) => g.path !== excludePath)
-  .map((g) => `        <li><a href="${g.path}">${esc(g.title)}</a> ${esc(g.blurb)}</li>`)
-  .join("\n")}
-      </ul>`;
-
 /** Sibling-guide block for the foot of a guide, above its CTA band. */
 export const relatedGuides = (currentPath) => `  <section>
     <div class="container narrow">

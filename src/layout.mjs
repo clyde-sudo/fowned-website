@@ -170,6 +170,61 @@ export const DEMO_NAV = [
   { path: "/demo/client/service-health/", title: "Service health", group: "Client" },
 ];
 
+export const GUIDES = [
+  {
+    path: "/guides/local-seo-vs-geo-vs-aeo/",
+    short: "Local SEO vs GEO vs AEO",
+    title: "Local SEO vs GEO vs AEO for local businesses",
+    blurb: "Three acronyms, one plain comparison table, and which one to fund first.",
+  },
+  {
+    path: "/guides/what-sources-chatgpt-uses-to-recommend-local-businesses/",
+    short: "What sources ChatGPT uses",
+    title: "What sources ChatGPT uses to recommend local businesses",
+    blurb: "What is observable about its retrieval, and what is only claimed.",
+  },
+  {
+    path: "/guides/ai-visibility-audit-for-local-businesses/",
+    short: "What the audit checks",
+    title: "AI visibility audit for local businesses: what we check and why",
+    blurb: "Every check in the free audit, with the reason it exists.",
+  },
+  {
+    path: "/guides/how-to-choose-an-ai-seo-agency-for-a-local-business/",
+    short: "How to choose an agency",
+    title: "How to choose an AI SEO or GEO agency for a local business",
+    blurb: "Nine questions to ask, and the answers that should end the call.",
+  },
+  {
+    path: "/guides/how-to-track-leads-from-chatgpt/",
+    short: "Tracking leads from ChatGPT",
+    title: "How to track leads from ChatGPT and AI search without guessing",
+    blurb: "What the referrer can prove, what it cannot, and what to record instead.",
+  },
+];
+
+/* The guide list. The titles used to sit in a plain .check-list, where
+ * `a { color: inherit }` and a missing li rule rendered five links and five
+ * blurbs as one unbroken paragraph: crawlable, but invisible to a reader.
+ * The title is now its own line and carries its own class, so it reads as a
+ * link without depending on a global anchor colour. */
+export const guideList = (excludePath = "") =>
+  `      <ul class="guide-list">
+${GUIDES.filter((g) => g.path !== excludePath)
+  .map(
+    (g) => `        <li>
+          <a class="guide-link" href="${g.path}">${esc(g.title)}</a>
+          <span class="guide-blurb">${esc(g.blurb)}</span>
+        </li>`
+  )
+  .join("\n")}
+      </ul>`;
+
+/** Short guide labels for the nav panel and the footer, where the full
+ *  sentence-length titles do not fit. */
+export const guideLinks = (indent) =>
+  GUIDES.map((g) => `${indent}<a href="${g.path}">${esc(g.short)}</a>`).join("\n");
+
 const esc = (s) =>
   String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
@@ -260,6 +315,11 @@ function header(page) {
       <div class="menu-panel" id="menuPanel">
 ${links}
         <div class="menu-divider"></div>
+        <span class="menu-label">Guides</span>
+        <div class="menu-guides">
+${guideLinks("          ")}
+        </div>
+        <div class="menu-divider"></div>
         <a href="/audit/" class="btn btn-primary menu-btn-primary" data-ev="cta_click" data-ev-label="menu_audit">Run free audit</a>
         ${bookBtn("Book a call", "menu_book", "btn btn-secondary menu-btn-secondary")}
       </div>
@@ -300,6 +360,7 @@ ${col("Company", [
   '        <a href="/about/">About</a>',
   '        <a href="/resources/">Resources</a>',
 ])}
+${col("Guides", guideLinks("        ").split("\n"))}
 ${col("Contact", [
   `        <a href="${SITE.phoneHref}">${SITE.phoneText}</a>`,
   '        <a href="/contact/">Contact us</a>',
