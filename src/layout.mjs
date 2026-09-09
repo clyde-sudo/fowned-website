@@ -55,6 +55,12 @@ const BOOKING_URL = process.env.BOOKING_URL || "https://calendly.com/clyde-thrul
  * key, set RB2B_KEY at build time; nothing else needs to change. */
 const RB2B_KEY = process.env.RB2B_KEY || "";
 
+/* GA4 measurement ID for the fowned.live property (account 366810033, web
+ * stream 15749588848, created 2026-09-09). The ID is public by design, so the
+ * live value is the default and a missing variable cannot silently ship an
+ * untagged site. Set GA4_MEASUREMENT_ID="" at build time to omit the tag. */
+const GA4_ID = process.env.GA4_MEASUREMENT_ID ?? "G-EJZ4SZ1GY9";
+
 /* Turnstile is wired end to end but INERT until both keys exist: the public
  * site key here (build time) and TURNSTILE_SECRET_KEY as a Pages secret (run
  * time). Shipping the widget with an empty key would render a permanently
@@ -134,6 +140,13 @@ export const bookHref = () => SITE.bookingUrl || "/contact/";
 export const rb2bTag = () =>
   RB2B_KEY
     ? `<script>!function(){var r=document.createElement("script");r.async=!0,r.src="https://ddwl4m2hdecbv.cloudfront.net/b/"+${JSON.stringify(RB2B_KEY)}+"/rb2b.js.gz",document.head.appendChild(r)}();</script>`
+    : "";
+/** gtag.js loader + config for GA4, or "" when disabled. Lives in <head> per
+ *  Google's install instructions; anonymize_ip is the GA4 default already. */
+export const ga4Tag = () =>
+  GA4_ID
+    ? `  <script async src="https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA4_ID)}"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config",${JSON.stringify(GA4_ID)});</script>`
     : "";
 export const bookRel = () =>
   SITE.bookingUrl ? ' target="_blank" rel="noopener noreferrer"' : "";
@@ -281,6 +294,7 @@ function head(page) {
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="icon" type="image/svg+xml" href="/images/fowned_logo.svg">
+${ga4Tag()}
   <link rel="stylesheet" href="${v("/css/style.css")}">
   <link rel="stylesheet" href="${v("/css/app.css")}">
 ${schema.map((s) => `  <script type="application/ld+json">\n${s}\n  </script>`).join("\n")}`;
