@@ -1,4 +1,4 @@
-import { head, answer, cta } from "../ui.mjs";
+import { head, answer, cta, guideList } from "../ui.mjs";
 
 export default {
   path: "/resources/",
@@ -47,13 +47,7 @@ ${answer(
     <div class="container narrow">
 ${head({ label: "Guides", h: "Five longer reads for a local business owner." })}
       <p>Each guide answers one question in full and ends at the audit, because the audit is where a generic answer turns into your answer.</p>
-      <ul class="check-list">
-        <li><a href="/guides/local-seo-vs-geo-vs-aeo/">Local SEO vs GEO vs AEO for local businesses</a> Three acronyms, one plain comparison table, and which one to fund first.</li>
-        <li><a href="/guides/what-sources-chatgpt-uses-to-recommend-local-businesses/">What sources ChatGPT uses to recommend local businesses</a> What is observable about its retrieval, and what is only claimed.</li>
-        <li><a href="/guides/ai-visibility-audit-for-local-businesses/">AI visibility audit for local businesses: what we check and why</a> Every check in the free audit, with the reason it exists.</li>
-        <li><a href="/guides/how-to-choose-an-ai-seo-agency-for-a-local-business/">How to choose an AI SEO or GEO agency for a local business</a> Nine questions to ask, and the answers that should end the call.</li>
-        <li><a href="/guides/how-to-track-leads-from-chatgpt/">How to track leads from ChatGPT and AI search without guessing</a> What the referrer can prove, what it cannot, and what to record instead.</li>
-      </ul>
+${guideList()}
     </div>
   </section>
 

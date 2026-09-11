@@ -12,6 +12,16 @@
   var msg = document.getElementById("contactMsg");
   if (!form) return;
 
+  /* A sprint applicant arrives from /audit/ as /contact/?topic=sprint. The marker
+   * rides in on the note field, so the lead is distinguishable in the leads table
+   * without a new column or a new form field.
+   * ponytail: MESSAGE-prefix marker is the ceiling. Upgrade path when sprint
+   * volume justifies it: a real `kind` column on leads plus a hidden input. */
+  var sprintNote = document.getElementById("cNote");
+  if (sprintNote && !sprintNote.value && /[?&]topic=sprint(&|$)/.test(location.search)) {
+    sprintNote.value = "Visibility Sprint application. ";
+  }
+
   var cfg = window.FOWNED || {};
   var phoneHref = cfg.phoneHref || "#";
   var phoneText = cfg.phoneText || "our phone number";

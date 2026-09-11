@@ -105,11 +105,20 @@ publishing internal docs. The build additionally:
 
 ## Deploy
 
-    BOOKING_URL=https://calendly.com/clyde-thrulead/30min \
-      SITE_ORIGIN=https://fowned.live node build.mjs \
-      && npx wrangler pages deploy dist --project-name=fowned --branch=main
+    git switch main && git pull upstream main && ./deploy.sh
 
-Both flags on that command are load-bearing and both fail silently if omitted.
+`deploy.sh` is the only supported production deploy. It refuses unless you are
+on `main`, with no uncommitted tracked changes, at exactly `upstream/main`.
+
+**Why (11 September 2026).** Production used to be deployable from any branch,
+because `--branch=main` labels every upload "main". A local branch holding nine
+commits (guide links, menu fix, Sprint price, GA4) was deployed straight to
+production without being merged. The next deploy, from real `upstream/main`,
+replaced it, and all nine vanished from fowned.live while every row in the
+deploy list still said `main`. Merge through a PR first, then deploy. A branch
+you want to look at goes to a preview: drop `--branch=main`.
+
+The two env vars inside `deploy.sh` are load-bearing and both fail silently if omitted.
 
 `SITE_ORIGIN` and `BOOKING_URL` are read at BUILD time. Without them the build
 succeeds and produces canonicals, `og:url`, the sitemap and the JSON-LD pointing

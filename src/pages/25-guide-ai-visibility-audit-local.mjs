@@ -1,4 +1,4 @@
-import { head, answer, cta, table } from "../ui.mjs";
+import { head, answer, cta, table, relatedGuides } from "../ui.mjs";
 import { SITE } from "../layout.mjs";
 
 /* Primary query: "ai visibility audit for local business" / "what does an ai
@@ -79,6 +79,8 @@ ${head({ label: "What is not on the list", h: "And why." })}
       <p>The audit is free because the diagnosis is the cheap part. What you do with a fail is described on <a class="inline-link" href="/services/">the services page</a>, and the first conversation about it happens after the results, not before.</p>
     </div>
   </section>
+
+${relatedGuides("/guides/ai-visibility-audit-for-local-businesses/")}
 
 ${cta({
   h: "Run the twelve checks on your site.",

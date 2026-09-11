@@ -1,4 +1,4 @@
-import { head, answer, cta, table } from "../ui.mjs";
+import { head, answer, cta, table, relatedGuides } from "../ui.mjs";
 import { SITE } from "../layout.mjs";
 
 /* Primary query: "what sources does chatgpt use to recommend local businesses".
@@ -100,6 +100,8 @@ ${head({ label: "Not observable", h: "What is sold as known but is not." })}
       </ul>
     </div>
   </section>
+
+${relatedGuides("/guides/what-sources-chatgpt-uses-to-recommend-local-businesses/")}
 
 ${cta({
   h: "See which of these sources can reach you today.",

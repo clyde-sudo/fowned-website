@@ -877,3 +877,71 @@ section:first-of-type {
 @media (min-width: 900px) {
   .narrow .table-wrap { width: 760px; max-width: none; }
 }
+
+/* ---- guide lists ------------------------------------------------------- *
+ * The guides previously rendered in .check-list, which sets list-style:none
+ * but only gives li spacing to .tick-list and .claim-list. Combined with the
+ * global `a { color: inherit }`, five titles and five blurbs collapsed into
+ * one unbroken block of body text: followable by a crawler, invisible to a
+ * reader. Title on its own line, in link colour, with the blurb beneath it.
+ * No new tokens. */
+.guide-list {
+  list-style: none;
+  max-width: 620px;
+}
+.guide-list li {
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--color-hairline);
+}
+.guide-list li:first-child {
+  border-top: 1px solid var(--color-hairline);
+}
+.guide-list .guide-link {
+  display: block;
+  font-weight: 600;
+  color: var(--color-indigo);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  margin-bottom: 4px;
+}
+.guide-list .guide-link:hover {
+  text-decoration-thickness: 2px;
+}
+.guide-list .guide-blurb {
+  display: block;
+  color: var(--color-gray);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* Guides in the nav panel sit under the main routes, so they read one step
+ * quieter than a top-level destination. */
+.menu-label {
+  display: block;
+  padding: 4px 10px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gray);
+}
+.menu-guides {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.menu-panel .menu-guides a {
+  font-size: 15px;
+  font-weight: 400;
+  padding: 8px 10px;
+}
+
+/* The Guides group makes the panel taller than a short viewport. Without this
+ * the "Run free audit" button at the foot of the menu falls below the fold on
+ * a laptop and on most phones, which is the one control the menu exists to
+ * reach. Cap the height and let the panel scroll instead. */
+.menu-panel {
+  max-height: calc(100vh - 88px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}

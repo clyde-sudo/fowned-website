@@ -27,6 +27,30 @@ export default {
     </div>
   </section>
 
+  <section class="band" id="sprint">
+    <div class="container narrow">
+${head({
+  label: "Sent here by Citability",
+  h: "The Visibility Sprint is delivered by Fowned.",
+  sub: "Citability sells the sprint and measures the result. Fowned does the implementation work inside it.",
+})}
+      <div class="tier-card">
+        <span class="label">Visibility Sprint</span>
+        <h3>Four weeks of implementation, then a re-test that proves it moved.</h3>
+        <p>Citability runs the audit that sets your baseline. Fowned then builds the infrastructure that audit named, and Citability re-runs the same question set afterwards, so the change is measured rather than asserted.</p>
+        <ul class="tick-list">
+          <li>llms.txt and AI crawler allowlist</li>
+          <li>Entity and schema graph across Organization, Person, FAQ and DefinedTerm</li>
+          <li>Answer-capsule content restructure</li>
+          <li>Re-test on Citability against the baseline question set</li>
+        </ul>
+        <p class="tier-who">Four weeks from $4,500 for one business. Six weeks at $9,000 when several properties are in scope.</p>
+        <p class="fineprint">Sprints are sold alongside the Citability retainer rather than on their own, because a sprint nobody measures afterwards is a report with extra steps. Fowned runs two slots per quarter, so a sprint starts with an application.</p>
+        <a href="/contact/?topic=sprint" class="btn btn-primary tier-cta" data-ev="cta_click" data-ev-label="audit_sprint_apply">Apply for a sprint slot &rarr;</a>
+      </div>
+    </div>
+  </section>
+
   <section class="band">
     <div class="container narrow">
 ${head({ label: "Before you run it", h: "What the audit does and does not do." })}

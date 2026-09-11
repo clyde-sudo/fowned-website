@@ -56,6 +56,14 @@
   .quote blockquote {
     font-family: var(--font-display);
   }
+
+  /* Display headings need tighter leading than body copy. Without this an h2
+     inherits body's 1.5 and a 36px heading sits on 54px, floating apart from
+     the h1 above it (1.08) and the paragraph below. Rules that already set
+     their own leading (.hero-text h1, .contact-top h2) still win. */
+  h1, h2 {
+    line-height: 1.2;
+  }
   
   a {
     color: inherit;
@@ -87,6 +95,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    line-height: 1.5;
     font-family: var(--font-sans);
     font-weight: 600;
     font-size: 15px;
@@ -117,6 +126,7 @@
      getting hidden underneath it */
   #why,
   #how,
+  #guides,
   #tiers,
   #contact,
   #audit {
@@ -254,7 +264,7 @@
     display: flex;
   }
   
-  .menu-panel a {
+  .menu-panel a:not(.btn) {
     padding: 12px 10px;
     font-size: 17px;
     font-weight: 500;
@@ -262,7 +272,7 @@
     border-radius: 8px;
   }
   
-  .menu-panel a:hover {
+  .menu-panel a:not(.btn):hover {
     background: var(--color-hairline);
     color: var(--color-indigo);
   }
@@ -371,9 +381,10 @@
     .hero-ctas {
       justify-content: center;
     }
-    .hero-visual {
-      order: -1; /* portrait shows above the text on mobile */
-    }
+    /* The visual slot used to hold a portrait, where showing a face first was
+       the point. It now holds a simulated AI answer, so ordering it above the
+       headline makes a decoration the first thing a phone visitor reads. The
+       headline states what this is; it goes first. */
   }
   
   .ai-badges {
@@ -548,9 +559,13 @@
     z-index: 1;
   }
   
+  /* The gap under a head has to be smaller than the gap between sections, or
+     the head stops reading as a label for the block beneath it (proximity).
+     --space-xl matched the section gap exactly; --space-lg restores the
+     ladder: 40 tight head / 64 head / 80+ between sections. */
   .section-head {
     max-width: 560px;
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-lg);
   }
   
   .section-head h2 {
@@ -748,6 +763,12 @@
   /* how it works */
   
   #how {
+    padding: var(--space-md) 0;
+  }
+  
+  /* guides */
+  
+  #guides {
     padding: var(--space-md) 0;
   }
   

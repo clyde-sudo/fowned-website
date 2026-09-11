@@ -1,7 +1,12 @@
 /** Small shared render helpers. Markup lives here so every surface renders the
  *  same concept the same way - a truth state in particular. */
 import { TRUTH_STATES, SOURCES } from "./data.mjs";
-import { bookRel } from "./layout.mjs";
+import { bookRel, guideList } from "./layout.mjs";
+
+/* GUIDES and guideList live in layout.mjs beside NAV: one registry for every
+ * surface that links a guide (nav panel, footer, homepage, /resources/,
+ * sibling block). Re-exported so page modules keep importing it from here. */
+export { guideList };
 
 export const esc = (s) =>
   String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
@@ -60,5 +65,26 @@ export const cta = ({ h, p, primary, secondary }) => `  <section class="band">
           ${secondary ? `<a href="${secondary.href}"${secondary.booking ? bookRel() : ""} class="btn btn-secondary" data-ev="${secondary.booking ? "booking_click" : "cta_click"}" data-ev-label="${esc(secondary.ev)}">${esc(secondary.text)}</a>` : ""}
         </div>
       </div>
+    </div>
+  </section>`;
+
+/* ------------------------------------------------------------------------ *
+ * GUIDE REGISTRY.
+ *
+ * The five guides were published (2026-09-06) reachable only from /resources/,
+ * with no link between them and none from the homepage: three clicks from the
+ * front door down a single path, and no sibling link to pass authority along.
+ * Google had them as "discovered, currently not indexed", which is what thin
+ * internal linking looks like from the crawler's side.
+ *
+ * One list, read by the guide cross-link block and the homepage section, so a
+ * new guide is linked from every place it should be by adding one row here.
+ * ------------------------------------------------------------------------ */
+/** Sibling-guide block for the foot of a guide, above its CTA band. */
+export const relatedGuides = (currentPath) => `  <section>
+    <div class="container narrow">
+${head({ label: "Keep reading", h: "The other guides in this set." })}
+${guideList(currentPath)}
+      <p class="center-link"><a class="inline-link" href="/resources/">Every guide and answer &rarr;</a></p>
     </div>
   </section>`;

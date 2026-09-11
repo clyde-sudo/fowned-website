@@ -1,4 +1,4 @@
-import { head, answer, cta, table } from "../ui.mjs";
+import { head, answer, cta, table, relatedGuides } from "../ui.mjs";
 import { SITE } from "../layout.mjs";
 
 /* Primary query: "how to track leads from chatgpt" / "track ai search traffic".
@@ -85,6 +85,8 @@ ${head({ label: "What this cannot tell you", h: "Stated once, so no report has t
       <p>This is the vocabulary used on <a class="inline-link" href="/ai-visibility/">the measurement page</a> and in the attribution tier of <a class="inline-link" href="/services/">the services</a>. It is also what the demonstration dashboard shows, with all five labels visible and the unknown column left unhidden.</p>
     </div>
   </section>
+
+${relatedGuides("/guides/how-to-track-leads-from-chatgpt/")}
 
 ${cta({
   h: "Before tracking leads, make sure you can be found.",
