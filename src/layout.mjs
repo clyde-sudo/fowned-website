@@ -236,7 +236,7 @@ ${GUIDES.filter((g) => g.path !== excludePath)
 /** Short guide labels for the nav panel and the footer, where the full
  *  sentence-length titles do not fit. */
 export const guideLinks = (indent) =>
-  GUIDES.map((g) => `${indent}<a href="${g.path}">${esc(g.short)}</a>`).join("\n");
+  [...GUIDES.map((g) => `${indent}<a href="${g.path}">${esc(g.short)}</a>`), `${indent}<a href="/guides/">All guides &rarr;</a>`].join("\n");
 
 const esc = (s) =>
   String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
