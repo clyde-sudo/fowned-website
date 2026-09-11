@@ -44,8 +44,31 @@ ${answer(
 )}
 ${answer(
   "It prefers agreement across sources",
-  "This one is inferred, not documented, so it is labeled as such. When the same business name, address and service list appear on the business site, on Google, on Yelp and in a local news item, the business is named more reliably than when those sources disagree. We observe the pattern in sampled answers; we do not have a published mechanism for it."
+  "This one is inferred, not documented, so it is labeled as such. Practitioners report that when the same business name, address and service list appear on the business site, on Google, on Yelp and in a local news item, the business is named more reliably than when those sources disagree. Our own sample has not yet confirmed it, and no published mechanism for it exists."
 )}
+    </div>
+  </section>
+
+  <section id="source-map">
+    <div class="container narrow">
+${head({ label: "Source map", h: "How we are measuring this, and what we have so far." })}
+      <p>The source classes below are a working list, not a finding. To say which sources ChatGPT actually cites for local questions, and how often, you need recorded answers. This is how Fowned records them.</p>
+${table(
+  ["Field", "What is recorded"],
+  [
+    ["Question", "The exact wording asked, frozen before collection"],
+    ["Town and trade", "The named place and service category in the question"],
+    ["Engine and mode", "The assistant, with search on or off, and the date of the answer"],
+    ["Cited URLs", "Every source link the answer shows, copied as shown"],
+    ["Source class", "Each cited URL assigned to one class from the table below"],
+    ["Businesses named", "Every business the answer recommends, whether or not it is linked"],
+  ]
+)}
+      <ul class="check-list">
+        <li><strong>Collection.</strong> The same frozen questions are asked across several towns and trades, each answer is saved in full, and nothing is scored until the set is complete.</li>
+        <li><strong>Reporting.</strong> Every share is published with its count and denominator, for example 12 of 40 answers, never as a bare percentage.</li>
+        <li><strong>Current state: insufficient data.</strong> Fowned has published zero recorded answers so far. Until a complete set exists, this page states no share, ranking or frequency for any source class.</li>
+      </ul>
     </div>
   </section>
 
