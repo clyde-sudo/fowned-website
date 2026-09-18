@@ -3,7 +3,9 @@ import { SITE } from "../layout.mjs";
 
 /* Primary query: "local seo vs geo vs aeo" (and "geo vs aeo for local business").
  * Funnel job: informational spoke -> /audit/. Citability owns the measurement
- * definitions; this page owns the local-business buying decision. */
+ * definitions; this page owns the three-way comparison. The qualification
+ * family ("geo for local businesses", "does my business need geo", "aeo for
+ * local business") is owned by /guides/geo-for-local-businesses/. */
 export default {
   path: "/guides/local-seo-vs-geo-vs-aeo/",
   title: "Local SEO vs GEO vs AEO for local businesses | which to fund first | Fowned",
@@ -40,7 +42,7 @@ ${answer(
 )}
 ${answer(
   "GEO, generative engine optimization",
-  "Generative engine optimization competes to be the business a generated answer names when a customer asks an assistant such as ChatGPT or Perplexity for a recommendation. The unit of output is being named, with or without a link. The work overlaps AEO on content shape and adds two things: the assistant must be able to fetch your pages at all, and sources outside your own site must agree about who you are."
+  "Generative engine optimization competes to be the business a generated answer names when a customer asks an assistant such as ChatGPT or Perplexity for a recommendation. The unit of output is being named, with or without a link. The work overlaps AEO on content shape and adds two things: the assistant must be able to fetch your pages at all, and sources outside your own site must agree about who you are. Whether your business needs it at all is a separate question, answered in <a class=\"inline-link\" href=\"/guides/geo-for-local-businesses/\">GEO for local businesses</a>."
 )}
     </div>
   </section>
