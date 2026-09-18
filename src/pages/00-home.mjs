@@ -17,6 +17,13 @@ export default {
       description:
         "Generative engine optimization agency. Audits, fixes and monitors how AI assistants describe a business.",
       telephone: "+1-831-332-0184",
+      /* Required by schema.org Organization and flagged by the GSC Wizard
+       * on-page audit 2026-09-18. Raster on purpose: Google Images does not
+       * accept SVG, so fowned_logo.svg would satisfy the validator and still
+       * be unusable for a rich result. The build copies an image only when
+       * the rendered HTML names it, and this JSON-LD is rendered HTML, so
+       * this reference is what keeps face_logo.png in dist/. */
+      logo: SITE.origin + "/images/face_logo.png",
       sameAs: [SITE.linkedin],
     },
     {
