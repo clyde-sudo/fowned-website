@@ -191,6 +191,12 @@ export const GUIDES = [
     blurb: "Three acronyms, one plain comparison table, and which one to fund first.",
   },
   {
+    path: "/guides/geo-for-local-businesses/",
+    short: "GEO for local businesses",
+    title: "GEO for local businesses: does yours need it?",
+    blurb: "Three questions that decide it, what the work actually is, and how to prove it worked.",
+  },
+  {
     path: "/guides/what-sources-chatgpt-uses-to-recommend-local-businesses/",
     short: "What sources ChatGPT uses",
     title: "What sources ChatGPT uses to recommend local businesses",
