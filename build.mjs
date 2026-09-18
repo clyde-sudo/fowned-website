@@ -136,6 +136,11 @@ User-agent: Google-Extended
 User-agent: Applebot-Extended
 Allow: /
 
+# GSC Wizard on-page SEO checker. Fetches one page at a time, only when the
+# site owner opens the report. https://www.gscwizard.com/onpage-seo-bot.html
+User-agent: GSCWizard-Bot
+Allow: /
+
 Sitemap: ${SITE.origin}/sitemap.xml
 `);
 
