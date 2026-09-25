@@ -108,13 +108,57 @@
     BUFFER.push(ev);
     if (window.FOWNED_DEBUG) console.log("[fowned]", ev);
     ship(ev);
+    toGa4(name, detail);
   }
 
-  /* Declarative CTA tracking: any element carrying data-ev fires on click. */
+  /* GA4 mirror of the chudi.dev event contract, so the portfolio reads one set
+   * of names: cta_click, offer_click, outbound_click, newsletter_success,
+   * tool_use. The first-party stream keeps its own names; only these five are
+   * forwarded, renamed where the contract uses a different word. Fowned has no
+   * newsletter, so its email capture (a lead that the server accepted) is the
+   * newsletter_success equivalent, told apart by the form param. page_view is
+   * not forwarded because gtag's config already sends it. */
+  var GA4_NAMES = {
+    cta_click: "cta_click",
+    booking_click: "offer_click",
+    outbound_click: "outbound_click",
+    lead_success: "newsletter_success",
+    audit_complete: "tool_use",
+  };
+
+  function toGa4(name, detail) {
+    var gaName = GA4_NAMES[name];
+    if (!gaName || typeof window.gtag !== "function") return;
+    var d = detail || {};
+    var params = {
+      cta_label: d.label,
+      destination: d.destination,
+      location: location.pathname,
+      offer_id: name === "booking_click" ? "strategy_call" : undefined,
+      form: d.form,
+      tool_id: name === "audit_complete" ? "ai_visibility_audit" : undefined,
+      tool_state: d.state,
+    };
+    for (var k in params) if (params[k] === undefined || params[k] === null) delete params[k];
+    try { window.gtag("event", gaName, params); } catch (e) { /* never break the page */ }
+  }
+
+  /* Declarative CTA tracking: any element carrying data-ev fires on click. A
+   * link to another host with no data-ev is an outbound_click. */
   document.addEventListener("click", function (e) {
-    var el = e.target.closest ? e.target.closest("[data-ev]") : null;
-    if (!el) return;
-    track(el.getAttribute("data-ev"), { label: el.getAttribute("data-ev-label") || el.textContent.trim() });
+    if (!e.target.closest) return;
+    var el = e.target.closest("[data-ev]");
+    if (el) {
+      track(el.getAttribute("data-ev"), {
+        label: el.getAttribute("data-ev-label") || el.textContent.trim(),
+        destination: el.getAttribute("href") || undefined,
+      });
+      return;
+    }
+    var a = e.target.closest("a[href]");
+    if (a && /^https?:$/.test(a.protocol) && a.hostname !== location.hostname) {
+      track("outbound_click", { label: a.textContent.trim().slice(0, 100), destination: a.href });
+    }
   });
 
   window.FownedInstrument = {

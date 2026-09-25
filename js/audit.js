@@ -263,6 +263,7 @@
       lm.textContent = "Sending…";
 
       submitLead(email, r, lf).then(function (ok) {
+        if (ok) track("lead_success", { form: "audit_gate" });
         lf.remove();
         lm.innerHTML = ok
           ? "<strong>Got it. Someone here will come back to you about " + esc(hostname) + ".</strong> " +
