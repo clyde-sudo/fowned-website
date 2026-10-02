@@ -18,7 +18,7 @@ export default {
       <h2 class="section-h">Definitions for a local business owner</h2>
 ${answer(
   "What is generative engine optimization?",
-  "Generative engine optimization, or GEO, is the practice of making a business readable, accurate and retrievable to AI assistants, so that when one answers a customer's question the business can be named correctly. It covers the machine-readable identity of the business, the structure of the content describing it, the consistency of its details across the wider web, and whether retrieval systems are technically permitted to fetch the pages at all."
+  "Generative engine optimization, or GEO, is the practice of making a business readable, accurate and retrievable to AI assistants, so that when one answers a customer's question the business can be named correctly. It covers the machine-readable identity of the business, the structure of the content describing it, the consistency of its details across the wider web, and whether retrieval systems are technically permitted to fetch the pages at all. Whether a local business should spend on it is a separate question: <a class=\"inline-link\" href=\"/guides/geo-for-local-businesses/\">does your business need GEO?</a>"
 )}
 ${answer(
   "How is it different from SEO?",
