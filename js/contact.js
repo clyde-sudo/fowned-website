@@ -70,6 +70,7 @@
       .catch(function () { return false; })
       .then(function (ok) {
         if (ok) {
+          track("lead_success", { form: "consultation" });
           form.innerHTML =
             '<p class="audit-lead-msg"><strong>Got it, ' + name.replace(/[<>&]/g, "") +
             ".</strong> Someone here will read this and reply on a working day. " +
