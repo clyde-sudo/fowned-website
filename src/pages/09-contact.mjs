@@ -5,7 +5,7 @@ export default {
   path: "/contact/",
   title: "Contact Fowned",
   description:
-    "Reach Fowned by phone or LinkedIn, or run the free audit first so the conversation starts from evidence rather than a sales script.",
+    "Reach Fowned by phone or LinkedIn, or request the free audit first so the conversation starts from evidence rather than a sales script.",
   scripts: ["/js/contact.js"],
   body: `  <section class="page-hero">
     <div class="container narrow">

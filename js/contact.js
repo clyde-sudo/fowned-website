@@ -60,7 +60,8 @@
       .catch(function () { return false; })
       .then(function (ok) {
         if (ok) {
-          track("contact_submit", { form: "consultation" });
+          /* A filled honeypot gets a silent 200 from the server; not a lead. */
+          if (!(hp && hp.value)) track("contact_submit", { form: "consultation" });
           form.innerHTML =
             '<p class="audit-lead-msg"><strong>Got it, ' + name.replace(/[<>&]/g, "") +
             ".</strong> Someone here will read this and reply on a working day. " +

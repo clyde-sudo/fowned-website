@@ -80,7 +80,9 @@
       .catch(function () { return false; })
       .then(function (ok) {
         if (ok) {
-          track("audit_request", { form: "audit" });
+          /* The server answers a filled honeypot with a silent 200; keep that
+           * bot out of the conversion count. */
+          if (!(hp && hp.value)) track("audit_request", { form: "audit" });
           form.hidden = true;
           msg.innerHTML =
             "<strong>Request received.</strong> A person will check " + esc(domain) +

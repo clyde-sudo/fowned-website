@@ -1099,13 +1099,21 @@
 
   .audit-form .btn { flex: 1 0 100%; order: 2; white-space: nowrap; }
 
+  /* audit.js hides the form after a successful request; display:flex above
+   * would otherwise beat the browser's own [hidden] rule. */
+  .audit-form[hidden] { display: none; }
+
   @media (max-width: 640px) {
     /* In a column a flex basis is a height, so drop it and let each row size
-     * to its content. */
-    .audit-form { flex-direction: column; }
+     * to its content. nowrap keeps a single flex line, so the fields stretch
+     * to the form's width instead of to the 300px Turnstile iframe. */
+    .audit-form { flex-direction: column; flex-wrap: nowrap; }
     .audit-form input,
     .audit-form .cf-turnstile,
     .audit-form .btn { flex: none; }
+    .audit-form .cf-turnstile { align-self: center; }
+    /* 64px of side padding leaves 215px at 375, narrower than the widget. */
+    .final-cta:has(> .audit-form) { padding: var(--space-md) 20px; }
   }
 
   .audit-health {
