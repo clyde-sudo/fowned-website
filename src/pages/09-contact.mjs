@@ -11,7 +11,7 @@ export default {
     <div class="container narrow">
       <span class="label">Contact</span>
       <h1>Talk to a person.</h1>
-      <p class="hero-sub">The fastest route is the phone. If you want the conversation to start from evidence, run the free audit first and we will read the result with you.</p>
+      <p class="hero-sub">The fastest route is the phone. If you want the conversation to start from evidence, request the free audit first and we will walk through it with you.</p>
     </div>
   </section>
 
@@ -35,8 +35,8 @@ ${SITE.bookingUrl ? `        <div class="contact-card">
         </div>
         <div class="contact-card">
           <span class="label">Start with evidence</span>
-          <p class="contact-big"><a href="/audit/" data-ev="cta_click" data-ev-label="contact_audit">Run the free audit</a></p>
-          <p>About a minute, no account. It gives us both something concrete to talk about.</p>
+          <p class="contact-big"><a href="/audit/" data-ev="cta_click" data-ev-label="contact_audit">Request the free audit</a></p>
+          <p>No account. A person emails it to you within 2 business days, and it gives us both something concrete to talk about.</p>
         </div>
       </div>
     </div>

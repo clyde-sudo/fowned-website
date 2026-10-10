@@ -66,6 +66,6 @@ ${head({ label: "Failure states", h: "A measurement that did not happen is not a
 ${cta({
   h: "See your own numbers.",
   p: "The free audit runs the retrieval-health checks described above and reports each one as itself.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "aiv_audit" },
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "aiv_audit" },
 })}`,
 };

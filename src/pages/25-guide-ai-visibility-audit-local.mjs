@@ -83,9 +83,9 @@ ${head({ label: "What is not on the list", h: "And why." })}
 ${relatedGuides("/guides/ai-visibility-audit-for-local-businesses/")}
 
 ${cta({
-  h: "Run the twelve checks on your site.",
-  p: "About a minute. Each check reports as pass, fail or could not measure, with the repair named next to every fail.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "guide_audit_checks" },
+  h: "Get the twelve checks run on your site.",
+  p: "A person runs them and emails the audit within 2 business days. Each check reports as pass, fail or could not measure, with the repair named next to every fail.",
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "guide_audit_checks" },
   secondary: { href: "/how-it-works/", text: "How the results turn into work", ev: "guide_audit_checks_hiw" },
 })}`,
 };

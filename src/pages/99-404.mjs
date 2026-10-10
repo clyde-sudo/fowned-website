@@ -9,7 +9,7 @@ export default {
       <p class="hero-sub">The link may be out of date, or the address may have a typo in it. These are the pages that do exist.</p>
       <div class="hero-ctas">
         <a href="/" class="btn btn-primary">Back to the homepage</a>
-        <a href="/audit/" class="btn btn-secondary">Run the free audit</a>
+        <a href="/audit/" class="btn btn-secondary">Request the free audit</a>
       </div>
       <ul class="claim-list four-oh-four">
         <li><a class="inline-link" href="/services/">Services</a> &mdash; what each level covers</li>

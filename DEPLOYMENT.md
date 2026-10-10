@@ -53,41 +53,18 @@ also different agents: `GPTBot` trains, while `OAI-SearchBot` builds the index
 ChatGPT actually retrieves from. For a citation goal the retrieval half is the
 one that matters, and it was the half originally missing.
 
-## The audit has two modes, and the mode is a build-time switch
+## The audit is a request, not an on-page result
 
-`js/audit.js` runs the real eight-state machine. What feeds it depends on one
-environment variable at build time:
+`/audit/` and the homepage form take a site address and an email and post them
+to `/api/lead`, marked `Free audit request` in the message field. A person
+checks the site and emails the audit within 2 business days. Nothing renders on
+the page in the meantime.
 
-| `AUDIT_SCAN_URL` | Mode | Result |
-|---|---|---|
-| unset (default) | fixture | Deterministic verdicts hashed from the entered domain, badged `DEMO AUDIT RESULT` on every render |
-| set | live | One POST to the tenant-scoped Citability endpoint, real verdicts, no demo badge |
-
-It is a build-time switch, not a runtime probe, because the audit page must
-never ship a live path that 404s while a visitor watches it spin. In live mode a
-failed scan says it failed; it never falls back to the fixture, because a made-up
-result wearing a live badge is worse than either mode on its own.
-
-**Current mode: FIXTURE.** `scanUrl` is empty in the config object served on
-`/audit/`, verified 3 September 2026, so the switch has never been flipped and
-every audit result carries its `DEMO AUDIT RESULT` badge.
-
-**What has to be true before the switch is flipped.** The endpoint
-(`/api/agency/fowned/scan`) is deployed on the Citability side. It answers only
-when BOTH of these are true there. Neither was true as of 31 August 2026 and
-neither has been re-checked since, because checking means a real POST to
-Citability production:
-
-1. An `organizations` row with `slug = 'fowned'` exists in the Citability
-   production database. Without it the endpoint returns
-   `404 {"state":"FAILED","message":"Unknown agency."}`.
-2. `https://fowned.live` is in `AGENCY_ALLOWED_ORIGINS` in that project's
-   Vercel production environment, followed by a redeploy. Without it no CORS
-   headers are returned and the browser rejects the response, even though curl
-   would see a body.
-
-Both are changes to Citability production, not to this repository. Verify with a
-real POST before setting `AUDIT_SCAN_URL`.
+It used to render a result from a built-in fixture whenever `AUDIT_SCAN_URL`
+was unset, which on production was always, so every visitor saw invented
+findings for their own domain. That code and the variable were deleted on
+10 October 2026 rather than left switched off. Bringing an automated scan back
+is a new feature with its own review, not a config flip.
 
 ## Build
 
@@ -144,7 +121,6 @@ STDIN, never from argv, and a secret only takes effect on the NEXT deployment.
 | `SLACK_WEBHOOK_URL` | Pages secret | Leads still store and still email; no Slack card. Comma-separate to post to more than one workspace |
 | `SLACK_NOTIFY_MENTIONS` | Pages secret | The card posts without pinging anyone by name |
 | `TURNSTILE_SITE_KEY` | Build-time env | The Turnstile widget is not rendered at all |
-| `AUDIT_SCAN_URL` | Build-time env | The audit runs in fixture mode |
 
 ### Slack lead alerts
 

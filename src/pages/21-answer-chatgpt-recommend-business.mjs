@@ -80,7 +80,7 @@ ${head({ label: "What does not work", h: "Three things sold as levers that are n
 ${cta({
   h: "Start with lever one, because it is binary.",
   p: "The free audit requests your pages the way an assistant does and reports whether the fetch returns your text, which check failed, and which produced no verdict at all.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "answer_recommend" },
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "answer_recommend" },
   secondary: { href: "/answers/why-my-business-is-not-showing-up-on-chatgpt/", text: "Why am I not showing up?", ev: "answer_to_absent" },
 })}`,
 };

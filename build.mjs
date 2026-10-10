@@ -150,7 +150,7 @@ Sitemap: ${SITE.origin}/sitemap.xml
  * page level by the robots meta tag in src/layout.mjs; leaving them out here
  * keeps this file from asking for the thing that tag refuses. */
 const urls = pages
-  .filter((p) => p.path !== "/404/" && !p.path.startsWith("/demo/"))
+  .filter((p) => !["/404/", "/410/"].includes(p.path) && !p.path.startsWith("/demo/"))
   .map((p) => p.path);
 writeFileSync(join(OUT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -169,7 +169,7 @@ ${urls.map((u) => `  <url><loc>${SITE.origin}${u}</loc></url>`).join("\n")}
  * noindex, the sitemap and llms.txt are three different readers being told the
  * same thing, and a page that is invented data should be missing from all three
  * or it will be quoted as fact by whichever one was forgotten. */
-const listed = pages.filter((p) => p.path !== "/404/" && !p.path.startsWith("/demo/"));
+const listed = pages.filter((p) => !["/404/", "/410/"].includes(p.path) && !p.path.startsWith("/demo/"));
 writeFileSync(join(OUT, "llms.txt"), `# ${SITE.name}
 
 > ${SITE.name} is a generative engine optimization agency. We audit how AI assistants describe a business, repair the signals they read, and report which leads arrived from an AI tool.

@@ -80,7 +80,7 @@ ${answer(
 )}
 ${answer(
   "2. Can the assistant fetch your pages?",
-  "A retrieval client reads the HTML your server sends. It does not run your JavaScript app, it does not read text inside images, and it obeys robots.txt. A site whose menu, prices, service area or phone number live only in images, a site built as an app shell that renders on the client, and a site whose robots.txt blocks AI retrieval crawlers are all empty to it. This is a pass or fail check, and the free audit on this site runs it in about a minute."
+  "A retrieval client reads the HTML your server sends. It does not run your JavaScript app, it does not read text inside images, and it obeys robots.txt. A site whose menu, prices, service area or phone number live only in images, a site built as an app shell that renders on the client, and a site whose robots.txt blocks AI retrieval crawlers are all empty to it. This is a pass or fail check, and the free audit on this site includes it."
 )}
 ${answer(
   "3. Do outside sources agree about who you are?",
@@ -129,9 +129,9 @@ ${answer(
 ${relatedGuides("/guides/geo-for-local-businesses/")}
 
 ${cta({
-  h: "Answer question two in about a minute.",
-  p: "The free audit runs the retrieval and legibility checks on your site and reports each one as pass, fail or could not measure.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "guide_geo_for_local_businesses" },
+  h: "Answer question two with the free audit.",
+  p: "The free audit runs the retrieval and legibility checks on your site and reports each one as pass, fail or could not measure. A person emails it to you within 2 business days.",
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "guide_geo_for_local_businesses" },
   secondary: { href: "/guides/local-seo-vs-geo-vs-aeo/", text: "Local SEO vs GEO vs AEO", ev: "guide_geo_for_local_businesses_vs" },
 })}`,
 };

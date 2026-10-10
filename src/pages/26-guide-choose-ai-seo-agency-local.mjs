@@ -100,7 +100,7 @@ ${relatedGuides("/guides/how-to-choose-an-ai-seo-agency-for-a-local-business/")}
 ${cta({
   h: "Start with the diagnosis, whoever you hire.",
   p: "The free audit gives you the answer to question one before you ask it of anyone.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "guide_choose_agency" },
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "guide_choose_agency" },
   secondary: { href: BOOK_HREF, text: "Book a call after the audit", ev: "guide_choose_agency_book", booking: true },
 })}`,
 };

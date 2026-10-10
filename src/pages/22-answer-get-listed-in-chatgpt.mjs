@@ -75,7 +75,7 @@ ${head({ label: "The step people skip", h: "Check that the fetch works before wr
 ${cta({
   h: "See which sources can actually reach you.",
   p: "The free audit requests your pages as an assistant would and reports what passed, what failed, and what returned no verdict at all.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "answer_listed" },
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "answer_listed" },
   secondary: { href: "/answers/how-to-get-chatgpt-to-recommend-my-business/", text: "How recommendation works", ev: "answer_to_recommend" },
 })}`,
 };

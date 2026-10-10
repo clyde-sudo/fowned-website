@@ -89,8 +89,8 @@ ${relatedGuides("/guides/local-seo-vs-geo-vs-aeo/")}
 
 ${cta({
   h: "Find out which layer is broken on your site.",
-  p: "The free audit runs the retrieval and consistency checks in about a minute and reports each one as pass, fail or could not measure.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "guide_local_seo_vs_geo_vs_aeo" },
+  p: "The free audit runs the retrieval and consistency checks and reports each one as pass, fail or could not measure. A person emails it to you within 2 business days.",
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "guide_local_seo_vs_geo_vs_aeo" },
   secondary: { href: "/geo/", text: "What GEO is, in full", ev: "guide_local_seo_vs_geo_vs_aeo_geo" },
 })}`,
 };

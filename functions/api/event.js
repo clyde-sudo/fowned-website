@@ -29,6 +29,8 @@ const EVENTS = new Set([
   "booking_click",
   "lead_success",
   "outbound_click",
+  "audit_request",
+  "contact_submit",
 ]);
 
 /** The closed source vocabulary. Mirrors js/instrument.js. */
