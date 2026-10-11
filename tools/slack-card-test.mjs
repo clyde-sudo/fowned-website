@@ -14,7 +14,7 @@
  * Slack accepts the block structure; Slack validates blocks server-side and
  * answers `invalid_payload` in plain text, not JSON.
  */
-import { slackCard, esc, notifySlack } from "../functions/api/lead.js";
+import { slackCard, esc, notifySlack, auditDueDate } from "../functions/api/lead.js";
 
 let failed = 0;
 const check = (name, cond) => {
@@ -67,6 +67,16 @@ const minimal = slackCard(
 check("minimal lead still names the contact", minimal.text.includes("solo@example.com"));
 check("minimal lead emits no empty blocks", minimal.blocks.every((b) =>
   b.type === "section" ? Boolean(b.text?.text?.trim()) : b.elements.length > 0));
+
+// A free-audit request is owed within 2 business days on the Pacific calendar.
+check("due date skips the weekend (Sat 10/10/2026 is due Tue 10/13/2026)",
+  auditDueDate(new Date("2026-10-10T20:00:00Z")) === "10/13/2026");
+check("due date counts the Pacific day, not UTC (Thu 8 pm PDT is due Mon 10/12/2026)",
+  auditDueDate(new Date("2026-10-09T03:00:00Z")) === "10/12/2026");
+const owed = JSON.stringify(slackCard({ ...JSON.parse(JSON.stringify(hostile)), AUDIT_DUE: "10/13/2026", OWNER: "CHUDI" }, []));
+check("audit request card names the due date", owed.includes("*Audit:* requested, send by 10/13/2026 (2 business days, Pacific)"));
+check("audit request card names the owner", owed.includes("*Owner:* CHUDI"));
+check("other leads carry no Audit line", !JSON.stringify(minimal).includes("Audit:") && !JSON.stringify(card).includes("Audit:"));
 
 if (process.argv.includes("--live-post")) {
   const url = process.env.SLACK_WEBHOOK_URL;

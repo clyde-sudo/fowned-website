@@ -111,7 +111,7 @@ ${answer(
 )}
 ${answer(
   "Why hire an agency instead of buying a measurement tool?",
-  "A tool tells you which signals are missing. It does not rewrite the page, reconcile the listing that disagrees with your website, unblock the crawler your firewall is refusing, or carry the change through your web developer. If you have people who will do that work, buy the tool at <a href=\"https://citability.dev/\">citability.dev</a> and keep the rest of the money. Hire us when the finding needs hands."
+  "A tool tells you which signals are missing. It does not rewrite the page, reconcile the listing that disagrees with your website, unblock the crawler your firewall is refusing, or carry the change through your web developer. If you have people who will do that work, the free audit may be all you need. Hire us when the finding needs hands."
 )}
 ${answer(
   "What happens after the audit?",

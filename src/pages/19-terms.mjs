@@ -1,12 +1,12 @@
 import { head } from "../ui.mjs";
 
-const UPDATED = "31 August 2026";
+const UPDATED = "11 October 2026";
 
 export default {
   path: "/terms/",
   title: "Terms of use | Fowned",
   description:
-    "The terms that govern use of the fowned.live website, the free audit, and the demo product surfaces.",
+    "The terms that govern use of the fowned.live website and the free audit.",
   body: `  <section class="page-hero">
     <div class="container narrow">
       <span class="label">Terms</span>
@@ -18,7 +18,7 @@ export default {
   <section>
     <div class="container narrow">
 ${head({ label: "The site", h: "What this website is." })}
-      <p>Fowned is a generative engine optimization agency. This site describes that service, runs a free sample audit, and shows product screens. Using it means you accept what is written here. If you do not, please stop using it.</p>
+      <p>Fowned is a generative engine optimization agency. This site describes that service and offers a free audit. Using it means you accept what is written here. If you do not, please stop using it.</p>
       <p>You may read, quote and link to anything published here. You may not scrape it at a rate that degrades it for other people, resell it as your own, or use it to train a model that competes with us.</p>
     </div>
   </section>
@@ -26,9 +26,8 @@ ${head({ label: "The site", h: "What this website is." })}
   <section class="band">
     <div class="container narrow">
 ${head({ label: "The free audit", h: "A sample, not a professional opinion." })}
-      <p>The audit on this site is a free sample. It reports what a set of automated checks observed at one moment about one website. It is information, not advice, and no engagement or duty of care starts because you ran it.</p>
+      <p>When you request the free audit, a person reviews your website and emails you the findings. It reports what was observed at one moment about one website. It is information, not advice, and no engagement or duty of care starts because you requested it.</p>
       <p>Run it against a site you own or are authorised to test. Running it against somebody else's property to gather competitive intelligence is not what it is for.</p>
-      <p>Screens marked DEMO DATA show invented example clients. Every figure on them is a fixture. No company named on those screens is a Fowned customer, and nothing there is live telemetry.</p>
     </div>
   </section>
 
