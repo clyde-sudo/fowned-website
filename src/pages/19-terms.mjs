@@ -1,6 +1,6 @@
 import { head } from "../ui.mjs";
 
-const UPDATED = "11 October 2026";
+const UPDATED = "22 October 2026";
 
 export default {
   path: "/terms/",
@@ -25,9 +25,9 @@ ${head({ label: "The site", h: "What this website is." })}
 
   <section class="band">
     <div class="container narrow">
-${head({ label: "The free audit", h: "A sample, not a professional opinion." })}
+${head({ label: "The free audit", h: "Information, not a professional opinion." })}
       <p>When you request the free audit, a person reviews your website and emails you the findings. It reports what was observed at one moment about one website. It is information, not advice, and no engagement or duty of care starts because you requested it.</p>
-      <p>Run it against a site you own or are authorised to test. Running it against somebody else's property to gather competitive intelligence is not what it is for.</p>
+      <p>Request it for a site you own or are authorised to have reviewed. Requesting it for somebody else's property to gather competitive intelligence is not what it is for.</p>
     </div>
   </section>
 
