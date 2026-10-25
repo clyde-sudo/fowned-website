@@ -129,6 +129,20 @@ export const SITE = {
  *  booking. A plain link keeps the page weight flat and keeps attribution. */
 export const bookHref = () => SITE.bookingUrl || "/contact/";
 
+/** The one Calendly URL builder. render() rewrites every booking link on a page
+ *  to this, so a booking names the page that produced it (utm_content) and no
+ *  page module has to know its own path. */
+export const bookingUrl = (path) => {
+  const u = new URL(BOOKING_URL);
+  u.search = new URLSearchParams({
+    utm_source: "fowned.live",
+    utm_medium: "site",
+    utm_campaign: "book_call",
+    utm_content: path.replace(/^\/+|\/+$/g, "").replace(/[^a-z0-9]+/gi, "-").toLowerCase() || "home",
+  }).toString();
+  return u.href;
+};
+
 /** RB2B snippet, or "" when no key is configured. Emitting nothing is the
  *  point: an unconfigured tag must not become a third-party request. */
 export const rb2bTag = () =>
@@ -442,7 +456,7 @@ ${page.body}
 ${page.body}
   </main>`;
 
-  return `<!DOCTYPE html>
+  const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
 ${head(page)}
@@ -452,12 +466,16 @@ ${head(page)}
 ${header(page)}
 ${body}
 ${footer(isDemo)}
-<script>window.FOWNED = { bookingUrl: ${JSON.stringify(SITE.bookingUrl)}, phoneHref: ${JSON.stringify(SITE.phoneHref)}, phoneText: ${JSON.stringify(SITE.phoneText)}, turnstileSiteKey: ${JSON.stringify(SITE.turnstileSiteKey)} };</script>
+<script>window.FOWNED = { phoneHref: ${JSON.stringify(SITE.phoneHref)}, phoneText: ${JSON.stringify(SITE.phoneText)}, turnstileSiteKey: ${JSON.stringify(SITE.turnstileSiteKey)} };</script>
 ${SITE.turnstileSiteKey ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ""}
 <script src="${v("/js/instrument.js")}"></script>
+<script src="${v("/js/booking.js")}"></script>
 ${rb2bTag()}
 <script src="${v("/js/main.js")}"></script>
 ${page.scripts ? page.scripts.map((s) => `<script src="${v(s)}"></script>`).join("\n") : ""}
 </body>
 </html>`;
+  return SITE.bookingUrl
+    ? html.replaceAll(`href="${BOOKING_URL}"`, `href="${esc(bookingUrl(page.path))}"`)
+    : html;
 }

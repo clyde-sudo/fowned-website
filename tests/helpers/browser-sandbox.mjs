@@ -28,9 +28,10 @@ export function fakeElement(props = {}) {
   };
 }
 
-export function runScript(file, { elements = {}, hostname = "fowned.live", globals = {}, source } = {}) {
+export function runScript(file, { elements = {}, hostname = "fowned.live", pathname = "/", globals = {}, source } = {}) {
   const requests = [];
   const appended = [];
+  const opened = [];
   const docListeners = {};
   const winListeners = {};
   const document = {
@@ -47,7 +48,8 @@ export function runScript(file, { elements = {}, hostname = "fowned.live", globa
     return Promise.resolve({ ok: true, status: 200, json: async () => ({ ok: true }) });
   };
   const window = {
-    location: { hostname, pathname: "/", search: "", protocol: "https:", origin: "https://" + hostname },
+    location: { hostname, pathname, search: "", protocol: "https:", origin: "https://" + hostname, href: "https://" + hostname + pathname },
+    open: (...a) => { opened.push(a); return {}; },
     addEventListener(type, fn) { (winListeners[type] ||= []).push(fn); },
     ...globals,
   };
@@ -67,7 +69,7 @@ export function runScript(file, { elements = {}, hostname = "fowned.live", globa
   Object.assign(ctx, globals);
   vm.runInContext(source ?? readFileSync(file, "utf8"), ctx, { filename: file });
   return {
-    ctx, window, document, requests, appended,
+    ctx, window, document, requests, appended, opened,
     fireDocument(type, ev) { for (const fn of docListeners[type] || []) fn(ev); },
     fireWindow(type, ev) { for (const fn of winListeners[type] || []) fn(ev); },
     flush: () => new Promise((r) => setTimeout(r, 0)),

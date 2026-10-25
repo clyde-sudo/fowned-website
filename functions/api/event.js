@@ -31,6 +31,7 @@ const EVENTS = new Set([
   "outbound_click",
   "audit_request",
   "contact_submit",
+  "booking_scheduled",
 ]);
 
 /** The closed source vocabulary. Mirrors js/instrument.js. */

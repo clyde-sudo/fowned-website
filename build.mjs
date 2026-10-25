@@ -12,7 +12,7 @@
  */
 import { mkdirSync, rmSync, writeFileSync, cpSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { render, NAV, DEMO_NAV, SITE } from "./src/layout.mjs";
+import { render, NAV, DEMO_NAV, SITE, bookingUrl } from "./src/layout.mjs";
 
 const OUT = "dist";
 rmSync(OUT, { recursive: true, force: true });
@@ -180,7 +180,7 @@ ${listed.map((p) => `- [${p.title.replace(/ \| Fowned$/, "")}](${SITE.origin}${p
 
 ## Contact
 
-- Book a call: ${SITE.bookingUrl || SITE.origin + "/contact/"}
+- Book a call: ${SITE.bookingUrl ? bookingUrl("/llms.txt") : SITE.origin + "/contact/"}
 - Phone: ${SITE.phoneText}
 - LinkedIn: ${SITE.linkedin}
 `);
