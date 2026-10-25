@@ -135,12 +135,17 @@ export const rb2bTag = () =>
   RB2B_KEY
     ? `<script>!function(){var r=document.createElement("script");r.async=!0,r.src="https://ddwl4m2hdecbv.cloudfront.net/b/"+${JSON.stringify(RB2B_KEY)}+"/rb2b.js.gz",document.head.appendChild(r)}();</script>`
     : "";
-/** gtag.js loader + config for GA4, or "" when disabled. Lives in <head> per
- *  Google's install instructions; anonymize_ip is the GA4 default already. */
+/** The only hosts allowed to talk to GA4. js/instrument.js holds the same list;
+ *  tests/analytics-host.test.mjs holds the two to it. */
+export const GA4_HOSTS = ["fowned.live", "www.fowned.live"];
+
+/** The one gtag.js loader, or "" when disabled. It starts gtag only on the
+ *  production hosts, so a *.pages.dev preview, a local build or a test run never
+ *  reaches the GA4 property. A static <script src> would load on every host.
+ *  anonymize_ip is the GA4 default already. */
 export const ga4Tag = () =>
   GA4_ID
-    ? `  <script async src="https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA4_ID)}"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config",${JSON.stringify(GA4_ID)});</script>`
+    ? `  <script>(function(){if(${JSON.stringify(GA4_HOSTS)}.indexOf(location.hostname)<0)return;var id=${JSON.stringify(GA4_ID)};window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};window.gtag("js",new Date());window.gtag("config",id);var s=document.createElement("script");s.async=true;s.src="https://www.googletagmanager.com/gtag/js?id="+encodeURIComponent(id);document.head.appendChild(s)})();</script>`
     : "";
 export const bookRel = () =>
   SITE.bookingUrl ? ' target="_blank" rel="noopener noreferrer"' : "";

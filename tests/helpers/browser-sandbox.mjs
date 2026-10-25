@@ -28,7 +28,7 @@ export function fakeElement(props = {}) {
   };
 }
 
-export function runScript(file, { elements = {}, hostname = "fowned.live", globals = {} } = {}) {
+export function runScript(file, { elements = {}, hostname = "fowned.live", globals = {}, source } = {}) {
   const requests = [];
   const appended = [];
   const docListeners = {};
@@ -65,7 +65,7 @@ export function runScript(file, { elements = {}, hostname = "fowned.live", globa
   // A global the page itself defines (window.FOWNED, window.gtag) must be
   // visible both as window.X and as bare X, as it is in a browser.
   Object.assign(ctx, globals);
-  vm.runInContext(readFileSync(file, "utf8"), ctx, { filename: file });
+  vm.runInContext(source ?? readFileSync(file, "utf8"), ctx, { filename: file });
   return {
     ctx, window, document, requests, appended,
     fireDocument(type, ev) { for (const fn of docListeners[type] || []) fn(ev); },
