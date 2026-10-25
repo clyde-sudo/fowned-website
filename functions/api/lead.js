@@ -46,8 +46,9 @@ import { leadAlertEmail, auditStatus } from "../../src/email.mjs";
 const OWNERS = new Set(["PHOENIX", "CLYDE", "CHUDI", "UNASSIGNED"]);
 
 /* js/audit.js opens every free-audit request with this sentence. It is the only
- * sign that a person now owes this lead an audit within 2 business days. */
-const AUDIT_REQUEST_MARKER = "Free audit request.";
+ * sign that a person now owes this lead an audit within 2 business days.
+ * Exported so tests/audit-marker.test.mjs can hold the two files to it. */
+export const AUDIT_REQUEST_MARKER = "Free audit request.";
 
 /**
  * MM/DD/YYYY, 2 business days after `now`, counted on the Pacific calendar.

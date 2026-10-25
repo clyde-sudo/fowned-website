@@ -1097,7 +1097,7 @@
 
   .audit-form .cf-turnstile { flex: 0 0 100%; order: 1; }
 
-  .audit-form .btn { flex: 1 0 100%; order: 2; white-space: nowrap; }
+  .audit-form .btn { flex: 1 0 100%; order: 2; white-space: nowrap; justify-content: center; }
 
   /* audit.js hides the form after a successful request; display:flex above
    * would otherwise beat the browser's own [hidden] rule. */
