@@ -100,7 +100,7 @@ async function notify(env, record) {
     body: JSON.stringify({
       from,
       to,
-      reply_to: record.CONTACT,
+      reply_to: record.CONTACT.includes("@") ? record.CONTACT : undefined,
       subject: mail.subject,
       html: mail.html,
       text: mail.text,
@@ -137,17 +137,21 @@ export function esc(v) {
  * an unset SLACK_NOTIFY_MENTIONS changes nothing else about the card.
  */
 export function slackCard(record, mentionIds) {
-  const who = record.COMPANY || record.DOMAIN || record.CONTACT;
+  const who = record.BOOKING_FROM
+    ? `Booking: scheduled from ${record.BOOKING_FROM}`
+    : record.COMPANY || record.DOMAIN || record.CONTACT;
   const heat = record.AUDIT_COMPLETED ? "\u{1F525}" : "\u{1F4E5}";
 
   const facts = [
     record.DOMAIN ? `*Domain:* ${esc(record.DOMAIN)}` : null,
-    `*Email:* ${esc(record.CONTACT)}`,
+    `*${record.CONTACT.includes("@") ? "Email" : "Invitee"}:* ${esc(record.CONTACT)}`,
     record.CONTACT_NAME ? `*Name:* ${esc(record.CONTACT_NAME)}` : null,
     `*Source:* ${esc(record.SOURCE)}`,
     record.LANDING_PAGE ? `*Landed:* ${esc(record.LANDING_PAGE)}` : null,
     auditStatus(record) ? `*Audit:* ${auditStatus(record)}` : null,
-    record.BOOKING_CLICK ? "*Booking:* clicked" : null,
+    record.BOOKING_FROM
+      ? `*Booking:* scheduled from ${esc(record.BOOKING_FROM)}`
+      : record.BOOKING_CLICK ? "*Booking:* clicked" : null,
     `*Owner:* ${esc(record.OWNER)}`,
   ].filter(Boolean);
 
@@ -303,7 +307,41 @@ async function turnstileOk(env, token, ip) {
   }
 }
 
+/* A Calendly booking is reported by the visitor's browser, so these are the
+ * only shapes accepted: the invitee must belong to the event it came with. */
+const EVENT_URI = /^https:\/\/api\.calendly\.com\/scheduled_events\/([A-Za-z0-9-]{8,64})$/;
+const INVITEE_URI = /^https:\/\/api\.calendly\.com\/scheduled_events\/([A-Za-z0-9-]{8,64})\/invitees\/[A-Za-z0-9-]{8,64}$/;
+
+/** More than 10 posts from one IP in 10 minutes gets a 429. Counted in D1 so the
+ * limit holds across Pages isolates. Fails open: a counter that cannot be read
+ * must not cost a real lead. */
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+async function rateLimited(db, ip) {
+  if (!db || !ip) return false;
+  try {
+    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));
+    const ipHash = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const since = new Date(Date.now() - RATE_WINDOW_MS).toISOString();
+    await db.prepare("DELETE FROM lead_posts WHERE at < ?").bind(since).run();
+    const row = await db
+      .prepare("SELECT COUNT(*) AS n FROM lead_posts WHERE ip_hash = ? AND at >= ?")
+      .bind(ipHash, since)
+      .first();
+    if ((row?.n ?? 0) >= RATE_LIMIT) return true;
+    await db.prepare("INSERT INTO lead_posts (ip_hash, at) VALUES (?, ?)").bind(ipHash, new Date().toISOString()).run();
+  } catch {
+    return false;
+  }
+  return false;
+}
+
 export async function onRequestPost(context) {
+  const ip = context.request.headers.get("CF-Connecting-IP");
+  if (await rateLimited(context.env.fowned_leads, ip)) {
+    return json({ ok: false, error: "RATE_LIMITED" }, 429);
+  }
+
   let body;
   try {
     body = await context.request.json();
@@ -320,36 +358,58 @@ export async function onRequestPost(context) {
     return json({ ok: false, error: "BAD_ORIGIN" }, 403);
   }
 
-  const ip = context.request.headers.get("CF-Connecting-IP");
-  if (!(await turnstileOk(context.env, str(body?.turnstileToken, 2048), ip))) {
+  const a = body?.attribution || {};
+  const booking = body?.kind === "BOOKING_SCHEDULED";
+  let eventUri = null;
+  let inviteeUri = null;
+  let bookingFrom = null;
+
+  if (booking) {
+    /* No Turnstile token exists for a booking (the visitor passed Calendly,
+     * not our form), so the Origin header is required here instead of merely
+     * checked. Name and email are never read from the post: Calendly holds
+     * them, and Clyde reads them there. */
+    if (!context.request.headers.get("Origin")) {
+      return json({ ok: false, error: "BAD_ORIGIN" }, 403);
+    }
+    eventUri = str(body?.eventUri, 256);
+    inviteeUri = str(body?.inviteeUri, 320);
+    bookingFrom = str(body?.pagePath, 256);
+    const ev = eventUri && EVENT_URI.exec(eventUri);
+    const inv = inviteeUri && INVITEE_URI.exec(inviteeUri);
+    if (!ev || !inv || ev[1] !== inv[1] || !bookingFrom || !bookingFrom.startsWith("/") || bookingFrom.startsWith("//")) {
+      return json({ ok: false, error: "BAD_BOOKING" }, 400);
+    }
+  } else if (!(await turnstileOk(context.env, str(body?.turnstileToken, 2048), ip))) {
     return json({ ok: false, error: "CHALLENGE_FAILED" }, 403);
   }
 
-  const contact = str(body?.contact, 160);
-  if (!contact || contact.indexOf("@") < 1) {
+  const contact = booking ? inviteeUri : str(body?.contact, 160);
+  if (!booking && (!contact || contact.indexOf("@") < 1)) {
     return json({ ok: false, error: "CONTACT_REQUIRED" }, 400);
   }
 
-  const a = body?.attribution || {};
-  const message = str(body?.message, 2000);
+  const message = booking ? `Booking: scheduled from ${bookingFrom}.` : str(body?.message, 2000);
   const auditRequest = Boolean(message && message.startsWith(AUDIT_REQUEST_MARKER));
 
   const record = {
-    kind: "FOWNED_LEAD",
-    DOMAIN: str(body?.domain, 253),
-    COMPANY: str(body?.company, 160),
+    kind: booking ? "BOOKING_SCHEDULED" : "FOWNED_LEAD",
+    DOMAIN: booking ? null : str(body?.domain, 253),
+    COMPANY: booking ? null : str(body?.company, 160),
     CONTACT: contact,
-    CONTACT_NAME: str(body?.name, 120),
+    CONTACT_NAME: booking ? null : str(body?.name, 120),
     MESSAGE: message,
     SOURCE: str(a?.source, 48) || "DIRECT_OR_UNKNOWN",
     LANDING_PAGE: str(a?.landingPath, 256),
     AUDIT_COMPLETED: Boolean(body?.auditCompleted),
-    KEY_AUDIT_FINDINGS: Array.isArray(body?.findings)
+    KEY_AUDIT_FINDINGS: !booking && Array.isArray(body?.findings)
       ? body.findings.slice(0, 6).map((f) => str(f, 200)).filter(Boolean)
       : [],
-    BOOKING_CLICK: Boolean(body?.bookingClick),
+    BOOKING_CLICK: booking || Boolean(body?.bookingClick),
+    BOOKING_FROM: bookingFrom,
+    EVENT_URI: eventUri,
     AUDIT_DUE: auditRequest ? auditDueDate() : null,
-    OWNER: OWNERS.has(body?.owner) ? body.owner : auditRequest ? "CHUDI" : "UNASSIGNED",
+    OWNER: booking ? "CLYDE" : OWNERS.has(body?.owner) ? body.owner : auditRequest ? "CHUDI" : "UNASSIGNED",
     STATUS: "NEW",
     TIMESTAMP: new Date().toISOString(),
   };
@@ -362,6 +422,11 @@ export async function onRequestPost(context) {
     return json({ ok: false, error: "STORE_UNAVAILABLE" }, 503);
   }
 
+  if (booking) {
+    const dupe = await db.prepare("SELECT id FROM leads WHERE event_uri = ?").bind(eventUri).first().catch(() => null);
+    if (dupe) return json({ ok: false, error: "DUPLICATE_BOOKING" }, 409);
+  }
+
   let id;
   try {
     const stored = await db
@@ -369,8 +434,8 @@ export async function onRequestPost(context) {
         `INSERT INTO leads
            (domain, company, contact, contact_name, message, source,
             landing_page, audit_completed, key_audit_findings, booking_click,
-            owner, status, timestamp)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            owner, status, timestamp, kind, event_uri, invitee_uri)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          RETURNING id`
       )
       .bind(
@@ -386,11 +451,18 @@ export async function onRequestPost(context) {
         record.BOOKING_CLICK ? 1 : 0,
         record.OWNER,
         record.STATUS,
-        record.TIMESTAMP
+        record.TIMESTAMP,
+        record.kind,
+        eventUri,
+        inviteeUri
       )
       .first();
     id = stored?.id;
   } catch (err) {
+    // Two tabs racing past the pre-check land here, on the unique index.
+    if (booking && /UNIQUE/i.test(String(err))) {
+      return json({ ok: false, error: "DUPLICATE_BOOKING" }, 409);
+    }
     console.log("FOWNED_LEAD_STORE_FAILED " + String(err) + " " + JSON.stringify(record));
     return json({ ok: false, error: "STORE_FAILED" }, 503);
   }

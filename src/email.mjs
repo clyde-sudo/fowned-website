@@ -209,17 +209,23 @@ export function auditStatus(record) {
     : null;
 }
 
+/** The Booking line for both lead alerts. */
+export function bookingStatus(record) {
+  if (record.BOOKING_FROM) return "scheduled from " + record.BOOKING_FROM;
+  return record.BOOKING_CLICK ? "clicked" : "no";
+}
+
 export function leadAlertText(record) {
   const lines = [
     "Company:  " + (record.COMPANY || "-"),
     "Domain:   " + (record.DOMAIN || "-"),
     "Name:     " + (record.CONTACT_NAME || "-"),
-    "Email:    " + record.CONTACT,
+    (record.CONTACT.includes("@") ? "Email:    " : "Invitee:  ") + record.CONTACT,
     "",
     "Source:   " + record.SOURCE,
     "Landed:   " + (record.LANDING_PAGE || "-"),
     ...(auditStatus(record) ? ["Audit:    " + auditStatus(record)] : []),
-    "Booking:  " + (record.BOOKING_CLICK ? "clicked" : "no"),
+    "Booking:  " + bookingStatus(record),
     "Owner:    " + record.OWNER,
     "Time:     " + humanTime(record.TIMESTAMP),
   ];
@@ -233,8 +239,13 @@ export function leadAlertText(record) {
 
 /** The internal lead alert sent to whoever works the pipeline. */
 export function leadAlertEmail(record) {
-  const who = record.CONTACT_NAME || record.COMPANY || record.DOMAIN || record.CONTACT;
-  const mailto = "mailto:" + encodeURIComponent(record.CONTACT).replace(/%40/g, "@");
+  const who = record.BOOKING_FROM
+    ? "Booking: " + bookingStatus(record)
+    : record.CONTACT_NAME || record.COMPANY || record.DOMAIN || record.CONTACT;
+  // A booking's contact is a Calendly invitee URI, not an address to reply to.
+  const mailto = record.CONTACT.includes("@")
+    ? "mailto:" + encodeURIComponent(record.CONTACT).replace(/%40/g, "@")
+    : null;
 
   const blocks = [];
 
@@ -247,8 +258,10 @@ export function leadAlertEmail(record) {
       TOKENS.black + ';">' + escapeHtml(who) + "</div>" +
       '<div style="margin:10px 0 0;font-family:' + SANS + ";font-size:14px;" +
       "line-height:20px;\">" +
-      '<a href="' + escapeHtml(mailto) + '" style="color:' + TOKENS.indigo +
-      ';text-decoration:none;">' + escapeHtml(record.CONTACT) + "</a></div>" +
+      (mailto
+        ? '<a href="' + escapeHtml(mailto) + '" style="color:' + TOKENS.indigo +
+          ';text-decoration:none;">' + escapeHtml(record.CONTACT) + "</a>"
+        : escapeHtml(record.CONTACT)) + "</div>" +
       (record.AUDIT_COMPLETED
         ? '<div style="margin:14px 0 0;">' + badge("Audit completed on site") + "</div>"
         : ""),
@@ -265,7 +278,7 @@ export function leadAlertEmail(record) {
         ["Source", record.SOURCE],
         ["Landed", record.LANDING_PAGE],
         ["Audit", auditStatus(record)],
-        ["Booking", record.BOOKING_CLICK ? "Clicked" : "No"],
+        ["Booking", bookingStatus(record).replace(/^./, (c) => c.toUpperCase())],
         ["Owner", record.OWNER],
         ["Time", humanTime(record.TIMESTAMP)],
       ]),
@@ -305,7 +318,7 @@ export function leadAlertEmail(record) {
     );
   }
 
-  blocks.push(row(button(mailto, "Reply to " + who), "20px 32px 28px"));
+  if (mailto) blocks.push(row(button(mailto, "Reply to " + who), "20px 32px 28px"));
 
   const html = shell({
     title: "New Fowned lead: " + who,
@@ -313,14 +326,16 @@ export function leadAlertEmail(record) {
     preheader:
       who + " · " + (record.DOMAIN || record.SOURCE) +
       (record.MESSAGE ? " · " + record.MESSAGE.slice(0, 80) : ""),
-    footer:
-      "Sent by fowned.live because the consultation form was submitted. " +
-      "Reply goes straight to the person who filled it in.",
+    footer: record.BOOKING_FROM
+      ? "Sent by fowned.live because a call was booked through Calendly. " +
+        "The invitee's name and email are in Calendly, not here."
+      : "Sent by fowned.live because the consultation form was submitted. " +
+        "Reply goes straight to the person who filled it in.",
     blocks: blocks,
   });
 
   return {
-    subject: "Fowned lead: " + (record.COMPANY || record.DOMAIN || record.CONTACT),
+    subject: "Fowned lead: " + (record.BOOKING_FROM ? who : record.COMPANY || record.DOMAIN || record.CONTACT),
     html: html,
     text: leadAlertText(record),
   };

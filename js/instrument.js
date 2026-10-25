@@ -112,8 +112,9 @@
   }
 
   /* Events forwarded to GA4, under the same names the first-party stream uses.
-   * booking_click, audit_request and contact_submit are the key events (the
-   * last two fire only on a lead the server accepted). They used to be renamed
+   * audit_request, contact_submit and booking_scheduled are the key events
+   * (the first two fire only on a lead the server accepted; the last only on
+   * Calendly's own scheduled message). They used to be renamed
    * to the chudi.dev portfolio contract (offer_click, tool_use,
    * newsletter_success), which left GA4 reporting a blog's conversions and none
    * of the agency's. page_view is not forwarded because gtag's config already
@@ -124,6 +125,7 @@
     outbound_click: "outbound_click",
     audit_request: "audit_request",
     contact_submit: "contact_submit",
+    booking_scheduled: "booking_scheduled",
   };
 
   /* Same list as GA4_HOSTS in src/layout.mjs. Off these hosts nothing is sent
@@ -141,6 +143,8 @@
       destination: d.destination,
       location: location.pathname,
       form: d.form,
+      page_path: d.page_path,
+      source_class: d.source_class,
     };
     for (var k in params) if (params[k] === undefined || params[k] === null) delete params[k];
     try { window.gtag("event", gaName, params); } catch (e) { /* never break the page */ }
