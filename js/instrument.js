@@ -126,9 +126,15 @@
     contact_submit: "contact_submit",
   };
 
+  /* Same list as GA4_HOSTS in src/layout.mjs. Off these hosts nothing is sent
+   * to GA4 at all, rather than sent with an env=preview tag, so the property
+   * never holds a test or preview event that a report could forget to filter. */
+  var GA4_HOSTS = ["fowned.live", "www.fowned.live"];
+
   function toGa4(name, detail) {
     var gaName = GA4_NAMES[name];
     if (!gaName || typeof window.gtag !== "function") return;
+    if (GA4_HOSTS.indexOf(location.hostname) < 0) return;
     var d = detail || {};
     var params = {
       cta_label: d.label,
