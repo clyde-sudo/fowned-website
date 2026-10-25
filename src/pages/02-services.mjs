@@ -90,7 +90,7 @@ ${table(
     ["Opportunity tracking", "&mdash;", "&mdash;", "Yes"],
   ]
 )}
-      <p class="fineprint">Pricing is set on the call, against what the audit finds. The one exception is the Visibility Sprint, which starts at a published $4,500 because its scope is fixed in advance. Everything else is scoped to the gap, and a fixed price before a diagnosis is either padded or unprofitable.</p>
+      <p class="fineprint">Pricing is set on the call, against what the audit finds. Every engagement is scoped to the gap, and a fixed price before a diagnosis is either padded or unprofitable.</p>
     </div>
   </section>
 
@@ -111,7 +111,7 @@ ${answer(
 )}
 ${answer(
   "Why hire an agency instead of buying a measurement tool?",
-  "A tool tells you which signals are missing. It does not rewrite the page, reconcile the listing that disagrees with your website, unblock the crawler your firewall is refusing, or carry the change through your web developer. If you have people who will do that work, buy the tool at <a href=\"https://citability.dev/\">citability.dev</a> and keep the rest of the money. Hire us when the finding needs hands."
+  "A tool tells you which signals are missing. It does not rewrite the page, reconcile the listing that disagrees with your website, unblock the crawler your firewall is refusing, or carry the change through your web developer. If you have people who will do that work, the free audit may be all you need. Hire us when the finding needs hands."
 )}
 ${answer(
   "What happens after the audit?",
@@ -135,8 +135,8 @@ ${answer(
 
 ${cta({
   h: "Start with the audit.",
-  p: "It takes about a minute and tells us both what we are actually dealing with.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "services_audit" },
+  p: "A person checks your site and emails the audit within 2 business days. It tells us both what we are actually dealing with.",
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "services_audit" },
   secondary: { href: BOOK_HREF, text: "Book a call after the audit", ev: "services_book_footer", booking: true },
 })}`,
 };

@@ -25,7 +25,7 @@ ${guideList()}
 ${cta({
   h: "Want the answer for your business?",
   p: "The audit runs the same checks these guides describe, on your site.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "guides_audit" },
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "guides_audit" },
   secondary: { href: "/resources/", text: "Short answers", ev: "guides_resources" },
 })}`,
 };

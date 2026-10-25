@@ -39,10 +39,34 @@
  *                         (see the gate comments below).
  */
 
-import { leadAlertEmail } from "../../src/email.mjs";
+import { leadAlertEmail, auditStatus } from "../../src/email.mjs";
 
-/** Whoever picks the lead up. UNASSIGNED until a human claims it. */
-const OWNERS = new Set(["PHOENIX", "CLYDE", "UNASSIGNED"]);
+/** Whoever picks the lead up. UNASSIGNED until a human claims it; a free-audit
+ * request starts as CHUDI, who produces audits. */
+const OWNERS = new Set(["PHOENIX", "CLYDE", "CHUDI", "UNASSIGNED"]);
+
+/* js/audit.js opens every free-audit request with this sentence. It is the only
+ * sign that a person now owes this lead an audit within 2 business days.
+ * Exported so tests/audit-marker.test.mjs can hold the two files to it. */
+export const AUDIT_REQUEST_MARKER = "Free audit request.";
+
+/**
+ * MM/DD/YYYY, 2 business days after `now`, counted on the Pacific calendar.
+ * ponytail: weekends are skipped, public holidays are not; add a holiday list
+ * if a due date ever lands on one.
+ */
+export function auditDueDate(now = new Date()) {
+  const [m, d, y] = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(now).split("/");
+  const t = new Date(Date.UTC(+y, +m - 1, +d));
+  for (let left = 2; left > 0; ) {
+    t.setUTCDate(t.getUTCDate() + 1);
+    if (t.getUTCDay() % 6 !== 0) left--;
+  }
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${pad(t.getUTCMonth() + 1)}/${pad(t.getUTCDate())}/${t.getUTCFullYear()}`;
+}
 
 const str = (v, max = 256) =>
   typeof v === "string" && v.trim().length ? v.trim().slice(0, max) : null;
@@ -122,7 +146,7 @@ export function slackCard(record, mentionIds) {
     record.CONTACT_NAME ? `*Name:* ${esc(record.CONTACT_NAME)}` : null,
     `*Source:* ${esc(record.SOURCE)}`,
     record.LANDING_PAGE ? `*Landed:* ${esc(record.LANDING_PAGE)}` : null,
-    `*Audit:* ${record.AUDIT_COMPLETED ? "completed on site" : "not run"}`,
+    auditStatus(record) ? `*Audit:* ${auditStatus(record)}` : null,
     record.BOOKING_CLICK ? "*Booking:* clicked" : null,
     `*Owner:* ${esc(record.OWNER)}`,
   ].filter(Boolean);
@@ -307,6 +331,8 @@ export async function onRequestPost(context) {
   }
 
   const a = body?.attribution || {};
+  const message = str(body?.message, 2000);
+  const auditRequest = Boolean(message && message.startsWith(AUDIT_REQUEST_MARKER));
 
   const record = {
     kind: "FOWNED_LEAD",
@@ -314,7 +340,7 @@ export async function onRequestPost(context) {
     COMPANY: str(body?.company, 160),
     CONTACT: contact,
     CONTACT_NAME: str(body?.name, 120),
-    MESSAGE: str(body?.message, 2000),
+    MESSAGE: message,
     SOURCE: str(a?.source, 48) || "DIRECT_OR_UNKNOWN",
     LANDING_PAGE: str(a?.landingPath, 256),
     AUDIT_COMPLETED: Boolean(body?.auditCompleted),
@@ -322,7 +348,8 @@ export async function onRequestPost(context) {
       ? body.findings.slice(0, 6).map((f) => str(f, 200)).filter(Boolean)
       : [],
     BOOKING_CLICK: Boolean(body?.bookingClick),
-    OWNER: OWNERS.has(body?.owner) ? body.owner : "UNASSIGNED",
+    AUDIT_DUE: auditRequest ? auditDueDate() : null,
+    OWNER: OWNERS.has(body?.owner) ? body.owner : auditRequest ? "CHUDI" : "UNASSIGNED",
     STATUS: "NEW",
     TIMESTAMP: new Date().toISOString(),
   };

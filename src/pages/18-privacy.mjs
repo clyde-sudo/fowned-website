@@ -32,7 +32,7 @@ ${head({ label: "The short version", h: "No cookies, no ad tracking, no selling.
   <section class="band">
     <div class="container narrow">
 ${head({ label: "What you give us", h: "Information you type into a form." })}
-      <p>The audit form takes a website address. The result form and the consultation form take your email, and optionally your name, your website and a short message. If you run the audit and then leave your email, we attach the findings you saw to your record so that whoever replies is reading the same report you did.</p>
+      <p>The audit form takes a website address and your email, so we can send the audit to you. The consultation form takes your email, and optionally your name, your website and a short message.</p>
       <p>We store this in a database operated for Fowned by Cloudflare, and we send a copy to our own inboxes by email so the enquiry is not missed. Nothing else is done with it. It is used to reply to you and to keep track of the conversation.</p>
       <p>We keep lead records for as long as the commercial conversation is live, and for two years after the last contact so we can honour a request to be forgotten and know who we already spoke to. Ask us to delete it sooner and we will.</p>
     </div>

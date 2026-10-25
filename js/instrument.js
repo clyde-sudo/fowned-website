@@ -111,19 +111,19 @@
     toGa4(name, detail);
   }
 
-  /* GA4 mirror of the chudi.dev event contract, so the portfolio reads one set
-   * of names: cta_click, offer_click, outbound_click, newsletter_success,
-   * tool_use. The first-party stream keeps its own names; only these five are
-   * forwarded, renamed where the contract uses a different word. Fowned has no
-   * newsletter, so its email capture (a lead that the server accepted) is the
-   * newsletter_success equivalent, told apart by the form param. page_view is
-   * not forwarded because gtag's config already sends it. */
+  /* Events forwarded to GA4, under the same names the first-party stream uses.
+   * booking_click, audit_request and contact_submit are the key events (the
+   * last two fire only on a lead the server accepted). They used to be renamed
+   * to the chudi.dev portfolio contract (offer_click, tool_use,
+   * newsletter_success), which left GA4 reporting a blog's conversions and none
+   * of the agency's. page_view is not forwarded because gtag's config already
+   * sends it. */
   var GA4_NAMES = {
     cta_click: "cta_click",
-    booking_click: "offer_click",
+    booking_click: "booking_click",
     outbound_click: "outbound_click",
-    lead_success: "newsletter_success",
-    audit_complete: "tool_use",
+    audit_request: "audit_request",
+    contact_submit: "contact_submit",
   };
 
   function toGa4(name, detail) {
@@ -134,10 +134,7 @@
       cta_label: d.label,
       destination: d.destination,
       location: location.pathname,
-      offer_id: name === "booking_click" ? "strategy_call" : undefined,
       form: d.form,
-      tool_id: name === "audit_complete" ? "ai_visibility_audit" : undefined,
-      tool_state: d.state,
     };
     for (var k in params) if (params[k] === undefined || params[k] === null) delete params[k];
     try { window.gtag("event", gaName, params); } catch (e) { /* never break the page */ }

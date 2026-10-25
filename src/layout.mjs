@@ -108,14 +108,8 @@ function v(path) {
 const TURNSTILE_SITE_KEY =
   process.env.TURNSTILE_SITE_KEY || "0x4AAAAAAEmXEc7D3kVZl4Hn";
 
-/* Empty means the audit runs in fixture mode. Set it to the tenant-scoped
- * Citability endpoint ONLY once that endpoint answers for fowned.live, because
- * the value flipping the switch is also the value the browser calls. */
-const AUDIT_SCAN_URL = process.env.AUDIT_SCAN_URL || "";
-
 export const SITE = {
   turnstileSiteKey: TURNSTILE_SITE_KEY,
-  scanUrl: AUDIT_SCAN_URL,
   name: "Fowned",
   origin: ORIGIN,
   bookingUrl: BOOKING_URL,
@@ -166,7 +160,6 @@ export const NAV = [
   { path: "/how-it-works/", title: "How it works" },
   { path: "/ai-visibility/", title: "AI visibility" },
   { path: "/geo/", title: "What is GEO" },
-  { path: "/case-studies/", title: "Case study" },
   { path: "/resources/", title: "Resources" },
   { path: "/about/", title: "About" },
   { path: "/contact/", title: "Contact" },
@@ -322,7 +315,7 @@ function header(page) {
           </span>
         </a>
         <div class="nav-right">
-          <a href="/audit/" class="btn btn-primary nav-cta" data-ev="cta_click" data-ev-label="header_audit">Run free audit</a>
+          <a href="/audit/" class="btn btn-primary nav-cta" data-ev="cta_click" data-ev-label="header_audit">Request free audit</a>
           <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="menuPanel">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -340,7 +333,7 @@ ${links}
 ${guideLinks("          ")}
         </div>
         <div class="menu-divider"></div>
-        <a href="/audit/" class="btn btn-primary menu-btn-primary" data-ev="cta_click" data-ev-label="menu_audit">Run free audit</a>
+        <a href="/audit/" class="btn btn-primary menu-btn-primary" data-ev="cta_click" data-ev-label="menu_audit">Request free audit</a>
         ${bookBtn("Book a call", "menu_book", "btn btn-secondary menu-btn-secondary")}
       </div>
     </div>
@@ -361,9 +354,9 @@ ${items.join("\n")}
   <div class="container">
     <div class="contact-top">
       <h2>Start with the audit. Then we talk.</h2>
-      <p class="contact-sub">Run the free audit and leave your email with the result. If you would rather speak to someone first, book a call or use the number below.</p>
+      <p class="contact-sub">Request the free audit and a person emails it to you within 2 business days. If you would rather speak to someone first, book a call or use the number below.</p>
       <div class="hero-ctas contact-ctas">
-        <a href="/audit/" class="btn btn-primary" data-ev="cta_click" data-ev-label="footer_audit">Run my free audit &rarr;</a>
+        <a href="/audit/" class="btn btn-primary" data-ev="cta_click" data-ev-label="footer_audit">Request my free audit &rarr;</a>
         ${bookBtn("Book a call", "footer_book", "btn btn-secondary")}
       </div>
     </div>
@@ -376,7 +369,6 @@ ${col("Services", [
 ])}
 ${col("Company", [
   '        <a href="/how-it-works/">How it works</a>',
-  '        <a href="/case-studies/">Case study</a>',
   '        <a href="/about/">About</a>',
   '        <a href="/resources/">Resources</a>',
 ])}
@@ -455,7 +447,7 @@ ${head(page)}
 ${header(page)}
 ${body}
 ${footer(isDemo)}
-<script>window.FOWNED = { bookingUrl: ${JSON.stringify(SITE.bookingUrl)}, phoneHref: ${JSON.stringify(SITE.phoneHref)}, phoneText: ${JSON.stringify(SITE.phoneText)}, turnstileSiteKey: ${JSON.stringify(SITE.turnstileSiteKey)}, scanUrl: ${JSON.stringify(SITE.scanUrl)} };</script>
+<script>window.FOWNED = { bookingUrl: ${JSON.stringify(SITE.bookingUrl)}, phoneHref: ${JSON.stringify(SITE.phoneHref)}, phoneText: ${JSON.stringify(SITE.phoneText)}, turnstileSiteKey: ${JSON.stringify(SITE.turnstileSiteKey)} };</script>
 ${SITE.turnstileSiteKey ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>' : ""}
 <script src="${v("/js/instrument.js")}"></script>
 ${rb2bTag()}

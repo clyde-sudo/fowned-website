@@ -1068,15 +1068,19 @@
     color: #9a9a9a;
   }
 
+  /* Row 1: site address and email side by side. Row 2: the Turnstile widget,
+   * a fixed ~300px iframe that will not shrink, so it gets its own line rather
+   * than squeezing the button. Row 3: a full-width submit. */
   .audit-form {
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     max-width: 560px;
     margin: var(--space-sm) auto 0;
   }
 
   .audit-form input {
-    flex: 1;
+    flex: 1 1 200px;
     font-family: var(--font-sans);
     font-size: 16px;
     padding: 14px 16px;
@@ -1086,57 +1090,30 @@
     color: var(--color-black);
   }
 
-  .audit-form input:focus-visible,
-  .audit-lead input:focus-visible {
+  .audit-form input:focus-visible {
     outline: 2px solid var(--color-indigo);
     outline-offset: 2px;
   }
 
-  .audit-form .btn { white-space: nowrap; }
+  .audit-form .cf-turnstile { flex: 0 0 100%; order: 1; }
+
+  .audit-form .btn { flex: 1 0 100%; order: 2; white-space: nowrap; justify-content: center; }
+
+  /* audit.js hides the form after a successful request; display:flex above
+   * would otherwise beat the browser's own [hidden] rule. */
+  .audit-form[hidden] { display: none; }
 
   @media (max-width: 640px) {
-    .audit-form { flex-direction: column; }
-  }
-
-  .audit-panel {
-    max-width: 560px;
-    margin: var(--space-sm) auto 0;
-    text-align: left;
-  }
-
-  .audit-notice,
-  .audit-result {
-    background: var(--color-white);
-    /* the panel mounts inside .final-cta, which sets color:white for the black
-       band. A card that flips the background owes an explicit foreground in the
-       same rule, or its unstyled children inherit white and vanish. */
-    color: var(--color-black);
-    border: 1px solid var(--color-hairline);
-    border-radius: var(--radius);
-    padding: var(--space-sm);
-  }
-
-  .audit-notice-title {
-    font-family: var(--font-display);
-    font-size: 18px;
-    margin-bottom: 6px;
-  }
-
-  .audit-notice-body { color: var(--color-gray); font-size: 15px; }
-
-  /* a failure must look like a failure, not like a neutral note */
-  .audit-panel[data-state="FAILED"] .audit-notice,
-  .audit-panel[data-state="INVALID_DOMAIN"] .audit-notice,
-  .audit-panel[data-state="RATE_LIMITED"] .audit-notice {
-    border-left: 3px solid var(--color-indigo);
-  }
-
-  .audit-result-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
+    /* In a column a flex basis is a height, so drop it and let each row size
+     * to its content. nowrap keeps a single flex line, so the fields stretch
+     * to the form's width instead of to the 300px Turnstile iframe. */
+    .audit-form { flex-direction: column; flex-wrap: nowrap; }
+    .audit-form input,
+    .audit-form .cf-turnstile,
+    .audit-form .btn { flex: none; }
+    .audit-form .cf-turnstile { align-self: center; }
+    /* 64px of side padding leaves 215px at 375, narrower than the widget. */
+    .final-cta:has(> .audit-form) { padding: var(--space-md) 20px; }
   }
 
   .audit-health {
@@ -1152,89 +1129,6 @@
   .audit-health-CRITICAL  { background: var(--color-black);     color: var(--color-white); }
   .audit-health-NEEDS_WORK{ background: var(--color-highlight); color: var(--color-black); }
   .audit-health-HEALTHY   { background: var(--color-indigo);    color: var(--color-white); }
-
-  .audit-score {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--color-gray);
-  }
-
-  .audit-health-line { font-size: 16px; margin-bottom: 8px; }
-
-  .audit-scanned {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--color-gray);
-    margin-bottom: var(--space-xs);
-  }
-
-  /* unmeasured checks get their own visible line: not a score, not a failure */
-  .audit-partial {
-    font-size: 13px;
-    color: var(--color-gray);
-    background: var(--color-blush);
-    border-radius: var(--radius);
-    padding: 12px 14px;
-    margin-bottom: var(--space-xs);
-  }
-
-  .audit-findings-head {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-
-  .audit-findings { list-style: none; margin-bottom: var(--space-sm); }
-
-  .audit-finding {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    font-size: 15px;
-    padding: 7px 0;
-    border-bottom: 1px solid var(--color-hairline);
-  }
-
-  .audit-finding-mark { font-weight: 700; line-height: 1.35; }
-  .audit-finding.is-fail .audit-finding-mark { color: var(--color-indigo); }
-  .audit-finding.is-pass .audit-finding-mark { color: var(--color-gray); }
-
-  .audit-gate {
-    border-top: 1px solid var(--color-hairline);
-    padding-top: var(--space-xs);
-  }
-
-  .audit-gate h4 {
-    font-family: var(--font-display);
-    font-size: 17px;
-    margin-bottom: 4px;
-  }
-
-  .audit-gate p { font-size: 14px; color: var(--color-gray); margin-bottom: 14px; }
-
-  /* The Turnstile widget is a fixed ~300px iframe that will not shrink, so on
-   * one line it squeezes the submit button into a wrapped sliver. Let the row
-   * wrap and give the challenge its own full line. */
-  .audit-lead { display: flex; gap: 10px; flex-wrap: wrap; }
-
-  .audit-lead .cf-turnstile { flex: 0 0 100%; order: 1; }
-
-  .audit-lead input {
-    flex: 1 1 200px;
-    font-family: var(--font-sans);
-    font-size: 15px;
-    padding: 12px 14px;
-    border: 1px solid var(--color-hairline);
-    border-radius: var(--radius);
-  }
-
-  @media (max-width: 640px) {
-    .audit-lead { flex-direction: column; }
-
-    /* In a column the main axis is vertical, so order:1 would push the
-     * challenge BELOW the submit button. Stacked, it belongs above it. */
-    .audit-lead .cf-turnstile { order: 0; }
-  }
 
   .audit-lead-msg {
     font-size: 14px;

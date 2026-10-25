@@ -15,7 +15,7 @@ export default {
           name: "How long does the first audit take?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "The automated retrieval checks run in about a minute. The reviewed version, where a person reads the result and writes the diagnosis, is returned within two business days.",
+            text: "A person runs the checks, reads the result and writes the diagnosis. The audit is emailed to you within 2 business days.",
           },
         },
         {
@@ -63,7 +63,7 @@ export default {
 ${head({ label: "Questions", h: "What people ask before signing." })}
 ${answer(
   "How long does the first audit take?",
-  "The automated retrieval checks run in about a minute. The reviewed version, where a person reads the result and writes the diagnosis, is returned within two business days."
+  "A person runs the checks, reads the result and writes the diagnosis. The audit is emailed to you within 2 business days."
 )}
 ${answer(
   "What happens if a measurement fails?",
@@ -79,7 +79,7 @@ ${answer(
 ${cta({
   h: "Step one is free.",
   p: "The audit is the observation stage of the loop. Everything else follows from what it finds.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "how_audit" },
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "how_audit" },
   secondary: { href: "/services/", text: "See service levels", ev: "how_services" },
 })}`,
 };

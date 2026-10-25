@@ -1,4 +1,4 @@
-import { head, cta, guideList } from "../ui.mjs";
+import { head, cta, guideList, auditForm } from "../ui.mjs";
 import { SITE, bookBtn } from "../layout.mjs";
 
 export default {
@@ -40,7 +40,7 @@ export default {
         <h1>Be the business AI recommends.</h1>
         <p class="hero-sub">GEO gets your business named when AI tools like ChatGPT and Perplexity answer a customer's question. We audit your visibility, fix what's missing, and keep you cited as those answers change.</p>
         <div class="hero-ctas">
-          <a href="/audit/" class="btn btn-primary" data-ev="cta_click" data-ev-label="hero_audit">Run my free audit &rarr;</a>
+          <a href="/audit/" class="btn btn-primary" data-ev="cta_click" data-ev-label="hero_audit">Request my free audit &rarr;</a>
           <a href="/how-it-works/" class="btn btn-secondary" data-ev="cta_click" data-ev-label="hero_how">See how it works</a>
         </div>
         <div class="ai-badges">
@@ -80,7 +80,7 @@ ${head({
   label: "Three levels of visibility",
   h: "Every plan starts from your audit.",
   sub: "Pick the outcome you want. Where you start depends on what the audit finds. Pricing is set on the call.",
-  cta: { href: "/audit/", text: "Run free audit", ev: "tiers_audit" },
+  cta: { href: "/audit/", text: "Request free audit", ev: "tiers_audit" },
 })}
       <img src="/images/fowned-portrait-transparent.png" alt="" class="tiers-portrait" width="320" height="320" loading="lazy" decoding="async">
       <div class="tier-grid">
@@ -164,7 +164,7 @@ ${head({ label: "How it works", h: "Three steps, one loop." })}
 
   <section id="guides">
     <div class="container">
-${head({ label: "Guides", h: "Read before you buy anything.", sub: "Five plain guides for a local business owner working out what AI visibility actually is and who to trust with it." })}
+${head({ label: "Guides", h: "Read before you buy anything.", sub: "Six plain guides for a local business owner working out what AI visibility actually is and who to trust with it." })}
 ${guideList()}
       <p class="center-link"><a class="inline-link" href="/resources/">All guides and short answers &rarr;</a></p>
     </div>
@@ -175,12 +175,7 @@ ${guideList()}
       <div class="final-cta">
         <h2>See how AI describes your business.</h2>
         <p>We check your site against the things AI tools rely on when they decide who to name. No account needed.</p>
-        <form class="audit-form" id="auditForm" novalidate>
-          <label class="sr-only" for="auditUrl">Your website address</label>
-          <input type="text" id="auditUrl" name="url" placeholder="yourbusiness.com" autocomplete="url" required>
-          <button type="submit" class="btn btn-primary" id="auditSubmit">Run my free audit &rarr;</button>
-        </form>
-        <div class="audit-panel" id="auditPanel" hidden aria-live="polite"></div>
+${auditForm()}
       </div>
     </div>
   </section>`,

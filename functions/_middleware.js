@@ -22,6 +22,13 @@ const isTemporaryHost = (host) => host.endsWith(".pages.dev");
 /** Canonical apex. www redirects here so link equity lands on one hostname. */
 const CANONICAL_HOST = "fowned.live";
 
+/* Retired URLs answer 410 Gone, which tells a crawler the removal is on
+ * purpose (a 404 gets retried for weeks). _redirects cannot set a 410, so it
+ * lives here. /case-studies/ held a fictional worked example; it stays gone
+ * until a real case study replaces it. /410/ itself is included so the body
+ * page never answers 200. */
+const GONE = /^\/(case-studies|410)(\/|$)/;
+
 const ROBOTS_TEMPORARY = `# Temporary Cloudflare hostname, not the Fowned property.
 # The real site is https://fowned.live and search equity belongs there. Equity
 # earned on a *.pages.dev host cannot be moved later, and a full duplicate of
@@ -63,6 +70,13 @@ export async function onRequest(context) {
         "Cache-Control": "public, max-age=300",
       },
     });
+  }
+
+  if (GONE.test(url.pathname)) {
+    const page = await context.env.ASSETS.fetch(new URL("/410/", url));
+    const out = new Response(page.body, { status: 410, headers: page.headers });
+    out.headers.set("X-Robots-Tag", "noindex");
+    return out;
   }
 
   const response = await next();

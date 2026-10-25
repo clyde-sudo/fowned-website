@@ -81,7 +81,7 @@ ${head({ label: "What this is not", h: "There is no ranking to appeal." })}
 ${cta({
   h: "Find out which of the three you have.",
   p: "The free audit requests your pages the way an assistant does and reports which checks passed, which failed, and which produced no verdict at all.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "answer_chatgpt_absent" },
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "answer_chatgpt_absent" },
   secondary: { href: "/resources/", text: "More plain answers", ev: "answer_to_resources" },
 })}`,
 };

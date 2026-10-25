@@ -1,7 +1,7 @@
 /** Small shared render helpers. Markup lives here so every surface renders the
  *  same concept the same way - a truth state in particular. */
 import { TRUTH_STATES, SOURCES } from "./data.mjs";
-import { bookRel, guideList } from "./layout.mjs";
+import { SITE, bookRel, guideList } from "./layout.mjs";
 
 /* GUIDES and guideList live in layout.mjs beside NAV: one registry for every
  * surface that links a guide (nav panel, footer, homepage, /resources/,
@@ -88,3 +88,19 @@ ${guideList(currentPath)}
       <p class="center-link"><a class="inline-link" href="/resources/">Every guide and answer &rarr;</a></p>
     </div>
   </section>`;
+
+/** The free-audit request form. Shared by the homepage and /audit/ so the two
+ *  cannot drift; js/audit.js wires it. The note under it states the turnaround
+ *  before anyone submits, because nothing renders on the page afterwards. */
+export const auditForm = () => `        <form class="audit-form" id="auditForm" novalidate>
+          <label class="sr-only" for="auditUrl">Your website address</label>
+          <input type="text" id="auditUrl" name="url" placeholder="yourbusiness.com" autocomplete="url" required>
+          <label class="sr-only" for="auditEmail">Your email</label>
+          <input type="email" id="auditEmail" name="email" placeholder="you@yourbusiness.com" autocomplete="email" required>
+          <div class="hp" aria-hidden="true">
+            <label for="aCompanyUrl">Company URL</label>
+            <input type="text" id="aCompanyUrl" name="company_url" tabindex="-1" autocomplete="off">
+          </div>
+${SITE.turnstileSiteKey ? `          <div class="cf-turnstile" data-sitekey="${SITE.turnstileSiteKey}"></div>\n` : ""}          <button type="submit" class="btn btn-primary" id="auditSubmit">Request my free audit &rarr;</button>
+        </form>
+        <p class="audit-lead-msg" id="auditMsg" role="status">A person checks your site and emails you the audit within 2 business days.</p>`;

@@ -82,7 +82,7 @@ ${head({ label: "What this cannot tell you", h: "Stated once, so no report has t
         <li><strong>Whether an assistant recommended you.</strong> A referrer proves a click on a link, not what the answer said. Answer presence is a separate measurement, sampled on a schedule, and it is what <a class="inline-link" href="https://citability.dev/" rel="noopener">Citability</a> exists to do.</li>
         <li><strong>Revenue caused by AI.</strong> A booked meeting with an observed AI referrer is a correlated fact. Causation would need the counterfactual, and nobody has it.</li>
       </ul>
-      <p>This is the vocabulary used on <a class="inline-link" href="/ai-visibility/">the measurement page</a> and in the attribution tier of <a class="inline-link" href="/services/">the services</a>. It is also what the demonstration dashboard shows, with all five labels visible and the unknown column left unhidden.</p>
+      <p>This is the vocabulary used on <a class="inline-link" href="/ai-visibility/">the measurement page</a> and in the attribution tier of <a class="inline-link" href="/services/">the services</a>.</p>
     </div>
   </section>
 
@@ -91,6 +91,6 @@ ${relatedGuides("/guides/how-to-track-leads-from-chatgpt/")}
 ${cta({
   h: "Before tracking leads, make sure you can be found.",
   p: "The free audit checks whether AI retrieval can reach your site at all. Attribution on a site nothing can fetch measures nothing.",
-  primary: { href: "/audit/", text: "Run my free audit →", ev: "guide_track_leads" },
+  primary: { href: "/audit/", text: "Request my free audit →", ev: "guide_track_leads" },
 })}`,
 };

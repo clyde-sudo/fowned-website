@@ -201,6 +201,14 @@ export function row(inner, extra) {
  * three seconds, some clients still prefer text, and a text part measurably
  * helps deliverability. It is the same facts, not a lesser email.
  */
+/** The Audit line for both lead alerts (Slack and email). Null, so the line is
+ * left out, unless the lead is a free-audit request a person now owes. */
+export function auditStatus(record) {
+  return record.AUDIT_DUE
+    ? "requested, send by " + record.AUDIT_DUE + " (2 business days, Pacific)"
+    : null;
+}
+
 export function leadAlertText(record) {
   const lines = [
     "Company:  " + (record.COMPANY || "-"),
@@ -210,7 +218,7 @@ export function leadAlertText(record) {
     "",
     "Source:   " + record.SOURCE,
     "Landed:   " + (record.LANDING_PAGE || "-"),
-    "Audit:    " + (record.AUDIT_COMPLETED ? "completed on site" : "not run"),
+    ...(auditStatus(record) ? ["Audit:    " + auditStatus(record)] : []),
     "Booking:  " + (record.BOOKING_CLICK ? "clicked" : "no"),
     "Owner:    " + record.OWNER,
     "Time:     " + humanTime(record.TIMESTAMP),
@@ -256,6 +264,7 @@ export function leadAlertEmail(record) {
         ["Domain", record.DOMAIN],
         ["Source", record.SOURCE],
         ["Landed", record.LANDING_PAGE],
+        ["Audit", auditStatus(record)],
         ["Booking", record.BOOKING_CLICK ? "Clicked" : "No"],
         ["Owner", record.OWNER],
         ["Time", humanTime(record.TIMESTAMP)],

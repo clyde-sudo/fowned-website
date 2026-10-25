@@ -96,6 +96,13 @@ ok("no empty Company row", !bare.includes(">Company<"));
 ok("no message block when there is no message", !bare.includes("What they asked for"));
 ok("no findings block when there are none", !bare.includes("Findings the visitor saw"));
 ok("no audit badge when the audit did not run", !bare.includes("Audit completed"));
+ok("no Audit row unless an audit is owed", !bare.includes(">Audit<") && !leadAlertEmail(HOSTILE).text.includes("Audit:"));
+
+/* A free-audit request names its due date in both parts. */
+const owed = leadAlertEmail({ CONTACT: "z@acme.com", DOMAIN: "acme.com", SOURCE: "DIRECT_OR_UNKNOWN",
+  OWNER: "CHUDI", AUDIT_DUE: "10/13/2026", TIMESTAMP: "2026-10-11T00:00:00.000Z", KEY_AUDIT_FINDINGS: [] });
+ok("audit request html shows the due date", owed.html.includes("requested, send by 10/13/2026 (2 business days, Pacific)"));
+ok("audit request text shows the due date", owed.text.includes("Audit:    requested, send by 10/13/2026 (2 business days, Pacific)"));
 
 if (process.argv.includes("--preview")) {
   const out = process.env.PREVIEW_OUT || "/tmp/fowned-lead-email.html";
