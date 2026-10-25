@@ -6,7 +6,7 @@ import { SITE } from "../layout.mjs";
  * The source vocabulary named here mirrors js/instrument.js; keep in sync. */
 export default {
   path: "/guides/how-to-track-leads-from-chatgpt/",
-  title: "How to track leads from ChatGPT and AI search without guessing | Fowned",
+  title: "How do I know which leads found me from ChatGPT? | Fowned",
   description:
     "What a referrer proves about a lead from ChatGPT or AI search, what it cannot, the five source labels we record, and how to set it up on a local business site.",
   schema: [

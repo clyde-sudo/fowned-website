@@ -8,9 +8,9 @@ import { SITE } from "../layout.mjs";
  * local business") is owned by /guides/geo-for-local-businesses/. */
 export default {
   path: "/guides/local-seo-vs-geo-vs-aeo/",
-  title: "Local SEO vs GEO vs AEO for local businesses | which to fund first | Fowned",
+  title: "Local SEO vs GEO vs AEO: which to fund first | Fowned",
   description:
-    "Local SEO, GEO and AEO compared for a local business: what each one optimizes, what it costs, how it is measured, and which one to fund first.",
+    "Local SEO, GEO and AEO compared: what each one optimizes, what it costs, how it is measured, and which one to fund first.",
   schema: [
     {
       "@context": "https://schema.org",
@@ -24,7 +24,7 @@ export default {
   body: `  <section class="page-hero">
     <div class="container narrow">
       <span class="label">Guide</span>
-      <h1>Local SEO vs GEO vs AEO for a local business.</h1>
+      <h1>Local SEO vs GEO vs AEO: which to fund first.</h1>
       <p class="hero-sub">Three acronyms, three different units of output, one plain comparison. The order to fund them in is at the end, and it is not the order they are sold in.</p>
     </div>
   </section>
