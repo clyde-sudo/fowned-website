@@ -9,9 +9,9 @@ import { SITE } from "../layout.mjs";
  * Funnel job: informational spoke -> /audit/. */
 export default {
   path: "/guides/geo-for-local-businesses/",
-  title: "GEO for local businesses | does your business need it | Fowned",
+  title: "GEO for local businesses: does yours need it? | Fowned",
   description:
-    "Whether a local business needs generative engine optimization, decided by three questions you can answer today, what the work actually is, and how to tell if it worked.",
+    "Whether a local business needs generative engine optimization, decided by three questions you can answer today, what the work is, and how to tell if it worked.",
   schema: [
     {
       "@context": "https://schema.org",

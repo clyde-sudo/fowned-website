@@ -6,7 +6,7 @@ import { SITE } from "../layout.mjs";
  * is publicly documented or directly observable in a browser session. */
 export default {
   path: "/guides/what-sources-chatgpt-uses-to-recommend-local-businesses/",
-  title: "What sources ChatGPT uses to recommend local businesses | Fowned",
+  title: "What sources does ChatGPT use to recommend local businesses?",
   description:
     "What is observable about where ChatGPT gets local business recommendations, what is only claimed, and what a local business can do about each source.",
   schema: [
