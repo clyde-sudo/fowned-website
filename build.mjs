@@ -29,9 +29,21 @@ const pages = [];
 /* Content dates come from git, per page module: the last commit that touched
  * the file is dateModified (and sitemap lastmod), the first is datePublished.
  * A layout or CSS change is not a content change, so it does not bump them.
- * Outside a git checkout, or for an uncommitted file, the dates are simply
- * omitted rather than invented. */
+ *
+ * A shallow clone (CI's default checkout) holds one commit, so every page
+ * would report that commit's date: confidently wrong rather than missing. In a
+ * shallow clone, outside git, or for an uncommitted file the dates are omitted
+ * rather than invented, and the warning says why. tests/seo-structure.test.mjs
+ * fails on missing dates, so CI must check out full history. */
+let shallow = false;
+try {
+  shallow = execFileSync("git", ["rev-parse", "--is-shallow-repository"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim() === "true";
+} catch {
+  console.warn("WARN: not a git checkout; Article dates and sitemap lastmod omitted");
+}
+if (shallow) console.warn("WARN: shallow git clone; Article dates and sitemap lastmod omitted");
 const gitDates = (file) => {
+  if (shallow) return {};
   try {
     const out = execFileSync("git", ["log", "--follow", "--format=%cs", "--", file], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] })
       .trim().split("\n").filter(Boolean);

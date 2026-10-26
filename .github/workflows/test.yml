@@ -8,11 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: Article dates and sitemap lastmod come from git log.
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # One file at a time: two test files run build.mjs, and both rewrite dist/.
-      - run: node --test --test-concurrency=1 tests/*.test.mjs
+      # Each test file builds into its own temp dir, so files can run in parallel.
+      - run: node --test tests/*.test.mjs
       - run: node tools/slack-card-test.mjs
       - run: node tools/email-test.mjs
       - run: node build.mjs

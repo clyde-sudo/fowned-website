@@ -68,6 +68,17 @@ test("every guide and answer carries exactly one BreadcrumbList ending at itself
   }
 });
 
+test("the 404 and gone pages carry no structured data", () => {
+  for (const f of ["404.html", "410/index.html"]) {
+    assert.doesNotMatch(readFileSync(join(out, f), "utf8"), /application\/ld\+json/, f);
+  }
+});
+
+test("content dates come from history, not from one shallow-clone commit", () => {
+  const dates = new Set(content().map((p) => ld(p.html).find((s) => s["@type"] === "Article").datePublished));
+  assert.ok(dates.size > 1, `every guide and answer reports the same datePublished: ${[...dates]}`);
+});
+
 test("sitemap gives every URL a lastmod date", () => {
   const xml = readFileSync(join(out, "sitemap.xml"), "utf8");
   const urls = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => m[1]);

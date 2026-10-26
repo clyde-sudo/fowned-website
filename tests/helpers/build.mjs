@@ -7,12 +7,13 @@
  * removes the race instead of serialising around it.
  */
 import { execFileSync } from "node:child_process";
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 export function buildSite(env = {}) {
   const out = mkdtempSync(join(tmpdir(), "fowned-build-"));
+  process.on("exit", () => rmSync(out, { recursive: true, force: true }));
   execFileSync(process.execPath, ["build.mjs"], {
     stdio: "ignore",
     env: { ...process.env, ...env, BUILD_OUT: out },

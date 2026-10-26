@@ -333,8 +333,8 @@ function articleSchema(page) {
       inLanguage: "en",
       ...(page.datePublished && { datePublished: page.datePublished }),
       ...(page.dateModified && { dateModified: page.dateModified }),
-      author: { "@id": ORG_ID() },
-      publisher: { "@id": ORG_ID() },
+      author: { "@type": "Organization", "@id": ORG_ID(), name: SITE.name, url: SITE.origin },
+      publisher: { "@type": "Organization", "@id": ORG_ID(), name: SITE.name, url: SITE.origin },
     },
   ];
   /* Guides already carry a hand-written breadcrumb; answers had none. */
