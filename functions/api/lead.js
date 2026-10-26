@@ -17,7 +17,7 @@
  *
  * Env, all set as Pages secrets and NOT in wrangler.toml, deliberately:
  *   RESEND_API_KEY    transactional send
- *   LEAD_NOTIFY_FROM  verified sender
+ *   LEAD_NOTIFY_FROM  sender; unset falls back to DEFAULT_NOTIFY_FROM
  *   LEAD_NOTIFY_TO    comma-separated recipients
  * Missing any of them degrades to store-only, which is still better than the
  * behaviour this replaces.
@@ -77,9 +77,13 @@ const json = (payload, status) =>
     headers: { "Content-Type": "application/json" },
   });
 
+/* The only domain verified in Resend today. A fowned.live sender needs its DNS
+ * records first; after that, setting LEAD_NOTIFY_FROM is the whole switch. */
+export const DEFAULT_NOTIFY_FROM = "leads@citability.dev";
+
 async function notify(env, record) {
   const key = env.RESEND_API_KEY;
-  const from = env.LEAD_NOTIFY_FROM;
+  const from = env.LEAD_NOTIFY_FROM || DEFAULT_NOTIFY_FROM;
   const to = (env.LEAD_NOTIFY_TO || "")
     .split(",")
     .map((s) => s.trim())
