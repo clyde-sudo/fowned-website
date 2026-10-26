@@ -12,7 +12,11 @@ const FACTS = [
   },
   {
     q: "Who runs Fowned?",
-    a: "Clyde Sada is accountable for the work Fowned delivers and for whether each client is satisfied with it.",
+    a: "Fowned is run by Clyde Sada, Jack Busenhart and Chudi Nnorukam. Clyde Sada is accountable for the work Fowned delivers and for whether each client is satisfied with it.",
+  },
+  {
+    q: "Is Fowned part of ThruLead?",
+    a: "Yes. Fowned is a partner service of ThruLead LLC, the company behind thrulead.com.",
   },
   {
     q: "How can I check Fowned before working with you?",
@@ -74,7 +78,7 @@ ${head({ label: "Platform", h: "How the measurement runs." })}
   <section class="band">
     <div class="container narrow">
 ${head({ label: "Accountability", h: "Who answers for the work." })}
-      <p>Clyde Sada is accountable for whether an early Fowned client is satisfied with what was delivered. If the work is not what you were told it would be, you raise it with him and he owns the answer rather than passing you to a queue.</p>
+      <p>Fowned is run by Clyde Sada, Jack Busenhart and Chudi Nnorukam, as a partner service of <a href="https://thrulead.com">ThruLead LLC</a>. Clyde Sada is accountable for whether an early Fowned client is satisfied with what was delivered. If the work is not what you were told it would be, you raise it with him and he owns the answer rather than passing you to a queue.</p>
       <p>You get a reply within two business days on every channel published on the contact page. If an audit result looks wrong to you, say so and we re-run it rather than defending the first number. Pricing is agreed on the call and contracted with you directly, so nothing is charged through this website.</p>
     </div>
   </section>

@@ -304,6 +304,22 @@ const siteSchema = () => [
      * copies an image only when rendered HTML names it. */
     logo: SITE.origin + "/images/face_logo.png",
     sameAs: [SITE.linkedin],
+    /* Fowned is a partner service of ThruLead LLC, and these three people run
+     * it. Naming them is what lets an assistant answer "who runs Fowned"
+     * from the page instead of guessing. Chudi's @id is the one chudi.dev
+     * already publishes, so the two sites describe the same person. */
+    parentOrganization: {
+      "@type": "Organization",
+      name: "ThruLead",
+      legalName: "ThruLead LLC",
+      url: "https://thrulead.com",
+      sameAs: ["https://www.linkedin.com/company/thrulead/"],
+    },
+    member: [
+      { "@type": "Person", name: "Clyde Sada" },
+      { "@type": "Person", name: "Jack Busenhart" },
+      { "@type": "Person", "@id": "https://chudi.dev/about#author", name: "Chudi Nnorukam", url: "https://chudi.dev/about", sameAs: ["https://chudi.dev"] },
+    ],
   },
   {
     "@context": "https://schema.org",
