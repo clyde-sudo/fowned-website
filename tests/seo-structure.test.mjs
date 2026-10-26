@@ -123,3 +123,12 @@ test("the Organization names the domain as an alternate name", () => {
   const org = ld(pages.find((p) => p.path === "/").html).find((s) => s["@type"] === "Organization");
   assert.ok((org.alternateName || []).includes("fowned.live"));
 });
+
+/* 2026-10-26: Fowned is a partner service of ThruLead LLC, run by three named
+ * people. The Organization says both, so "who runs Fowned" has an answer. */
+test("the Organization names its parent company and the people who run it", () => {
+  const org = ld(pages.find((p) => p.path === "/").html).find((s) => s["@type"] === "Organization");
+  assert.equal(org.parentOrganization.legalName, "ThruLead LLC");
+  assert.equal(org.parentOrganization.url, "https://thrulead.com");
+  assert.deepEqual(org.member.map((m) => m.name), ["Clyde Sada", "Jack Busenhart", "Chudi Nnorukam"]);
+});
