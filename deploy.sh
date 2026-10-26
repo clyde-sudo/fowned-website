@@ -17,3 +17,11 @@ git fetch -q upstream main
 
 BOOKING_URL=https://calendly.com/clyde-thrulead/30min SITE_ORIGIN=https://fowned.live node build.mjs
 npx wrangler pages deploy dist --project-name=fowned --branch=main --commit-hash="$(git rev-parse HEAD)"
+
+# The CDN answers crawlers before robots.txt is ever read. Cloudflare's AI bot
+# policy refused GPTBot, ClaudeBot and the other training crawlers while
+# robots.txt said Allow, and no audit noticed for the life of the site. Every
+# deploy now fetches the live site as each crawler. A failure here means the
+# site is live but a crawler is refused: fix it in Cloudflare, not in this repo.
+sleep 10
+node tools/crawler-access.mjs fowned.live
