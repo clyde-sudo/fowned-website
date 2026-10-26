@@ -12,18 +12,50 @@
  */
 import { mkdirSync, rmSync, writeFileSync, cpSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
+import { execFileSync } from "node:child_process";
 import { render, NAV, DEMO_NAV, SITE, bookingUrl } from "./src/layout.mjs";
 
-const OUT = "dist";
+/* BUILD_OUT exists for the tests: each test file builds into its own temp dir,
+ * because parallel files sharing dist/ deleted each other's output mid-read.
+ * deploy.sh never sets it, so production still builds and uploads dist/. */
+const OUT = process.env.BUILD_OUT || "dist";
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
 /* ---- pages ------------------------------------------------------------- */
 const files = readdirSync("src/pages").filter((f) => f.endsWith(".mjs")).sort();
 const pages = [];
+
+/* Content dates come from git, per page module: the last commit that touched
+ * the file is dateModified (and sitemap lastmod), the first is datePublished.
+ * A layout or CSS change is not a content change, so it does not bump them.
+ *
+ * A shallow clone (CI's default checkout) holds one commit, so every page
+ * would report that commit's date: confidently wrong rather than missing. In a
+ * shallow clone, outside git, or for an uncommitted file the dates are omitted
+ * rather than invented, and the warning says why. tests/seo-structure.test.mjs
+ * fails on missing dates, so CI must check out full history. */
+let shallow = false;
+try {
+  shallow = execFileSync("git", ["rev-parse", "--is-shallow-repository"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim() === "true";
+} catch {
+  console.warn("WARN: not a git checkout; Article dates and sitemap lastmod omitted");
+}
+if (shallow) console.warn("WARN: shallow git clone; Article dates and sitemap lastmod omitted");
+const gitDates = (file) => {
+  if (shallow) return {};
+  try {
+    const out = execFileSync("git", ["log", "--follow", "--format=%cs", "--", file], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] })
+      .trim().split("\n").filter(Boolean);
+    return out.length ? { dateModified: out[0], datePublished: out.at(-1) } : {};
+  } catch {
+    return {};
+  }
+};
+
 for (const f of files) {
   const mod = await import("./src/pages/" + f);
-  pages.push(mod.default);
+  pages.push({ ...mod.default, ...gitDates("src/pages/" + f) });
 }
 
 for (const p of pages) {
@@ -105,13 +137,9 @@ cpSync("BingSiteAuth.xml", join(OUT, "BingSiteAuth.xml"));
 writeFileSync(join(OUT, "robots.txt"), `User-agent: *
 Allow: /
 
-# /demo/ is seeded with invented companies and must not appear in any index.
-# It is deliberately NOT disallowed here. A disallowed URL is never fetched, so
-# the "noindex" on those pages would never be read, while the four internal
-# links into /demo/ could still put bare URLs in an index with no snippet.
-# Crawlable-and-noindex is the combination that actually keeps a page out, so
-# the exclusion lives in a robots meta tag on the pages themselves and this file
-# stays out of its way. /demo/ is also absent from the sitemap and from llms.txt.
+# This file states crawler intent only. Cloudflare's bot settings sit in front
+# of it and can refuse a crawler this file allows, so a change here is checked
+# by fetching a page with each user agent, not by reading this file.
 
 # AI assistants are named explicitly rather than left to the wildcard above.
 # Without a matching group these crawlers fall through to "User-agent: *", which
@@ -149,12 +177,11 @@ Sitemap: ${SITE.origin}/sitemap.xml
  * the opposite of what those pages need. Their exclusion is enforced at the
  * page level by the robots meta tag in src/layout.mjs; leaving them out here
  * keeps this file from asking for the thing that tag refuses. */
-const urls = pages
-  .filter((p) => !["/404/", "/410/"].includes(p.path) && !p.path.startsWith("/demo/"))
-  .map((p) => p.path);
+const urls = pages.filter((p) => !["/404/", "/410/"].includes(p.path) && !p.path.startsWith("/demo/"));
+const lastmod = (p) => (p.dateModified ? `<lastmod>${p.dateModified}</lastmod>` : "");
 writeFileSync(join(OUT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `  <url><loc>${SITE.origin}${u}</loc></url>`).join("\n")}
+${urls.map((p) => `  <url><loc>${SITE.origin}${p.path}</loc>${lastmod(p)}</url>`).join("\n")}
 </urlset>
 `);
 

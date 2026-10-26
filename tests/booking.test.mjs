@@ -5,8 +5,8 @@
  * name or email from Calendly.
  */
 import { test, before } from "node:test";
+import { buildSite } from "./helpers/build.mjs";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -33,14 +33,15 @@ test("bookingUrl builds the agreed Calendly URL from a page path", () => {
 });
 
 let built = [];
+let out = "";
 before(() => {
-  execFileSync(process.execPath, ["build.mjs"], { stdio: "ignore" });
+  out = buildSite();
   const walk = (d) => readdirSync(d).flatMap((f) => {
     const p = join(d, f);
     return statSync(p).isDirectory() ? walk(p) : p.endsWith(".html") ? [p] : [];
   });
-  built = walk("dist").map((p) => {
-    const rel = p.slice("dist".length).replace(/index\.html$/, "").replace(/\.html$/, "/");
+  built = walk(out).map((p) => {
+    const rel = p.slice(out.length).replace(/index\.html$/, "").replace(/\.html$/, "/");
     return { path: rel, html: readFileSync(p, "utf8") };
   });
 });
@@ -57,7 +58,7 @@ test("every Calendly link in the built site and llms.txt comes from bookingUrl",
     }
   }
   assert.ok(links >= 40, `only ${links} Calendly links found`);
-  const llms = readFileSync("dist/llms.txt", "utf8").match(CALENDLY) || [];
+  const llms = readFileSync(join(out, "llms.txt"), "utf8").match(CALENDLY) || [];
   assert.deepEqual(llms.map((m) => "https://" + m), [bookingUrl("/llms.txt")]);
   console.log(`# calendly links checked: ${links} in html + ${llms.length} in llms.txt`);
 });
