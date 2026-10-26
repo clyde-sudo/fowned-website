@@ -5,7 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { robotsBlocksRoot, checkHost, CRAWLERS } from "../tools/crawler-access.mjs";
+import { robotsBlocksRoot, checkHost, parseCurl, CRAWLERS } from "../tools/crawler-access.mjs";
 import { buildSite } from "./helpers/build.mjs";
 
 test("a named group overrides the * group", () => {
@@ -47,22 +47,61 @@ const cloudflare = (codeFor) => async (url, opts = {}) => {
 
 test("the 2026-10-26 Cloudflare training block fails the check, crawler by crawler", async () => {
   const fetchImpl = cloudflare((ua) => (TRAINING.some((t) => ua.startsWith(t) || ua.includes(`${t}/`)) ? 403 : 200));
-  const rows = await checkHost("example.test", { fetchImpl });
+  const rows = await checkHost("example.test", { fetchImpl, retryDelayMs: 0 });
   const failed = rows.filter((r) => !r.ok).map((r) => r.ua).sort();
   assert.deepEqual(failed, [...TRAINING].sort());
 });
 
 test("a fully open site passes", async () => {
-  const rows = await checkHost("example.test", { fetchImpl: cloudflare(() => 200) });
+  const rows = await checkHost("example.test", { fetchImpl: cloudflare(() => 200), retryDelayMs: 0 });
   assert.ok(rows.every((r) => r.ok));
 });
 
 test("a 429 or 5xx is unmeasured, never a pass and never a refusal", async () => {
-  const rows = await checkHost("example.test", { fetchImpl: cloudflare(() => 503) });
+  const rows = await checkHost("example.test", { fetchImpl: cloudflare(() => 503), retryDelayMs: 0 });
   assert.ok(rows.every((r) => r.actual === "unmeasured" && !r.ok));
 });
 
 test("a robots.txt that will not load is an error, not an empty file that allows everything", async () => {
   const fetchImpl = async () => new Response("", { status: 404 });
-  await assert.rejects(checkHost("example.test", { fetchImpl }), /robots.txt returned 404/);
+  await assert.rejects(checkHost("example.test", { fetchImpl, retryDelayMs: 0 }), /robots.txt returned 404/);
+});
+
+test("a Vercel challenge is unmeasured, never a refusal", async () => {
+  const fetchImpl = async (url) =>
+    url.endsWith("/robots.txt")
+      ? new Response("User-agent: *\nAllow: /\n")
+      : new Response("", { status: 403, headers: { "x-vercel-mitigated": "challenge" } });
+  const rows = await checkHost("example.test", { fetchImpl, retryDelayMs: 0 });
+  assert.ok(rows.every((r) => r.actual === "unmeasured" && !r.ok));
+});
+
+test("one throttled answer is retried before it is judged", async () => {
+  const seen = new Map();
+  const fetchImpl = async (url, opts = {}) => {
+    if (url.endsWith("/robots.txt")) return new Response("User-agent: *\nAllow: /\n");
+    const ua = opts.headers["User-Agent"];
+    seen.set(ua, (seen.get(ua) || 0) + 1);
+    return new Response("", { status: seen.get(ua) === 1 ? 403 : 200 });
+  };
+  const rows = await checkHost("example.test", { fetchImpl, retryDelayMs: 0 });
+  assert.ok(rows.every((r) => r.ok));
+});
+
+test("a Vercel challenge is asked again through the fallback client", async () => {
+  const challenged = async (url) =>
+    url.endsWith("/robots.txt")
+      ? new Response("User-agent: *\nAllow: /\n")
+      : new Response("", { status: 403, headers: { "x-vercel-mitigated": "challenge" } });
+  const fallbackImpl = async () => new Response("", { status: 200 });
+  const rows = await checkHost("example.test", { fetchImpl: challenged, retryDelayMs: 0, fallbackImpl });
+  assert.ok(rows.every((r) => r.ok));
+});
+
+test("curl output is read as status, headers and body; anything else is an error", () => {
+  const res = parseCurl("HTTP/2 403\r\nx-vercel-mitigated: challenge\r\n\r\nbody");
+  assert.equal(res.status, 403);
+  assert.equal(res.headers.get("x-vercel-mitigated"), "challenge");
+  assert.throws(() => parseCurl("garbage data"), /no HTTP response/);
+  assert.throws(() => parseCurl("garbage\r\n\r\nbody"), /no HTTP response/);
 });
