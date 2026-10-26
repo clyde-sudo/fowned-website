@@ -6,7 +6,7 @@ import { SITE } from "../layout.mjs";
  * twelve checks named here are the twelve in js/audit.js; keep them in sync. */
 export default {
   path: "/guides/ai-visibility-audit-for-local-businesses/",
-  title: "AI visibility audit for local businesses | what we check and why | Fowned",
+  title: "Local business AI visibility audit: what we check | Fowned",
   description:
     "Every check in the free AI visibility audit for a local business, the reason each one exists, and what pass, fail and could not measure mean.",
   schema: [

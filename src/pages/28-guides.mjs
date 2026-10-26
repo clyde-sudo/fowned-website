@@ -6,7 +6,7 @@ export default {
   path: "/guides/",
   title: "Guides | AI visibility for local businesses | Fowned",
   description:
-    "Six plain-English guides for local business owners: local SEO vs GEO vs AEO, whether a local business needs GEO, what sources ChatGPT uses, what an AI visibility audit checks, choosing an agency, and tracking leads from ChatGPT.",
+    "Plain-English guides for local business owners: GEO vs local SEO, what ChatGPT reads, what an audit checks, choosing an agency, and tracking AI leads.",
   body: `  <section class="page-hero">
     <div class="container narrow">
       <span class="label">Guides</span>

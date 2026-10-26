@@ -978,7 +978,7 @@
   
   .contact-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(5, 1fr);
     gap: var(--space-sm);
     padding: var(--space-md) 0;
     border-top: 1px solid var(--color-hairline);

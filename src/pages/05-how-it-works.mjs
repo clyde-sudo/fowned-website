@@ -2,7 +2,7 @@ import { head, answer, cta } from "../ui.mjs";
 
 export default {
   path: "/how-it-works/",
-  title: "How Fowned works | the six-step loop | Fowned",
+  title: "How Fowned works: the six-step loop",
   description:
     "Observation, diagnosis, opportunity, recommendation, intervention, re-measure. The loop we run, and the rule that a step is never skipped forward.",
   schema: [
