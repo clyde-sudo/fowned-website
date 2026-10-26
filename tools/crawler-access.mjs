@@ -24,6 +24,8 @@
  * Cloudflare setting changes without any deploy.
  */
 
+import { execFile } from "node:child_process";
+
 // Crawlers that decide whether Fowned is found, cited or known: search
 // indexes, AI search and user-triggered fetchers, and the training crawlers
 // that teach models the entity exists. Each sends the user agent its operator
@@ -86,27 +88,59 @@ export function robotsBlocksRoot(robotsTxt, ua) {
   return hits.length > 0 && hits[0].key === "disallow";
 }
 
-async function status(url, ua, fetchImpl) {
-  const res = await fetchImpl(url, {
-    headers: { "User-Agent": ua },
-    redirect: "manual",
-  });
-  return res.status;
+// Vercel's firewall challenges bursts from one IP whatever the user agent
+// (x-vercel-mitigated: challenge) and lets verified crawlers through by IP, so
+// a Vercel challenge here says nothing about the real crawler. A Cloudflare
+// challenge is different: no crawler can solve one, so it counts as a refusal.
+const vercelChallenge = (res) => res.headers.get("x-vercel-mitigated") === "challenge";
+
+// One retry after a pause, so a single throttled request is not read as a
+// finding. A real block answers the same way twice.
+// Vercel challenges Node's HTTP client by its fingerprint but not curl's, so
+// a challenged request is asked again through curl before it is given up on.
+async function get(url, init, fetchImpl, retryDelayMs, fallbackImpl) {
+  let res = await fetchImpl(url, init);
+  if (res.status !== 200 && retryDelayMs >= 0) {
+    await new Promise((r) => setTimeout(r, retryDelayMs));
+    res = await fetchImpl(url, init);
+  }
+  if (vercelChallenge(res) && fallbackImpl) res = await fallbackImpl(url, init);
+  return res;
 }
 
-// A 429 or 5xx says the request was not judged, so it cannot count as either
-// a refusal or a pass.
-const unmeasured = (code) => code === 429 || code >= 500;
+// fetch-shaped wrapper over curl: no redirects followed, same user agent.
+export function curlFetch(url, init = {}) {
+  return new Promise((resolve, reject) => {
+    const ua = init.headers?.["User-Agent"] || "curl";
+    execFile("curl", ["-s", "-i", "--max-time", "20", "-A", ua, url], { maxBuffer: 4 << 20 }, (err, out) => {
+      if (err) return reject(err);
+      const split = out.indexOf("\r\n\r\n");
+      const head = out.slice(0, split).split("\r\n");
+      const headers = new Headers();
+      for (const line of head.slice(1)) {
+        const i = line.indexOf(":");
+        if (i > 0) headers.append(line.slice(0, i).trim(), line.slice(i + 1).trim());
+      }
+      resolve(new Response(out.slice(split + 4), { status: Number(head[0].split(" ")[1]), headers }));
+    });
+  });
+}
 
-export async function checkHost(host, { crawlers = CRAWLERS, fetchImpl = fetch } = {}) {
-  const res = await fetchImpl(`https://${host}/robots.txt`);
-  if (res.status !== 200) throw new Error(`robots.txt returned ${res.status}`);
+// A 429, a 5xx or a Vercel challenge says the request was not judged, so it
+// cannot count as either a refusal or a pass.
+const unmeasured = (res) => res.status === 429 || res.status >= 500 || vercelChallenge(res);
+
+export async function checkHost(host, { crawlers = CRAWLERS, fetchImpl = fetch, retryDelayMs = 2000, fallbackImpl = null } = {}) {
+  const ROBOTS_UA = CRAWLERS[0].ua;
+  const res = await get(`https://${host}/robots.txt`, { headers: { "User-Agent": ROBOTS_UA } }, fetchImpl, retryDelayMs, fallbackImpl);
+  if (res.status !== 200) throw new Error(`robots.txt returned ${res.status}${vercelChallenge(res) ? " (Vercel challenge)" : ""}`);
   const robots = await res.text();
   const rows = [];
   for (const { name, ua } of crawlers) {
-    const code = await status(`https://${host}/`, ua, fetchImpl);
+    const page = await get(`https://${host}/`, { headers: { "User-Agent": ua }, redirect: "manual" }, fetchImpl, retryDelayMs, fallbackImpl);
+    const code = page.status;
     const intended = robotsBlocksRoot(robots, name) ? "blocked" : "allowed";
-    const actual = unmeasured(code) ? "unmeasured" : code === 200 ? "allowed" : "blocked";
+    const actual = unmeasured(page) ? "unmeasured" : code === 200 ? "allowed" : "blocked";
     rows.push({ ua: name, code, intended, actual, ok: intended === actual });
   }
   return rows;
@@ -120,7 +154,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.log(host);
     let rows;
     try {
-      rows = await checkHost(host);
+      rows = await checkHost(host, { fallbackImpl: curlFetch });
     } catch (err) {
       console.log(`  UNMEASURED  ${err.message}`);
       unknown++;
