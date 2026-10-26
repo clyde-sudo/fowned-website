@@ -283,10 +283,81 @@ const esc = (s) =>
  *
  * Nothing in this comment reaches the output: naming internal hostnames and
  * file paths in an HTML comment ships them on every page. */
+/* One entity, defined on every page under a stable @id, so every Article and
+ * WebSite block can point at it instead of restating it. It used to live on
+ * the homepage only, which left 20 of 21 pages describing nobody. */
+const ORG_ID = () => `${SITE.origin}/#organization`;
+const siteSchema = () => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": ORG_ID(),
+    name: SITE.name,
+    url: SITE.origin,
+    description:
+      "Generative engine optimization agency. Audits, fixes and monitors how AI assistants describe a business.",
+    telephone: "+1-831-332-0184",
+    /* Raster on purpose: Google Images does not accept SVG for a logo. This
+     * reference is also what keeps face_logo.png in dist/, because the build
+     * copies an image only when rendered HTML names it. */
+    logo: SITE.origin + "/images/face_logo.png",
+    sameAs: [SITE.linkedin],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE.origin}/#website`,
+    name: SITE.name,
+    url: SITE.origin,
+    publisher: { "@id": ORG_ID() },
+  },
+];
+
+/* Guides and answers are articles. Their dates come from git via build.mjs and
+ * are left out, never guessed, when a page has none. The author is the
+ * organization because no individual byline is published on these pages. */
+const isArticle = (page) => /^\/(guides|answers)\/[^/]+\/$/.test(page.path);
+const headline = (page) => page.title.replace(/ \| Fowned$/, "");
+function articleSchema(page) {
+  if (!isArticle(page)) return [];
+  const url = SITE.origin + page.path;
+  const out = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: headline(page).slice(0, 110),
+      description: page.description,
+      url,
+      mainEntityOfPage: url,
+      image: SITE.origin + "/images/og-fowned.jpg",
+      inLanguage: "en",
+      ...(page.datePublished && { datePublished: page.datePublished }),
+      ...(page.dateModified && { dateModified: page.dateModified }),
+      author: { "@id": ORG_ID() },
+      publisher: { "@id": ORG_ID() },
+    },
+  ];
+  /* Guides already carry a hand-written breadcrumb; answers had none. */
+  if (!(page.schema || []).some((s) => s["@type"] === "BreadcrumbList")) {
+    out.push({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Resources", item: `${SITE.origin}/resources/` },
+        { "@type": "ListItem", position: 2, name: headline(page), item: url },
+      ],
+    });
+  }
+  return out;
+}
+
 function head(page) {
   const canonical = SITE.origin + page.path;
   const ogImage = SITE.origin + "/images/og-fowned.jpg";
-  const schema = page.schema ? page.schema.map((s) => JSON.stringify(s, null, 2)) : [];
+  const indexable = !["/404/", "/410/"].includes(page.path) && !page.path.startsWith("/demo/");
+  const schema = [...(indexable ? siteSchema() : []), ...(page.schema || []), ...articleSchema(page)].map((s) =>
+    JSON.stringify(s, null, 2)
+  );
   const robots = page.path.startsWith("/demo/")
     ? `\n  <meta name="robots" content="noindex, nofollow">`
     : "";

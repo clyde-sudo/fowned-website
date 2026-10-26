@@ -1,5 +1,5 @@
 import { head, cta, guideList, auditForm } from "../ui.mjs";
-import { SITE, bookBtn } from "../layout.mjs";
+import { bookBtn } from "../layout.mjs";
 
 export default {
   path: "/",
@@ -8,31 +8,7 @@ export default {
   description:
     "Fowned audits how AI assistants describe your business, fixes what they cannot read, and tracks which leads arrive from an AI tool. Start with a free audit.",
   scripts: ["/js/audit.js"],
-  schema: [
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: "Fowned",
-      url: SITE.origin,
-      description:
-        "Generative engine optimization agency. Audits, fixes and monitors how AI assistants describe a business.",
-      telephone: "+1-831-332-0184",
-      /* Required by schema.org Organization and flagged by the GSC Wizard
-       * on-page audit 2026-09-18. Raster on purpose: Google Images does not
-       * accept SVG, so fowned_logo.svg would satisfy the validator and still
-       * be unusable for a rich result. The build copies an image only when
-       * the rendered HTML names it, and this JSON-LD is rendered HTML, so
-       * this reference is what keeps face_logo.png in dist/. */
-      logo: SITE.origin + "/images/face_logo.png",
-      sameAs: [SITE.linkedin],
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      name: "Fowned",
-      url: SITE.origin,
-    },
-  ],
+  /* Organization and WebSite JSON-LD are emitted on every page by layout.mjs. */
   body: `  <section id="hero">
     <div class="container hero-grid">
       <div class="hero-text">

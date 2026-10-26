@@ -4,6 +4,9 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+  # HTTPS only, for one year, on this host alone. includeSubDomains and preload
+  # are left off on purpose: both are hard to undo and nothing needs them yet.
+  Strict-Transport-Security: max-age=31536000
   # NOTE: X-Robots-Tag is deliberately NOT set here. _headers cannot see the
   # request Host, and this one project answers on both the real property
   # (must index) and the temporary *.pages.dev hostnames (must not). A blanket

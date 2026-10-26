@@ -4,8 +4,8 @@
  * a preview deploy, a local build or a test run can never inflate it.
  */
 import { test, before } from "node:test";
+import { buildSite } from "./helpers/build.mjs";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { ga4Tag } from "../src/layout.mjs";
@@ -68,12 +68,12 @@ describeBuild();
 function describeBuild() {
   let pages = [];
   before(() => {
-    execFileSync(process.execPath, ["build.mjs"], { stdio: "ignore" });
+    const out = buildSite();
     const walk = (d) => readdirSync(d).flatMap((f) => {
       const p = join(d, f);
       return statSync(p).isDirectory() ? walk(p) : p.endsWith(".html") ? [p] : [];
     });
-    pages = walk("dist").map((p) => [p, readFileSync(p, "utf8")]);
+    pages = walk(out).map((p) => [p, readFileSync(p, "utf8")]);
   });
 
   test("every built page loads gtag through the shared loader and nowhere else", () => {
