@@ -5,7 +5,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { robotsBlocksRoot, checkHost, CRAWLERS } from "../tools/crawler-access.mjs";
+import { robotsBlocksRoot, checkHost, parseCurl, CRAWLERS } from "../tools/crawler-access.mjs";
 import { buildSite } from "./helpers/build.mjs";
 
 test("a named group overrides the * group", () => {
@@ -96,4 +96,12 @@ test("a Vercel challenge is asked again through the fallback client", async () =
   const fallbackImpl = async () => new Response("", { status: 200 });
   const rows = await checkHost("example.test", { fetchImpl: challenged, retryDelayMs: 0, fallbackImpl });
   assert.ok(rows.every((r) => r.ok));
+});
+
+test("curl output is read as status, headers and body; anything else is an error", () => {
+  const res = parseCurl("HTTP/2 403\r\nx-vercel-mitigated: challenge\r\n\r\nbody");
+  assert.equal(res.status, 403);
+  assert.equal(res.headers.get("x-vercel-mitigated"), "challenge");
+  assert.throws(() => parseCurl("garbage data"), /no HTTP response/);
+  assert.throws(() => parseCurl("garbage\r\n\r\nbody"), /no HTTP response/);
 });

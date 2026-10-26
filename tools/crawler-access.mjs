@@ -108,20 +108,32 @@ async function get(url, init, fetchImpl, retryDelayMs, fallbackImpl) {
   return res;
 }
 
+// Turns `curl -i` output into a Response. Output that is not an HTTP answer
+// throws, so the host reads as unmeasured instead of crashing the run.
+export function parseCurl(out) {
+  const split = out.indexOf("\r\n\r\n");
+  const head = (split < 0 ? "" : out.slice(0, split)).split("\r\n");
+  const status = Number(head[0].match(/^HTTP\/[\d.]+ (\d{3})/)?.[1]);
+  if (split < 0 || !(status >= 200 && status <= 599)) throw new Error("curl returned no HTTP response");
+  const headers = new Headers();
+  for (const line of head.slice(1)) {
+    const i = line.indexOf(":");
+    if (i > 0) headers.append(line.slice(0, i).trim(), line.slice(i + 1).trim());
+  }
+  return new Response(out.slice(split + 4), { status, headers });
+}
+
 // fetch-shaped wrapper over curl: no redirects followed, same user agent.
 export function curlFetch(url, init = {}) {
   return new Promise((resolve, reject) => {
     const ua = init.headers?.["User-Agent"] || "curl";
     execFile("curl", ["-s", "-i", "--max-time", "20", "-A", ua, url], { maxBuffer: 4 << 20 }, (err, out) => {
       if (err) return reject(err);
-      const split = out.indexOf("\r\n\r\n");
-      const head = out.slice(0, split).split("\r\n");
-      const headers = new Headers();
-      for (const line of head.slice(1)) {
-        const i = line.indexOf(":");
-        if (i > 0) headers.append(line.slice(0, i).trim(), line.slice(i + 1).trim());
+      try {
+        resolve(parseCurl(out));
+      } catch (e) {
+        reject(e);
       }
-      resolve(new Response(out.slice(split + 4), { status: Number(head[0].split(" ")[1]), headers }));
     });
   });
 }
