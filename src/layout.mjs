@@ -293,6 +293,8 @@ const siteSchema = () => [
     "@type": "Organization",
     "@id": ORG_ID(),
     name: SITE.name,
+    /* The domain is how people type the name, so it is named as one. */
+    alternateName: [new URL(SITE.origin).host],
     url: SITE.origin,
     description:
       "Generative engine optimization agency. Audits, fixes and monitors how AI assistants describe a business.",

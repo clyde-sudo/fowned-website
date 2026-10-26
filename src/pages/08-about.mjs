@@ -1,10 +1,41 @@
-import { head, cta } from "../ui.mjs";
+import { head, answer, cta } from "../ui.mjs";
+import { SITE } from "../layout.mjs";
+
+/* The questions people ask about the domain itself. Before 2026-10-26 no page
+ * said "fowned.live" in words, so a search for it had nothing to match and an
+ * assistant answering from memory guessed from the name. One list feeds both
+ * the visible answers and the FAQ data, so the two cannot drift apart. */
+const FACTS = [
+  {
+    q: "What is fowned.live?",
+    a: "fowned.live is the website of Fowned, a generative engine optimization agency. Fowned checks how AI assistants such as ChatGPT, Gemini and Perplexity describe a business, fixes what they get wrong, and keeps measuring the answers afterwards. Fowned is the name, one word, not a misspelling of another word.",
+  },
+  {
+    q: "Who runs Fowned?",
+    a: "Clyde Sada is accountable for the work Fowned delivers and for whether each client is satisfied with it.",
+  },
+  {
+    q: "How can I check Fowned before working with you?",
+    a: `Call ${SITE.phoneText}, message Fowned on LinkedIn, or request the free audit and judge the work before paying for anything. Nothing is charged through this website: pricing is agreed on a call and contracted with you directly.`,
+  },
+];
 
 export default {
   path: "/about/",
   title: "About Fowned | how we work | Fowned",
   description:
     "Fowned is a generative engine optimization agency. We diagnose before prescribing, label evidence honestly, and report what was not measured as not measured.",
+  schema: [
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: FACTS.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    },
+  ],
   body: `  <section class="page-hero">
     <div class="container narrow">
       <span class="label">About</span>
@@ -14,6 +45,13 @@ export default {
   </section>
 
   <section>
+    <div class="container narrow">
+${head({ label: "At a glance", h: "Fowned and fowned.live, in three answers." })}
+${FACTS.map((f) => answer(f.q, f.a)).join("\n")}
+    </div>
+  </section>
+
+  <section class="band">
     <div class="container narrow">
 ${head({ label: "Principles", h: "Four rules we run the work by." })}
       <ul class="claim-list">
@@ -25,7 +63,7 @@ ${head({ label: "Principles", h: "Four rules we run the work by." })}
     </div>
   </section>
 
-  <section class="band">
+  <section>
     <div class="container narrow">
 ${head({ label: "Platform", h: "How the measurement runs." })}
       <p>Fowned's audits, monitoring and lead attribution run on a dedicated visibility measurement platform operated for us. Your data stays inside your own workspace on it, scoped so that one client's records are not reachable from another's.</p>
@@ -33,7 +71,7 @@ ${head({ label: "Platform", h: "How the measurement runs." })}
     </div>
   </section>
 
-  <section>
+  <section class="band">
     <div class="container narrow">
 ${head({ label: "Accountability", h: "Who answers for the work." })}
       <p>Clyde Sada is accountable for whether an early Fowned client is satisfied with what was delivered. If the work is not what you were told it would be, you raise it with him and he owns the answer rather than passing you to a queue.</p>

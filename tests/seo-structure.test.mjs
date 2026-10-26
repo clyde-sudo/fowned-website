@@ -97,3 +97,29 @@ test("HSTS is sent on every path", () => {
   const headers = readFileSync(join(out, "_headers"), "utf8");
   assert.match(headers, /\/\*\n(?:  .*\n)*  Strict-Transport-Security: max-age=31536000\n/);
 });
+
+/* 2026-10-26: Gemini answering from memory called fowned.live a scam site; it
+ * was trained before the domain existed and guessed from the name. Grounded
+ * Gemini had nothing to read for "What is fowned.live?" because no page said
+ * the domain in words, and Google rewrote the query to "downed". The About
+ * page now answers the domain-shaped questions in visible text, and the FAQ
+ * data says exactly what the page says. */
+test("the About page answers what fowned.live is, and its FAQ data matches the visible text", () => {
+  const about = pages.find((p) => p.path === "/about/");
+  const faq = ld(about.html).find((s) => s["@type"] === "FAQPage");
+  assert.ok(faq, "no FAQPage on /about/");
+  const names = faq.mainEntity.map((q) => q.name);
+  assert.ok(names.includes("What is fowned.live?"), names.join(" | "));
+  assert.ok(names.includes("Who runs Fowned?"), names.join(" | "));
+  const visible = about.html.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+  for (const q of faq.mainEntity) {
+    assert.ok(visible.includes(q.name), `question not on the page: ${q.name}`);
+    assert.ok(visible.includes(q.acceptedAnswer.text), `answer not on the page: ${q.name}`);
+  }
+  assert.ok(!/scam|fraud/i.test(visible), "the page must not put the brand next to the accusation");
+});
+
+test("the Organization names the domain as an alternate name", () => {
+  const org = ld(pages.find((p) => p.path === "/").html).find((s) => s["@type"] === "Organization");
+  assert.ok((org.alternateName || []).includes("fowned.live"));
+});
