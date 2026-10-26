@@ -234,6 +234,15 @@ export const GUIDES = [
   },
 ];
 
+/* The three answer pages. They were reachable only from /resources/ and from
+ * each other (one had a single inlink), so the footer now carries them on
+ * every page. Short labels for the same reason as guideLinks below. */
+export const ANSWERS = [
+  { path: "/answers/why-my-business-is-not-showing-up-on-chatgpt/", short: "Not showing up on ChatGPT?" },
+  { path: "/answers/how-to-get-chatgpt-to-recommend-my-business/", short: "Get ChatGPT to name you" },
+  { path: "/answers/how-to-get-your-business-listed-in-chatgpt/", short: "Get listed in ChatGPT" },
+];
+
 /* The guide list. The titles used to sit in a plain .check-list, where
  * `a { color: inherit }` and a missing li rule rendered five links and five
  * blurbs as one unbroken paragraph: crawlable, but invisible to a reader.
@@ -463,6 +472,7 @@ ${col("Company", [
   '        <a href="/resources/">Resources</a>',
 ])}
 ${col("Guides", guideLinks("        ").split("\n"))}
+${col("Answers", ANSWERS.map((a) => `        <a href="${a.path}">${esc(a.short)}</a>`))}
 ${col("Contact", [
   `        <a href="${SITE.phoneHref}">${SITE.phoneText}</a>`,
   '        <a href="/contact/">Contact us</a>',

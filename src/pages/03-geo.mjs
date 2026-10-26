@@ -2,7 +2,7 @@ import { head, answer, cta } from "../ui.mjs";
 
 export default {
   path: "/geo/",
-  title: "What is GEO for a local business? Generative engine optimization explained | Fowned",
+  title: "What is GEO (generative engine optimization)? | Fowned",
   description:
     "GEO makes a local business readable, correct and retrievable to AI assistants so they can name it in an answer. What it is, what it is not, where evidence ends.",
   body: `  <section class="page-hero">

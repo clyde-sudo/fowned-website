@@ -2,7 +2,7 @@ import { head, cta } from "../ui.mjs";
 
 export default {
   path: "/about/",
-  title: "About Fowned | how we work | Fowned",
+  title: "About Fowned: how we work",
   description:
     "Fowned is a generative engine optimization agency. We diagnose before prescribing, label evidence honestly, and report what was not measured as not measured.",
   body: `  <section class="page-hero">
