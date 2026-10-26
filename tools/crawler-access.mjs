@@ -52,8 +52,9 @@ export const CRAWLERS = [
 
 /**
  * True when robots.txt disallows the whole site ("Disallow: /") for this user
- * agent. Follows the robots spec's group choice: the most specific matching
- * User-agent group wins, and "*" applies only when no named group matches.
+ * agent. Follows Google's group choice: the most specific (longest) matching
+ * User-agent name wins, so "GPTBot" beats "GPT"; groups that share that name
+ * are merged (RFC 9309); "*" applies only when no named group matches.
  */
 export function robotsBlocksRoot(robotsTxt, ua) {
   const groups = [];
@@ -75,7 +76,8 @@ export function robotsBlocksRoot(robotsTxt, ua) {
     }
   }
   const name = ua.toLowerCase();
-  const named = groups.filter((g) => g.agents.some((a) => a !== "*" && name.includes(a)));
+  const best = Math.max(0, ...groups.flatMap((g) => g.agents.filter((a) => a !== "*" && name.includes(a)).map((a) => a.length)));
+  const named = groups.filter((g) => g.agents.some((a) => a !== "*" && name.includes(a) && a.length === best));
   const chosen = named.length ? named : groups.filter((g) => g.agents.includes("*"));
   const rules = chosen.flatMap((g) => g.rules);
   // Longest matching rule wins; Allow beats Disallow on a tie.

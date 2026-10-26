@@ -20,6 +20,12 @@ test("consecutive User-agent lines share one group", () => {
   assert.equal(robotsBlocksRoot(txt, "CCBot"), true);
 });
 
+test("the most specific name wins, and groups sharing it merge", () => {
+  const txt = "User-agent: GPT\nDisallow: /\n\nUser-agent: GPTBot\nDisallow: /private/\n";
+  assert.equal(robotsBlocksRoot(txt, "GPTBot"), false);
+  assert.equal(robotsBlocksRoot("User-agent: GPTBot\nAllow: /x\n\nUser-agent: GPTBot\nDisallow: /\n", "GPTBot"), true);
+});
+
 test("a path-only Disallow does not count as blocking the site", () => {
   assert.equal(robotsBlocksRoot("User-agent: *\nDisallow: /admin/\n", "GPTBot"), false);
   assert.equal(robotsBlocksRoot("User-agent: *\nDisallow:\n", "GPTBot"), false);
