@@ -50,7 +50,7 @@ export default {
 
   <section>
     <div class="container narrow">
-${head({ label: "At a glance", h: "Fowned and fowned.live, in three answers." })}
+${head({ label: "At a glance", h: "Fowned and fowned.live, in four answers." })}
 ${FACTS.map((f) => answer(f.q, f.a)).join("\n")}
     </div>
   </section>

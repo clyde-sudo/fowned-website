@@ -310,6 +310,8 @@ const siteSchema = () => [
      * already publishes, so the two sites describe the same person. */
     parentOrganization: {
       "@type": "Organization",
+      /* The same @id chudi.dev uses for ThruLead, so the graphs join. */
+      "@id": "https://thrulead.com#organization",
       name: "ThruLead",
       legalName: "ThruLead LLC",
       url: "https://thrulead.com",
