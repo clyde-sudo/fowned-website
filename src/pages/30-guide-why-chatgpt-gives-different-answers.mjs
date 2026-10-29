@@ -2,12 +2,17 @@ import { head, answer, cta, table, relatedGuides } from "../ui.mjs";
 import { SITE } from "../layout.mjs";
 
 /* Primary query: "why does chatgpt give different answers to the same question"
- * (Google autocomplete, 2026-10-29, with seven sibling phrasings). The client
- * question behind it: a practice owner forwarded the DrBicuspid write-up of the
- * Dental.me study and asked whether AI recommendations can be trusted, and why
- * his AI referrals dipped. This page answers both without naming any client.
- * Every study figure below is from the DrBicuspid article (2026-10-28), read in
- * full; keep it that way. Funnel job: informational spoke -> /audit/. */
+ * (Google autocomplete, 2026-10-29, with seven sibling phrasings), plus whether
+ * AI recommendations can be trusted and why AI referrals dip. Every study
+ * figure below is from the DrBicuspid article (2026-10-28), read in full; keep
+ * it that way. FAQ answers are shared constants so the schema text matches the
+ * visible text exactly. Funnel job: informational spoke -> /audit/. */
+const Q_WHY = "Why does ChatGPT give different answers to the same question?";
+const A_WHY = "An assistant writes each answer fresh. It chooses its words with some randomness built in, and when web search is on it reads whatever pages its search returns at that moment. Change the wording, the assistant or the location and the list changes again. Two askings of the same question are two separate samples, not two looks at one fixed ranking.";
+const Q_RANDOM = "Are AI recommendations for local businesses random?";
+const A_RANDOM = "Not entirely. An assistant can only name a business it can find and read, and the study below shows the best rated are not always the ones named. A site the assistant can fetch, pages that say plainly what the business does and where, and outside listings that agree are the parts of being named that a business controls.";
+const Q_DIP = "Why did my AI referrals go down this month?";
+const A_DIP = "Check four things before concluding anything. Answers vary, so one month can be noise; compare several. AI apps often send visitors with no referrer, so they read as direct visits. The analytics tag on your site may report to a different account than the one you are reading, which can happen when more than one agency has worked on the site. And many categories are seasonal. Only a trend across months, measured the same way each time, says the recommendations themselves changed.";
 const STUDY = "https://www.drbicuspid.com/dental-practice/patient-communication/marketing/article/15838262/asking-ai-to-recommend-dentists-isnt-going-well";
 
 export default {
@@ -28,30 +33,9 @@ export default {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       mainEntity: [
-        {
-          "@type": "Question",
-          name: "Why does ChatGPT give different answers to the same question?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "An assistant writes each answer fresh. It chooses its words with some randomness built in, and when web search is on it reads whatever pages its search returns at that moment. Change the wording, the assistant or the location and the list changes again. Two askings of the same question are two separate samples, not two looks at one fixed ranking.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Are AI recommendations for local businesses random?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "No. They vary, but not evenly. Assistants name the businesses they can find and read, and those are not always the best rated. A business whose site the assistant can fetch, whose pages say plainly what it does and where, and whose outside listings agree, is named more often across many askings. That share is the part a business can move.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Why did my AI referrals go down this month?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Check three things before concluding anything. Answers vary, so one month can be noise; compare several. AI apps often send visitors with no referrer, so they read as direct visits, and the analytics tag on your site may report to a different account than the one you are reading. Finally, many categories are seasonal. Only a trend across months, measured the same way each time, says the recommendations themselves changed.",
-          },
-        },
+        { "@type": "Question", name: Q_WHY, acceptedAnswer: { "@type": "Answer", text: A_WHY } },
+        { "@type": "Question", name: Q_RANDOM, acceptedAnswer: { "@type": "Answer", text: A_RANDOM } },
+        { "@type": "Question", name: Q_DIP, acceptedAnswer: { "@type": "Answer", text: A_DIP } },
       ],
     },
   ],
@@ -66,10 +50,7 @@ export default {
   <section>
     <div class="container narrow">
 ${head({ label: "Short answer", h: "Each answer is a new sample." })}
-${answer(
-  "Why does ChatGPT give different answers to the same question?",
-  "An assistant writes each answer fresh. It chooses its words with some randomness built in, and when web search is on it reads whatever pages its search returns at that moment. Change the wording, the assistant or the location and the list changes again. Two askings of the same question are two separate samples, not two looks at one fixed ranking."
-)}
+${answer(Q_WHY, A_WHY)}
     </div>
   </section>
 
@@ -82,7 +63,7 @@ ${answer(
 )}
 ${answer(
   "2. Live search returns different pages",
-  "When an assistant searches the web before it answers, it reads only a handful of the pages that come back, and what comes back moves from one minute to the next. A business named on a page the assistant happened to read is in the answer. The same business, missing from the pages read the next time, is not."
+  "When an assistant searches the web before it answers, it reads some of the pages that come back, and what comes back changes over time. A business named on a page the assistant happened to read is in the answer. The same business, missing from the pages read the next time, is not."
 )}
 ${answer(
   "3. The wording and the place change the question",
@@ -90,7 +71,7 @@ ${answer(
 )}
 ${answer(
   "4. Each assistant is a different system",
-  "ChatGPT, Gemini, Claude and Perplexity are built by different companies, search the web through different systems and weigh sources differently. A business named by one is not automatically named by the others, which is why each one has to be checked on its own."
+  "ChatGPT, Gemini, Claude and Perplexity are built by different companies, search the web through different systems and can rely on different sources. A business named by one is not automatically named by the others, which is why each one has to be checked on its own."
 )}
     </div>
   </section>
@@ -110,25 +91,21 @@ ${table(
     ["Baltimore practices in the directory's own data at 4.8 stars or higher with more than 100 reviews", "49"],
   ]
 )}
-      <p>Two cautions. The study comes from a directory, which has its own reason to show that assistants are unreliable, and it asked the broadest question possible, once or twice per city. The variation it found is still real, and anyone can reproduce it by asking the same question twice. The Baltimore row is the more useful finding for a business owner: the assistant did not name the best-rated practices. It named practices it could find.</p>
+      <p>Two cautions. The study comes from a dental directory, and it asked the broadest question possible. The article reports a repeat question only for the 10 largest cities. The Baltimore rows are the ones for a business owner to note: one of Gemini's five picks had 3.1 stars on 24 reviews, in a city where 49 practices have 4.8 stars or higher. A strong rating on its own did not decide who was named.</p>
     </div>
   </section>
 
   <section>
     <div class="container narrow">
 ${head({ label: "What it means for you", h: "Variable is not the same as random." })}
-${answer(
-  "Are AI recommendations for local businesses random?",
-  "No. They vary, but not evenly. Assistants name the businesses they can find and read, and those are not always the best rated. A business whose site the assistant can fetch, whose pages say plainly what it does and where, and whose outside listings agree, is named more often across many askings. That share is the part a business can move, and the work behind it is described in <a class='inline-link' href='/guides/geo-for-local-businesses/'>GEO for local businesses</a>."
-)}
+${answer(Q_RANDOM, A_RANDOM)}
+      <p>The work behind those parts is described in <a class="inline-link" href="/guides/geo-for-local-businesses/">GEO for local businesses</a>.</p>
 ${answer(
   "Is one AI answer good evidence either way?",
   "No. One answer is one sample. A screenshot showing your business named proves it can be named, not that it usually is, and a screenshot showing a competitor proves just as little. Anyone selling or judging AI visibility from a single answer is reporting a sample of one."
 )}
-${answer(
-  "Why did my AI referrals go down this month?",
-  "Check three things before concluding anything. Answers vary, so one month can be noise; compare several. AI apps often send visitors with no referrer, so they read as direct visits, and the analytics tag on your site may report to a different account than the one you are reading, which happens when more than one agency has touched the site. Finally, many categories are seasonal. Only a trend across months, measured the same way each time, says the recommendations themselves changed. <a class='inline-link' href='/guides/how-to-track-leads-from-chatgpt/'>Tracking leads from ChatGPT</a> covers the measurement side."
-)}
+${answer(Q_DIP, A_DIP)}
+      <p><a class="inline-link" href="/guides/how-to-track-leads-from-chatgpt/">Tracking leads from ChatGPT</a> covers the measurement side.</p>
     </div>
   </section>
 

@@ -4,14 +4,13 @@ import { SITE } from "../layout.mjs";
 /* Primary query: "how do i know which leads found me from chatgpt?" (GSC,
  * position 7.3, 39 impressions, 0 clicks through 2026-10-27), plus "how to
  * track leads from chatgpt". The title and short answer lead with that
- * question. The "When AI referrals dip" section answers the follow-up a
- * practice owner asked a client team in October 2026; no client is named.
+ * question. The "When AI referrals dip" section answers the common follow-up.
  * Funnel job: informational spoke -> /audit/, with /ai-visibility/ as the hub.
  * The source vocabulary named here mirrors js/instrument.js; keep in sync. */
 const Q_WHICH = "How do I know which leads found me from ChatGPT?";
-const A_WHICH = "Use three records together. First, the referrer: a visitor who clicks a link in ChatGPT often arrives with chatgpt.com as the referring site, sometimes with utm_source=chatgpt.com added to the address, and your analytics can report it. Second, ask every new lead how they heard about you, and include an AI assistant such as ChatGPT as one of the answers. Third, put a campaign tag on the links you control, such as the website link on your Google Business Profile. No one record catches every lead; together they show which leads were observed coming from AI and which are unknown.";
+const A_WHICH = "Use three records together. First, the referrer: a visitor who clicks a link in ChatGPT may arrive with chatgpt.com as the referring site, sometimes with utm_source=chatgpt.com added to the address, and when it does your analytics can report it. Second, ask every new lead how they heard about you, and include an AI assistant such as ChatGPT as one of the answers. Third, put a campaign tag on the links you control, such as the website link on your Google Business Profile. No one record catches every lead; together they show which leads were observed coming from AI and which are unknown.";
 const Q_DIP = "Why did my AI referrals go down?";
-const A_DIP = "Check four things before concluding anything. AI answers vary from one asking to the next, so one month can be noise. AI apps often open links with no referrer, so those visitors are counted as direct. The analytics tag on your site may report to a different account than the one you are reading, which happens when more than one agency has worked on the site. And many categories are seasonal. Only a trend across several months, measured the same way each time, says the recommendations changed.";
+const A_DIP = "Check four things before concluding anything. AI answers vary from one asking to the next, so one month can be noise. AI apps often open links with no referrer, so those visitors are counted as direct. The analytics tag on your site may report to a different account than the one you are reading, which can happen when more than one agency has worked on the site. And many categories are seasonal. Only a trend across several months, measured the same way each time, says the recommendations changed.";
 
 export default {
   path: "/guides/how-to-track-leads-from-chatgpt/",
@@ -24,7 +23,7 @@ export default {
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Resources", item: `${SITE.origin}/resources/` },
-        { "@type": "ListItem", position: 2, name: "How to track leads from ChatGPT and AI search", item: `${SITE.origin}/guides/how-to-track-leads-from-chatgpt/` },
+        { "@type": "ListItem", position: 2, name: "Which leads found you from ChatGPT", item: `${SITE.origin}/guides/how-to-track-leads-from-chatgpt/` },
       ],
     },
     {
@@ -121,7 +120,7 @@ ${answer(Q_DIP, A_DIP)}
       <ol class="check-list">
         <li><strong>Compare several months, not one.</strong> Assistants write each answer fresh, and a repeat question can name different businesses. <a class="inline-link" href="/guides/why-chatgpt-gives-different-answers/">Why ChatGPT gives different answers</a> covers why, and what one large study of dentist recommendations found.</li>
         <li><strong>Count the unknowns.</strong> If direct visits rose while AI referrals fell, some of the AI visitors may simply have arrived without a referrer.</li>
-        <li><strong>Confirm which account the site reports to.</strong> Open your site, find the analytics measurement ID it sends, and check that it matches the account you are reading. An account that shows no data at all is the usual sign of a mismatch.</li>
+        <li><strong>Confirm which account the site reports to.</strong> Open your site, find the analytics measurement ID it sends, and check that it matches the account you are reading. An account that shows no data at all is one sign of a mismatch.</li>
         <li><strong>Check the season.</strong> Compare with the same month last year before comparing with last month.</li>
       </ol>
     </div>
