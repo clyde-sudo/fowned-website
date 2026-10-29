@@ -45,7 +45,7 @@ ${answer(
 
   <section>
     <div class="container narrow">
-${head({ label: "Guides", h: "Six longer reads for a local business owner." })}
+${head({ label: "Guides", h: "Seven longer reads for a local business owner." })}
       <p>Each guide answers one question in full and ends at the audit, because the audit is where a generic answer turns into your answer.</p>
 ${guideList()}
     </div>
