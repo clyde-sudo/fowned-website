@@ -140,7 +140,7 @@ ${head({ label: "How it works", h: "Three steps, one loop." })}
 
   <section id="guides">
     <div class="container">
-${head({ label: "Guides", h: "Read before you buy anything.", sub: "Six plain guides for a local business owner working out what AI visibility actually is and who to trust with it." })}
+${head({ label: "Guides", h: "Read before you buy anything.", sub: "Seven plain guides for a local business owner working out what AI visibility actually is and who to trust with it." })}
 ${guideList()}
       <p class="center-link"><a class="inline-link" href="/resources/">All guides and short answers &rarr;</a></p>
     </div>

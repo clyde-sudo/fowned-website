@@ -1,29 +1,56 @@
 import { head, answer, cta, table, relatedGuides } from "../ui.mjs";
 import { SITE } from "../layout.mjs";
 
-/* Primary query: "how to track leads from chatgpt" / "track ai search traffic".
+/* Primary query: "how do i know which leads found me from chatgpt?" (GSC,
+ * position 7.3, 39 impressions, 0 clicks through 2026-10-27), plus "how to
+ * track leads from chatgpt". The title and short answer lead with that
+ * question. The "When AI referrals dip" section answers the common follow-up.
  * Funnel job: informational spoke -> /audit/, with /ai-visibility/ as the hub.
  * The source vocabulary named here mirrors js/instrument.js; keep in sync. */
+const Q_WHICH = "How do I know which leads found me from ChatGPT?";
+const A_WHICH = "Use three records together. First, the referrer: a visitor who clicks a link in ChatGPT may arrive with chatgpt.com as the referring site, sometimes with utm_source=chatgpt.com added to the address, and when it does your analytics can report it. Second, ask every new lead how they heard about you, and include an AI assistant such as ChatGPT as one of the answers. Third, put a campaign tag on the links you control, such as the website link on your Google Business Profile. No one record catches every lead; together they show which leads were observed coming from AI and which are unknown.";
+const Q_DIP = "Why did my AI referrals go down?";
+const A_DIP = "Check four things before concluding anything. AI answers vary from one asking to the next, so one month can be noise. AI apps often open links with no referrer, so those visitors are counted as direct. The analytics tag on your site may report to a different account than the one you are reading, which can happen when more than one agency has worked on the site. And many categories are seasonal. Only a trend across several months, measured the same way each time, says the recommendations changed.";
+
 export default {
   path: "/guides/how-to-track-leads-from-chatgpt/",
-  title: "How to track leads from ChatGPT and AI search without guessing | Fowned",
+  title: "Which leads found you from ChatGPT, and how to track them | Fowned",
   description:
-    "What a referrer proves about a lead from ChatGPT or AI search, what it cannot, the five source labels we record, and how to set it up on a local business site.",
+    "How to tell which leads found you from ChatGPT or AI search: the referrer, the intake question and campaign tags, what each one can prove, and what to check when AI referrals dip.",
   schema: [
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Resources", item: `${SITE.origin}/resources/` },
-        { "@type": "ListItem", position: 2, name: "How to track leads from ChatGPT and AI search", item: `${SITE.origin}/guides/how-to-track-leads-from-chatgpt/` },
+        { "@type": "ListItem", position: 2, name: "Which leads found you from ChatGPT", item: `${SITE.origin}/guides/how-to-track-leads-from-chatgpt/` },
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        { "@type": "Question", name: Q_WHICH, acceptedAnswer: { "@type": "Answer", text: A_WHICH } },
+        { "@type": "Question", name: Q_DIP, acceptedAnswer: { "@type": "Answer", text: A_DIP } },
       ],
     },
   ],
   body: `  <section class="page-hero">
     <div class="container narrow">
       <span class="label">Guide</span>
-      <h1>How to track leads from ChatGPT and AI search without guessing.</h1>
-      <p class="hero-sub">Most AI traffic reports are built by inferring a source from its absence. This page is about recording what was observed and labeling the rest unknown, which is less flattering and considerably more useful.</p>
+      <h1>Which leads found you from ChatGPT, and how to track them.</h1>
+      <p class="hero-sub">Most AI traffic reports infer a source from its absence. This page covers the three records that show which leads came from ChatGPT or another assistant, what each one can prove, and what to check when the numbers drop.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container narrow">
+${head({ label: "Short answer", h: "Three records, read together." })}
+${answer(Q_WHICH, A_WHICH)}
+${answer(
+  "Why ask the lead as well as reading analytics?",
+  "Because analytics misses the visitors who arrive with no referrer, and the person who called or booked does not. A lead who says they asked ChatGPT is first-hand evidence. Write the answer down with the date, in the same place every time, so it can be counted next to the analytics."
+)}
     </div>
   </section>
 
@@ -83,6 +110,19 @@ ${head({ label: "What this cannot tell you", h: "Stated once, so no report has t
         <li><strong>Revenue caused by AI.</strong> A booked meeting with an observed AI referrer is a correlated fact. Causation would need the counterfactual, and nobody has it.</li>
       </ul>
       <p>This is the vocabulary used on <a class="inline-link" href="/ai-visibility/">the measurement page</a> and in the attribution tier of <a class="inline-link" href="/services/">the services</a>.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container narrow">
+${head({ label: "When AI referrals dip", h: "Four checks before reading a drop as a loss." })}
+${answer(Q_DIP, A_DIP)}
+      <ol class="check-list">
+        <li><strong>Compare several months, not one.</strong> Assistants write each answer fresh, and a repeat question can name different businesses. <a class="inline-link" href="/guides/why-chatgpt-gives-different-answers/">Why ChatGPT gives different answers</a> covers why, and what one large study of dentist recommendations found.</li>
+        <li><strong>Count the unknowns.</strong> If direct visits rose while AI referrals fell, some of the AI visitors may simply have arrived without a referrer.</li>
+        <li><strong>Confirm which account the site reports to.</strong> Open your site, find the analytics measurement ID it sends, and check that it matches the account you are reading. An account that shows no data at all is one sign of a mismatch.</li>
+        <li><strong>Check the season.</strong> Compare with the same month last year before comparing with last month.</li>
+      </ol>
     </div>
   </section>
 

@@ -229,8 +229,14 @@ export const GUIDES = [
   {
     path: "/guides/how-to-track-leads-from-chatgpt/",
     short: "Tracking leads from ChatGPT",
-    title: "How to track leads from ChatGPT and AI search without guessing",
-    blurb: "What the referrer can prove, what it cannot, and what to record instead.",
+    title: "Which leads found you from ChatGPT, and how to track them",
+    blurb: "The three records that show an AI lead, what each can prove, and what to check when referrals dip.",
+  },
+  {
+    path: "/guides/why-chatgpt-gives-different-answers/",
+    short: "Why AI answers change",
+    title: "Why ChatGPT gives different answers to the same question",
+    blurb: "Why the list of recommended businesses changes, what a 2026 study found, and how to measure through it.",
   },
 ];
 
