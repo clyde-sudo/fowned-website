@@ -91,7 +91,7 @@ ${table(
     ["Baltimore practices in the directory's own data at 4.8 stars or higher with more than 100 reviews", "49"],
   ]
 )}
-      <p>Two cautions. The study comes from a dental directory, and it asked the broadest question possible. The article reports a repeat question only for the 10 largest cities. The Baltimore rows are the ones for a business owner to note: one of Gemini's five picks had 3.1 stars on 24 reviews, in a city where 49 practices have 4.8 stars or higher. A strong rating on its own did not decide who was named.</p>
+      <p>Two cautions. The study comes from a dental directory, and it asked the broadest question possible. The article reports a repeat question only for the 10 largest cities. The Baltimore rows are the ones for a business owner to note: one of Gemini's five picks had 3.1 stars on 24 reviews, in a city where 49 practices have 4.8 stars or higher on more than 100 reviews. A strong rating on its own did not decide who was named.</p>
     </div>
   </section>
 
