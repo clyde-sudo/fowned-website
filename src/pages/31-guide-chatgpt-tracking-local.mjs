@@ -90,7 +90,7 @@ ${answer(
 )}
 ${answer(
   "Tracking ChatGPT's crawlers on your site",
-  "OpenAI documents three crawlers by name: OAI-SearchBot, which builds its search results; ChatGPT-User, which fetches a page when a person's question calls for it; and GPTBot, which collects training data. Your server logs show whether each one visited and whether it was served the page or refused. A site that refuses them cannot be read, whatever else you track."
+  "OpenAI documents its crawlers by name, and three of them matter here: OAI-SearchBot, which builds its search results; ChatGPT-User, which fetches a page when a person's question calls for it; and GPTBot, which collects content that may be used for training. Your server logs show whether each one visited and whether it was served the page or refused. A site that refuses them cannot be read, whatever else you track."
 )}
     </div>
   </section>
