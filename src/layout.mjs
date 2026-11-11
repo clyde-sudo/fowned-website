@@ -238,6 +238,12 @@ export const GUIDES = [
     title: "Why ChatGPT gives different answers to the same question",
     blurb: "Why the list of recommended businesses changes, what a 2026 study found, and how to measure through it.",
   },
+  {
+    path: "/guides/chatgpt-tracking-for-local-businesses/",
+    short: "ChatGPT tracking",
+    title: "ChatGPT tracking: how to track your business in ChatGPT",
+    blurb: "The four things you can track, where each one is read, and what tracking tools do.",
+  },
 ];
 
 /* The guide list. The titles used to sit in a plain .check-list, where
