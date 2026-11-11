@@ -15,3 +15,25 @@ Metrics: OpenSEO get_keyword_metrics, US, 2026-09-06. 13 of 50 queries carry Goo
 
 Rule: one owner per query. A new page is created only for a `owner:GAP-evidence-post` row.
 Five GAP rows collapse into at most three evidence posts (GBP+reviews, directories+citations, schema).
+
+## Refresh-or-spoke rule (operator, 2026-11-11)
+
+The site is worked as one cluster: every guide is a spoke, and the work list
+comes from Search Console, not from outside keyword tools.
+
+1. Pull query + page rows from Search Console. For each page, list the queries
+   it is shown for whose phrase is not on the page.
+2. **Refresh first.** Add the phrase to the page that is already shown for it,
+   as a question heading with its answer, when that page can answer it honestly.
+3. **New spoke only when it cannot be added.** A query cannot be added when its
+   intent is not the page's job, or when another page owns it. A page being
+   inside its 28-day freeze is a reason to wait, not a reason for a new page.
+4. Queries that cannot be housed are grouped by intent. One new spoke per
+   intent, never one page per phrase. A group under 20 impressions per 28 days
+   waits until it grows.
+5. One owner per query still holds. When a new spoke takes a query, the page
+   that used to be shown for it links to the spoke and does not add the phrase.
+
+First use: `/guides/chatgpt-tracking-for-local-businesses/` takes the
+"chatgpt tracking" group (785 impressions, 2026-08-12..11-09) from the
+lead-tracking guide, which owns lead attribution only.
