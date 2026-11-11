@@ -5,7 +5,10 @@ import { SITE } from "../layout.mjs";
  * Funnel job: informational spoke -> /audit/. Citability owns the measurement
  * definitions; this page owns the three-way comparison. The qualification
  * family ("geo for local businesses", "does my business need geo", "aeo for
- * local business") is owned by /guides/geo-for-local-businesses/. */
+ * local business") is owned by /guides/geo-for-local-businesses/.
+ * Search Console showed this page for "local aeo", "geo local seo" and "local
+ * geo" (2026-08-12..11-09) with none of the phrases on the page; the "Local"
+ * section defines them and hands the qualification question to the hub. */
 export default {
   path: "/guides/local-seo-vs-geo-vs-aeo/",
   title: "Local SEO vs GEO vs AEO for local businesses | which to fund first | Fowned",
@@ -69,6 +72,24 @@ ${table(
 ${head({ label: "Overlap", h: "Why one fix often serves all three." })}
       <p>A page a crawler cannot fetch is invisible to all three. A business whose name, address and phone differ across directories is untrustworthy to all three. A fact stated only inside an image is unreadable to all three. Most of what a local business needs to do first sits in that shared foundation, which is why the cheapest useful action is usually a diagnosis rather than a new campaign.</p>
       <p>Where they diverge is the top layer. Local SEO rewards review volume and proximity. AEO rewards answer shape. GEO rewards corroboration from sources the assistant already trusts. Funding the top layer of one before the shared foundation is sound produces the common outcome: a report that says the work was done, and a customer who still cannot find you.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container narrow">
+${head({ label: "Local", h: "Local AEO and local GEO: what the word local changes." })}
+${answer(
+  "What is local AEO?",
+  "Local AEO is answer engine optimization for a business that serves one area. The questions have a place in them: who repairs furnaces in this town, what a crown costs here, whether the shop is open on Sunday. The work is the content shape described above, applied to the facts a nearby customer asks about. Services, service area, hours and any prices you publish are each stated in plain text, under a heading that asks the question the way a customer would."
+)}
+${answer(
+  "What is local GEO?",
+  "Local GEO is generative engine optimization for the same kind of business. The customer asks an assistant for a recommendation near a place. The work is making sure the assistant can fetch your pages and that the sources outside your site agree about who you are. For a local business those outside sources are mostly its Google Business Profile and the directories and review sites that already list it. Whether yours needs the work at all is answered in <a class=\"inline-link\" href=\"/guides/geo-for-local-businesses/\">GEO for local businesses</a>."
+)}
+${answer(
+  "GEO vs local SEO: does one replace the other?",
+  "No. A customer who opens Google Maps is reading a ranked list, and a customer who asks an assistant is reading a generated answer. Both customers exist. GEO and local SEO share the foundation described above and differ only at the top, so the question is which one to fund first, not which one to keep."
+)}
     </div>
   </section>
 
