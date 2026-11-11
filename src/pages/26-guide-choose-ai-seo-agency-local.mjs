@@ -3,7 +3,10 @@ import { SITE, bookHref } from "../layout.mjs";
 
 /* Primary query: "how to choose an ai seo agency" / "geo agency for local
  * business". Funnel job: commercial spoke -> /services/ and /audit/. This is
- * the one guide where booking is a legitimate secondary action. */
+ * the one guide where booking is a legitimate secondary action.
+ * Search Console showed this page for "how to choose a geo agency" and "do i
+ * need a separate geo agency" (2026-08-12..11-09) with neither phrase on the
+ * page; the "GEO agencies" section answers both. */
 const BOOK_HREF = bookHref();
 
 export default {
@@ -67,6 +70,21 @@ ${answer(
 ${answer(
   "9. What does the first month cost if the audit finds nothing to fix?",
   "There is a correct answer here and it is a small number. Some sites are already retrievable, consistent and machine-readable. An agency whose price does not change when the diagnosis changes is not selling a diagnosis."
+)}
+    </div>
+  </section>
+
+  <section>
+    <div class="container narrow">
+${head({ label: "GEO agencies", h: "How to choose a GEO agency." })}
+      <p>Choose a GEO agency the way you would choose any other provider: by what it measured before it quoted you. GEO, AEO, AI SEO and AI visibility are four labels on largely the same work for a local business, so the nine questions above apply to every one of them without changing a word. The label on the proposal matters less than whether the agency can show you a fetch check, a consistency check and a sampled measurement with its sample size.</p>
+${answer(
+  "Do I need a separate GEO agency?",
+  "Usually not. If the agency that handles your local SEO can show that AI crawlers can fetch your pages, that your name, address and phone agree across the directories that matter, and that it measures answer presence on a schedule with the number of questions stated, you already have a GEO agency under another name. A separate one is worth paying for in one case: your current provider cannot answer question three and has no plan to. If you do hire two, name one owner for your pages and one for your Google Business Profile, in writing, before either starts."
+)}
+${answer(
+  "Is a GEO agency different from an AI SEO agency?",
+  "In name, mostly. Both sell the same three kinds of repair: making your pages fetchable, making your facts readable, and making outside sources agree about who you are. Compare them on the nine answers, not on the acronym."
 )}
     </div>
   </section>
