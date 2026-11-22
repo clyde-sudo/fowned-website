@@ -11,15 +11,15 @@ import { SITE, bookHref } from "../layout.mjs";
 const BOOK_HREF = bookHref();
 
 const Q_WHAT = "What is AEO for a local business?";
-const A_WHAT = "Answer engine optimization is the work of writing your pages so a search feature or an AI assistant can lift a clear answer from them and name your business in it. For a local business that means a question as a heading, a short direct answer beneath it, and plain-text facts about your services, area and contact details.";
+const A_WHAT = "Answer engine optimization is the work of writing your pages so a search feature or an AI assistant can lift a clear answer from them as a quoted passage. For a local business that means a question as a heading, a short direct answer beneath it, and plain-text facts about your services, area and contact details.";
 const Q_SCHEMA = "Do I need special schema or an AI text file for AEO?";
 const A_SCHEMA = "Google says there is no special schema.org markup, no new machine-readable file and no AI text file required to appear in its AI features. The page must be indexed and eligible to show a snippet, and any structured data you add must match the visible text. Add markup only where the page really shows the same question and answer.";
 const Q_GUARANTEE = "Can I make Google or ChatGPT name my business?";
-const A_GUARANTEE = "No. Google states that you cannot mark a page as a featured snippet, because its systems decide, and that indexing and serving are not guaranteed. Anyone who promises a placement is promising something outside their control. You can make your pages easy to fetch, easy to read and consistent with your other listings.";
+const A_GUARANTEE = "No. Google states that you cannot mark a page as a featured snippet, because its systems decide, and that inclusion in search results is not guaranteed. Anyone who promises a placement is promising something outside their control. You can make your pages easy to fetch, easy to read and consistent with your other listings.";
 const Q_TIME = "How long does AEO take to show a result?";
 const A_TIME = "For search results, the change takes effect only after the crawler that builds the index returns. OpenAI says a robots.txt update can take about 24 hours to reach its search systems, and Google says a recrawl can take anywhere from a few days to a few weeks. Write down a baseline of ten questions before you edit, then ask them again after four weeks.";
 const Q_SEO = "Is AEO different from local SEO?";
-const A_SEO = "Local SEO competes for a position in a list, and AEO competes to be the text that answers the question. They share a foundation: pages a crawler can fetch, facts that match across listings, and content written for people. The full side-by-side is in our comparison guide, and this page covers only the AEO steps.";
+const A_SEO = "Local SEO competes for a position in a list, and AEO competes to be the text that answers the question. They share a foundation: pages a crawler can fetch, facts that match across listings, and content written for people. The full side-by-side is in our comparison guide, and this page covers the AEO steps plus the shared foundation.";
 
 export default {
   path: "/guides/aeo-for-local-businesses/",
@@ -83,7 +83,7 @@ ${table(
   <section>
     <div class="container narrow">
 ${head({ label: "Steps 1 and 2", h: "What should an answer under a question look like?" })}
-      <p>Write the heading as the question itself. Directly under it, answer in two or three sentences that name the business, the service and the place. A reader, a search feature and an assistant can all lift that paragraph without the rest of the page. Most sections of this guide follow the same pattern, and the <a class="inline-link" href="/guides/local-seo-vs-geo-vs-aeo/">comparison guide</a> shows it on definitions.</p>
+      <p>Write the heading as the question itself. Directly under it, answer in two or three sentences that name the business, the service and the place. A reader, a search feature and an assistant can all lift that paragraph without the rest of the page. Several sections of this guide follow the same pattern, and the <a class="inline-link" href="/guides/local-seo-vs-geo-vs-aeo/">comparison guide</a> shows the answer paragraph under each definition heading.</p>
       <p>Google describes the quoted result as a featured snippet and says in its <a class="inline-link" href="https://developers.google.com/search/docs/appearance/featured-snippets" rel="noopener">featured snippets documentation</a> that you cannot mark a page as one. Its systems decide whether a page would make a good snippet. That is why the work is the quality and shape of the answer, and not a tag.</p>
     </div>
   </section>
@@ -110,7 +110,7 @@ ${head({ label: "A dated check", h: "How can I check that my answers can be read
 ${head({ label: "Step 6", h: "How long does it take, and what counts as a result?" })}
 ${answer(Q_TIME, A_TIME)}
       <p>The recrawl range comes from Google's <a class="inline-link" href="https://developers.google.com/search/docs/crawling-indexing/ask-google-to-recrawl" rel="noopener">recrawl guidance</a>.</p>
-      <p>A result is a count with its denominator, such as named in 3 of 10 questions, next to the date. One screenshot of one answer proves nothing, because answers vary between sessions. <a class="inline-link" href="/guides/chatgpt-tracking-for-local-businesses/">ChatGPT tracking for local businesses</a> explains how to keep the sheet.</p>
+      <p>A result is a count with its denominator, such as named in 3 of 10 questions, next to the date. One screenshot of one answer proves nothing, because <a class="inline-link" href="/guides/why-chatgpt-gives-different-answers/">answers vary between sessions</a>. <a class="inline-link" href="/guides/chatgpt-tracking-for-local-businesses/">ChatGPT tracking for local businesses</a> explains how to keep the sheet.</p>
 ${answer(Q_GUARANTEE, A_GUARANTEE)}
 ${answer(Q_SEO, A_SEO)}
     </div>
