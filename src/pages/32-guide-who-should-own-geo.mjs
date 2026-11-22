@@ -81,7 +81,7 @@ ${answer(Q_STAFF, A_STAFF)}
         <li><strong>Write down ten questions.</strong> Use the words a customer would type, with your town in them, and keep the wording fixed. <a class="inline-link" href="/guides/chatgpt-tracking-for-local-businesses/">ChatGPT tracking for local businesses</a> shows the sheet.</li>
         <li><strong>Make the facts match.</strong> Compare your site, your Google Business Profile and the main directories for your trade, and correct the ones that differ.</li>
         <li><strong>Test the front door.</strong> The check in the next section takes one minute if you can open a terminal, and the free audit runs it for you if you cannot.</li>
-        <li><strong>Ask new customers how they found you.</strong> Write the answer down with the date. It is the only record that shows an assistant helped when no referrer arrives.</li>
+        <li><strong>Ask new customers how they found you.</strong> Write the answer down with the date. It is often the only record that shows an assistant helped when no referrer arrives.</li>
       </ol>
     </div>
   </section>
@@ -89,7 +89,7 @@ ${answer(Q_STAFF, A_STAFF)}
   <section>
     <div class="container narrow">
 ${head({ label: "A dated check", h: "How do I check whether the technical part is open?" })}
-      <p>On 2026-11-22 we requested one page of this site three times, each time identifying as a different OpenAI crawler, and wrote down the result. OpenAI documents these names on its <a class="inline-link" href="https://platform.openai.com/docs/bots" rel="noopener">crawler overview page</a>: OAI-SearchBot builds the search results in ChatGPT, ChatGPT-User fetches a page when a person's question calls for it, and GPTBot collects content that may be used for training.</p>
+      <p>On 2026-11-22 we requested one page of this site, <a class=\"inline-link\" href=\"/guides/local-seo-vs-geo-vs-aeo/\">the local SEO, GEO and AEO comparison</a>, three times, each time identifying as a different OpenAI crawler, and wrote down the result. OpenAI documents these names on its <a class="inline-link" href="https://platform.openai.com/docs/bots" rel="noopener">crawler overview page</a>: OAI-SearchBot builds the search results in ChatGPT, ChatGPT-User fetches a page when a person's question calls for it, and GPTBot collects content that may be used for training.</p>
 ${table(
   ["Crawler name sent", "What OpenAI says it is for", "Response from this site, 2026-11-22"],
   [
@@ -98,8 +98,8 @@ ${table(
     ["GPTBot", "Content that may be used for training", "200, the page was served"],
   ]
 )}
-      <p>You can run the same check on your own site with one line per crawler, such as <code>curl -I -A "OAI-SearchBot" https://your-site.example/</code>, and read the first line of the reply. A 200 means the page was served. A 403 or a challenge page means something between the visitor and your site, often a security setting at your host, refused the crawler. That setting is the usual reason the technical row needs whoever controls the website, and it is the first thing worth knowing before you pay anyone.</p>
-      <p>One check is a sample from one place on one day. It shows the door was open to that request, and it does not show that ChatGPT will name you.</p>
+      <p>You can run the same check on your own site with one line per crawler, such as <code>curl -sL -o /dev/null -w "%{http_code}\n" -A "OAI-SearchBot" https://your-site.example/</code>, and read the number it prints. A 200 means the page was served. A 301 or 308 means you should repeat the check with the final address. A 403 means something between the visitor and your site, often a security setting at your host, refused the crawler. That setting is the usual reason the technical row needs whoever controls the website, and it is the first thing worth knowing before you pay anyone.</p>
+      <p>One check is a sample from one place on one day, sent from an ordinary machine and not from OpenAI's network. A security setting can treat the real crawler differently. The check shows the door was open to that request, and it does not show that ChatGPT will name you.</p>
     </div>
   </section>
 
@@ -116,7 +116,7 @@ ${answer(Q_KEEP, A_KEEP)}
     <div class="container narrow">
 ${head({ label: "Time", h: "How much of my time does this take?" })}
 ${answer(Q_TIME, A_TIME)}
-      <p>Whether your business needs GEO at all is a separate question with its own three tests, set out in <a class="inline-link" href="/guides/geo-for-local-businesses/">GEO for local businesses</a>. Settle that first, then settle who owns it.</p>
+      <p>Whether your business needs GEO at all is a separate question with its own three questions, set out in <a class="inline-link" href="/guides/geo-for-local-businesses/">GEO for local businesses</a>. Settle that first, then settle who owns it.</p>
     </div>
   </section>
 
