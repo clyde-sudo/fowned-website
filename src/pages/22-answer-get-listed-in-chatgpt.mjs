@@ -69,6 +69,7 @@ ${table(
 ${head({ label: "The step people skip", h: "Check that the fetch works before writing anything." })}
       <p>Filling in every directory is wasted effort while your own site refuses the fetch. Assistants retrieve with a non-browser client that identifies itself by name, and a great many sites block or challenge that client through a security default nobody set deliberately. It is a quiet failure: the site works perfectly in your browser and returns nothing to the thing that would have quoted you.</p>
       <p>One distinction is worth carrying, because it is routinely got backwards. Crawlers that gather training data and crawlers that fetch a page for a live answer are different clients with different names. Blocking the first costs you nothing in citation. Blocking the second makes citation impossible. Most sites that block one are blocking both without meaning to block either.</p>
+      <p>For the steps that make a page answer-shaped, see <a class="inline-link" href="/guides/aeo-for-local-businesses/">AEO for local businesses: how to get named in AI answers</a>.</p>
     </div>
   </section>
 
