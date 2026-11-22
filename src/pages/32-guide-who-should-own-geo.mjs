@@ -14,13 +14,13 @@ const BOOK_HREF = bookHref();
 const Q_WHO = "Who should own GEO at a local business?";
 const A_WHO = "The owner of the business, or the one manager the owner names, should own GEO. That person decides what the business wants to be known for, approves every fact stated about it, and reads the results. Staff or an agency can do the tasks, but nobody outside the business can own the facts about it.";
 const Q_STAFF = "Can one employee run GEO?";
-const A_STAFF = "Yes, for the parts that need an afternoon a month. One employee can keep the business name, address, phone number and hours identical across the listings, keep a dated sheet of the questions customers ask an assistant, and read the free audit. The technical checks, such as whether an AI crawler is blocked, usually need whoever controls the website.";
+const A_STAFF = "Yes, for the parts that need a short monthly check. One employee can keep the business name, address, phone number and hours identical across the listings, keep a dated sheet of the questions customers ask an assistant, and read the free audit. The technical checks, such as whether an AI crawler is blocked, usually need whoever controls the website.";
 const Q_AGENCY = "Should I hire an agency or do GEO in house?";
 const A_AGENCY = "Do the foundation in house when one person has the time and the site is easy to change. Hire when the fixes sit on the website platform, when nobody owns the site, or when you need a measurement kept on a schedule. Either way the decision, the facts and the history stay with you.";
 const Q_KEEP = "What should I keep control of if I hire an agency?";
 const A_KEEP = "Keep the logins for your website, domain and Google Business Profile in your own name. Keep the history of what was measured and when. Keep approval of every claim made about your business. An agency that holds any of these three has made itself hard to leave.";
 const Q_TIME = "How much time does owning GEO take?";
-const A_TIME = "The first pass is a few hours: run the free audit, fix what it names, and write down ten customer questions. After that the work is a short monthly check against the same ten questions. Time spent beyond that should buy a named fix with a date, not more reporting.";
+const A_TIME = "The first pass is a single sitting: run the free audit, fix what it names, and write down ten customer questions. After that the work is a short monthly check against the same ten questions. Time spent beyond that should buy a named fix with a date, not more reporting.";
 
 export default {
   path: "/guides/who-should-own-geo-at-a-local-business/",
@@ -80,8 +80,8 @@ ${answer(Q_STAFF, A_STAFF)}
       <ol class="check-list">
         <li><strong>Write down ten questions.</strong> Use the words a customer would type, with your town in them, and keep the wording fixed. <a class="inline-link" href="/guides/chatgpt-tracking-for-local-businesses/">ChatGPT tracking for local businesses</a> shows the sheet.</li>
         <li><strong>Make the facts match.</strong> Compare your site, your Google Business Profile and the main directories for your trade, and correct the ones that differ.</li>
-        <li><strong>Test the front door.</strong> The check in the next section takes a few minutes if you can open a terminal, and the free audit checks your robots.txt for you if you cannot.</li>
-        <li><strong>Ask new customers how they found you.</strong> Write the answer down with the date. It is often the only record that shows an assistant helped when no referrer arrives.</li>
+        <li><strong>Test the front door.</strong> The check in the next section takes a few minutes if you can open a terminal, and the free audit covers the robots.txt part of it if you cannot. It does not replace the terminal check.</li>
+        <li><strong>Ask new customers how they found you.</strong> Write the answer down with the date. It may be the only record that shows an assistant helped when no referrer arrives.</li>
       </ol>
     </div>
   </section>
@@ -98,8 +98,8 @@ ${table(
     ["GPTBot", "Content that may be used for training", "200, the page was served"],
   ]
 )}
-      <p>You can run the same check on your own site with one line per crawler, such as <code>curl -sL -o /dev/null -w "%{http_code}\\n" -A "OAI-SearchBot" https://your-site.example/</code>, and read the number it prints. A 200 means the page was served. A 403 means something between the visitor and your site, often a security setting at your host, refused the crawler. That setting is the usual reason the technical row needs whoever controls the website, and it is the first thing worth knowing before you pay anyone.</p>
-      <p>Also open <code>your-site.example/robots.txt</code> in a browser and look for a <code>Disallow</code> line under the crawler's name or under <code>User-agent: *</code>, because a request made with curl ignores that file and a real crawler obeys it. One check is a sample from one place on one day, sent from an ordinary machine and not from OpenAI's network. A security setting can treat the real crawler differently. The check shows the door was open to that request, and it does not show that ChatGPT will name you.</p>
+      <p>You can run the same check on your own site with one line per crawler, such as <code>curl -sL -o /dev/null -w "%{http_code}\\n" -A "OAI-SearchBot" https://your-site.example/</code>, and read the number it prints. A 200 means the page was served. A 403 means the request was refused, often by a security setting at your host or on your site. That setting is a common reason the technical row needs whoever controls the website, and it is the first thing worth knowing before you pay anyone.</p>
+      <p>Also open <code>your-site.example/robots.txt</code> in a browser and look for a <code>Disallow</code> line under the crawler's name or under <code>User-agent: *</code>, because a request made with curl ignores that file. OpenAI says OAI-SearchBot and GPTBot follow robots.txt, and that robots.txt rules may not apply to ChatGPT-User, since a person starts that fetch. One check is a sample from one place on one day, sent from an ordinary machine and not from OpenAI's network. A security setting can treat the real crawler differently. The check shows the door was open to that request, and it does not show that ChatGPT will name you.</p>
     </div>
   </section>
 
@@ -124,7 +124,7 @@ ${relatedGuides("/guides/who-should-own-geo-at-a-local-business/")}
 
 ${cta({
   h: "Start with the part that either passes or fails.",
-  p: "The free audit checks whether your robots.txt allows AI crawlers to retrieve your pages. A person emails it to you within 2 business days, and a call afterward is optional.",
+  p: "The free audit checks whether search agents are allowed to retrieve your pages, including what your robots.txt says. A person emails it to you within 2 business days, and a call afterward is optional.",
   primary: { href: "/audit/", text: "Request my free audit →", ev: "guide_who_owns_geo" },
   secondary: { href: BOOK_HREF, text: "Book a call after the audit", ev: "guide_who_owns_geo_book", booking: true },
 })}`,
