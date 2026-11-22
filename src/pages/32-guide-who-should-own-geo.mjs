@@ -98,7 +98,7 @@ ${table(
     ["GPTBot", "Content that may be used for training", "200, the page was served"],
   ]
 )}
-      <p>You can run the same check on your own site with one line per crawler, such as <code>curl -sL -o /dev/null -w "%{http_code}\n" -A "OAI-SearchBot" https://your-site.example/</code>, and read the number it prints. A 200 means the page was served. A 301 or 308 means you should repeat the check with the final address. A 403 means something between the visitor and your site, often a security setting at your host, refused the crawler. That setting is the usual reason the technical row needs whoever controls the website, and it is the first thing worth knowing before you pay anyone.</p>
+      <p>You can run the same check on your own site with one line per crawler, such as <code>curl -sL -o /dev/null -w "%{http_code}\\n" -A "OAI-SearchBot" https://your-site.example/</code>, and read the number it prints. A 200 means the page was served. A 301 or 308 means you should repeat the check with the final address. A 403 means something between the visitor and your site, often a security setting at your host, refused the crawler. That setting is the usual reason the technical row needs whoever controls the website, and it is the first thing worth knowing before you pay anyone.</p>
       <p>One check is a sample from one place on one day, sent from an ordinary machine and not from OpenAI's network. A security setting can treat the real crawler differently. The check shows the door was open to that request, and it does not show that ChatGPT will name you.</p>
     </div>
   </section>
