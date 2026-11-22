@@ -74,6 +74,7 @@ ${head({ label: "What does not work", h: "Three things sold as levers that are n
       <p><strong>Keyword density.</strong> Repeating a phrase does not raise a score, because there is no score. The assistant needs the fact stated once, clearly, in text it can reach.</p>
       <p><strong>Volume for its own sake.</strong> Forty thin pages give a retriever forty weak sources. One page that answers a real question completely is worth more than all of them, because it can be lifted and quoted whole.</p>
       <p class="fineprint">Note the shape of the thing being measured. In assistant answers to questions like this one, the sources cited are overwhelmingly explanatory pages and documentation rather than vendor home pages. Being described accurately on the pages that get retrieved matters more than optimising the page you most want people to see.</p>
+      <p>For the steps that make a page answer-shaped, see <a class="inline-link" href="/guides/aeo-for-local-businesses/">AEO for local businesses: how to get named in AI answers</a>.</p>
     </div>
   </section>
 
