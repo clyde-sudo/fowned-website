@@ -12,7 +12,7 @@ import { SITE, bookHref } from "../layout.mjs";
 const BOOK_HREF = bookHref();
 
 const Q_WHO = "Who should own GEO at a local business?";
-const A_WHO = "The owner of the business, or the one manager the owner names, should own GEO. That person decides what the business wants to be known for, approves every fact stated about it, and reads the results. Staff or an agency can do the tasks. Nobody outside the business can own the facts about it, and nobody should own the result without a number.";
+const A_WHO = "The owner of the business, or the one manager the owner names, should own GEO. That person decides what the business wants to be known for, approves every fact stated about it, and reads the results. Staff or an agency can do the tasks, but nobody outside the business can own the facts about it.";
 const Q_STAFF = "Can one employee run GEO?";
 const A_STAFF = "Yes, for the parts that need an afternoon a month. One employee can keep the business name, address, phone number and hours identical across the listings, keep a dated sheet of the questions customers ask an assistant, and read the free audit. The technical checks, such as whether an AI crawler is blocked, usually need whoever controls the website.";
 const Q_AGENCY = "Should I hire an agency or do GEO in house?";
