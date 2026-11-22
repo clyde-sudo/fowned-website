@@ -91,7 +91,7 @@ ${table(
     <div class="container narrow">
 ${head({ label: "Our answers", h: "How we answer the nine, so you can compare." })}
       <p>Every engagement starts with the <a class="inline-link" href="/audit/">free audit</a>, and the proposal is written from its results. Findings are sorted into fetch, content and corroboration. Answer presence is measured with <a class="inline-link" href="https://citability.dev/" rel="noopener">Citability</a> on a schedule with the denominator on every report, and the measurement history belongs to you. We do not build location pages at scale. The list of what we refuse to claim is on <a class="inline-link" href="/ai-visibility/">the measurement page</a>, and the three service levels are on <a class="inline-link" href="/services/">the services page</a>. If the audit finds nothing to fix, we say so and the first month costs nothing.</p>
-      <p class="fineprint">This page exists to help you judge any provider, including us. When you are ready to judge us specifically, the three service levels, what each one delivers and what we refuse to claim are set out on <a class="inline-link" href="/services/">the services page</a>.</p>
+      <p class="fineprint">This page exists to help you judge any provider, including us. When you are ready to judge us specifically, the three service levels, what each one delivers and what we refuse to claim are set out on <a class="inline-link" href="/services/">the services page</a>. Before you hire anyone, it also helps to settle <a class="inline-link" href="/guides/who-should-own-geo-at-a-local-business/">who should own GEO inside your business</a>.</p>
     </div>
   </section>
 
